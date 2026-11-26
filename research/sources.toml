@@ -1,0 +1,20 @@
+# Every source Escapement cites. Keys are cited as [@key] in research/ and paper/.
+# type: peer-reviewed | preprint | spec | book | official-docs | legislation | legal-scholarship |
+#       vendor | news | essay | code | dataset | report
+# Each source has at least one identifier: doi, arxiv, isbn or url.
+
+[source.nakamoto2008]
+type = "preprint"
+title = "Bitcoin: A Peer-to-Peer Electronic Cash System"
+authors = ["Satoshi Nakamoto"]
+year = 2008
+url = "https://bitcoin.org/bitcoin.pdf"
+supports = "the 10-minute target block interval and proof-of-work chain"
+
+[source.bip141]
+type = "spec"
+title = "BIP 141: Segregated Witness (Consensus layer)"
+authors = ["Eric Lombrozo", "Johnson Lau", "Pieter Wuille"]
+year = 2015
+url = "https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki"
+supports = "the 4,000,000 weight-unit block limit"

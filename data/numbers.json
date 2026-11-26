@@ -1,0 +1,733 @@
+{
+  "block-interval-s": {
+    "value": 600.0,
+    "display": "600 s",
+    "unit": "s",
+    "basis": "spec",
+    "label": "target time between blocks",
+    "formula": "",
+    "inputs": [],
+    "source": "nakamoto2008",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L7"
+  },
+  "tier2-delay-blocks": {
+    "value": 6.0,
+    "display": "6 blocks",
+    "unit": "blocks",
+    "basis": "design",
+    "label": "delay between a Tier 2 commitment and its effect",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L14"
+  },
+  "tier3-delay-blocks": {
+    "value": 144.0,
+    "display": "144 blocks",
+    "unit": "blocks",
+    "basis": "design",
+    "label": "delay between a Tier 3 commitment and its effect",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L20"
+  },
+  "lease-blocks": {
+    "value": 144.0,
+    "display": "144 blocks",
+    "unit": "blocks",
+    "basis": "design",
+    "label": "length of one lease on an agent's authority",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L26"
+  },
+  "season-blocks": {
+    "value": 4032.0,
+    "display": "4,032 blocks",
+    "unit": "blocks",
+    "basis": "design",
+    "label": "time a bond must be locked before it backs full authority",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L32"
+  },
+  "block-weight-limit": {
+    "value": 4000000.0,
+    "display": "4,000,000 WU",
+    "unit": "WU",
+    "basis": "spec",
+    "label": "consensus limit on a block's weight",
+    "formula": "",
+    "inputs": [],
+    "source": "bip141",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L40"
+  },
+  "seal-tx-vbytes": {
+    "value": 111.0,
+    "display": "111 vB",
+    "unit": "vB",
+    "basis": "assumption",
+    "label": "size of a one-input, one-output Taproot seal transaction (to be replaced by a measured value)",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L47"
+  },
+  "tier3-blockspace-share": {
+    "value": 0.01,
+    "display": "1%",
+    "unit": "",
+    "basis": "assumption",
+    "label": "share of blockspace Tier 3 anchors could take without crowding out other use",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L53"
+  },
+  "feerate-low": {
+    "value": 1.0,
+    "display": "1 sat/vB",
+    "unit": "sat/vB",
+    "basis": "assumption",
+    "label": "a low fee rate (to be replaced by a measured value)",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L61"
+  },
+  "feerate-median": {
+    "value": 5.0,
+    "display": "5 sat/vB",
+    "unit": "sat/vB",
+    "basis": "assumption",
+    "label": "a median fee rate (to be replaced by a measured value)",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L67"
+  },
+  "feerate-high": {
+    "value": 100.0,
+    "display": "100 sat/vB",
+    "unit": "sat/vB",
+    "basis": "assumption",
+    "label": "a high fee rate (to be replaced by a measured value)",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L73"
+  },
+  "seal-epoch-blocks": {
+    "value": 6.0,
+    "display": "6 blocks",
+    "unit": "blocks",
+    "basis": "design",
+    "label": "blocks between a gateway's seals",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L81"
+  },
+  "agents-per-pool": {
+    "value": 1000.0,
+    "display": "1,000 agents",
+    "unit": "agents",
+    "basis": "assumption",
+    "label": "agents whose log heads share one seal pool",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L87"
+  },
+  "seal-pools": {
+    "value": 1000.0,
+    "display": "1,000 pools",
+    "unit": "pools",
+    "basis": "assumption",
+    "label": "seal pools worldwide, for the blockspace estimate",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L93"
+  },
+  "gain-from-violation": {
+    "value": 1000000.0,
+    "display": "1,000,000 sats",
+    "unit": "sats",
+    "basis": "assumption",
+    "label": "what a violation is worth to whoever commits it, for the deterrence example",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L101"
+  },
+  "allowance-per-lease": {
+    "value": 100000.0,
+    "display": "100,000 sats",
+    "unit": "sats",
+    "basis": "design",
+    "label": "an example agent's allowance for one lease",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L107"
+  },
+  "leases-at-risk": {
+    "value": 2.0,
+    "display": "2 leases",
+    "unit": "leases",
+    "basis": "design",
+    "label": "leases an agent can spend before a lapse or veto stops it",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L113"
+  },
+  "coverage-ratio": {
+    "value": 1.0,
+    "display": "1.0",
+    "unit": "",
+    "basis": "design",
+    "label": "bond per sat the agent can spend before it can be stopped",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L119"
+  },
+  "swarm-size": {
+    "value": 10000.0,
+    "display": "10,000 agents",
+    "unit": "agents",
+    "basis": "assumption",
+    "label": "size of a swarm, for the sybil example",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L127"
+  },
+  "hashrate-eh": {
+    "value": 1000.0,
+    "display": "1,000 EH/s",
+    "unit": "EH/s",
+    "basis": "assumption",
+    "label": "network hashrate (to be replaced by a measured value)",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L135"
+  },
+  "fleet-efficiency-j-th": {
+    "value": 20.0,
+    "display": "20 J/TH",
+    "unit": "J/TH",
+    "basis": "assumption",
+    "label": "energy per terahash of the mining fleet (to be replaced by a measured value)",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L141"
+  },
+  "blocks-per-day": {
+    "value": 144.0,
+    "display": "144 blocks",
+    "unit": "blocks",
+    "basis": "derived",
+    "label": "blocks in a day at the target interval",
+    "formula": "86400 / block-interval-s",
+    "inputs": [
+      "block-interval-s"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L45"
+  },
+  "tier2-delay-mean-min": {
+    "value": 60.0,
+    "display": "60 minutes",
+    "unit": "minutes",
+    "basis": "derived",
+    "label": "mean wall-clock length of the Tier 2 delay",
+    "formula": "tier2-delay-blocks * block-interval-s / 60",
+    "inputs": [
+      "tier2-delay-blocks",
+      "block-interval-s"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L48"
+  },
+  "tier2-delay-p-under-half": {
+    "value": 0.08391794203130343,
+    "display": "8.4%",
+    "unit": "",
+    "basis": "derived",
+    "label": "chance the Tier 2 delay ends in under half its mean time",
+    "formula": "ErlangCDF(k = tier2-delay-blocks, t = half the mean)",
+    "inputs": [
+      "tier2-delay-blocks",
+      "block-interval-s"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L53"
+  },
+  "tier3-delay-mean-h": {
+    "value": 24.0,
+    "display": "24 hours",
+    "unit": "hours",
+    "basis": "derived",
+    "label": "mean wall-clock length of the Tier 3 delay",
+    "formula": "tier3-delay-blocks * block-interval-s / 3600",
+    "inputs": [
+      "tier3-delay-blocks",
+      "block-interval-s"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L56"
+  },
+  "tier3-delay-p-under-80pct": {
+    "value": 0.005332990142931204,
+    "display": "0.53%",
+    "unit": "",
+    "basis": "derived",
+    "label": "chance the Tier 3 delay ends in under 80% of its mean time",
+    "formula": "ErlangCDF(k = tier3-delay-blocks, t = 80% of the mean)",
+    "inputs": [
+      "tier3-delay-blocks",
+      "block-interval-s"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L61"
+  },
+  "lease-mean-h": {
+    "value": 24.0,
+    "display": "24 hours",
+    "unit": "hours",
+    "basis": "derived",
+    "label": "mean wall-clock length of a lease",
+    "formula": "lease-blocks * block-interval-s / 3600",
+    "inputs": [
+      "lease-blocks",
+      "block-interval-s"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L64"
+  },
+  "season-days": {
+    "value": 28.0,
+    "display": "28 days",
+    "unit": "days",
+    "basis": "derived",
+    "label": "time for a bond to season fully",
+    "formula": "season-blocks / blocks-per-day",
+    "inputs": [
+      "season-blocks",
+      "blocks-per-day"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L66"
+  },
+  "vbytes-per-block": {
+    "value": 1000000.0,
+    "display": "1,000,000 vB",
+    "unit": "vB",
+    "basis": "derived",
+    "label": "virtual bytes in a full block",
+    "formula": "block-weight-limit / 4",
+    "inputs": [
+      "block-weight-limit"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L70"
+  },
+  "vbytes-per-day": {
+    "value": 144000000.0,
+    "display": "144,000,000 vB",
+    "unit": "vB",
+    "basis": "derived",
+    "label": "virtual bytes the chain carries in a day",
+    "formula": "vbytes-per-block * blocks-per-day",
+    "inputs": [
+      "vbytes-per-block",
+      "blocks-per-day"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L73"
+  },
+  "seal-tx-per-day-max": {
+    "value": 1297297.2972972973,
+    "display": "1,300,000 transactions",
+    "unit": "transactions",
+    "basis": "derived",
+    "label": "seal transactions a day if they filled every block",
+    "formula": "vbytes-per-day / seal-tx-vbytes",
+    "inputs": [
+      "vbytes-per-day",
+      "seal-tx-vbytes"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L76"
+  },
+  "tier3-capacity-per-day": {
+    "value": 12972.972972972973,
+    "display": "13,000 actions",
+    "unit": "actions",
+    "basis": "derived",
+    "label": "Tier 3 actions a day the world could anchor one by one at the assumed share of blockspace",
+    "formula": "seal-tx-per-day-max * tier3-blockspace-share",
+    "inputs": [
+      "seal-tx-per-day-max",
+      "tier3-blockspace-share"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L80"
+  },
+  "seal-cost-low": {
+    "value": 111.0,
+    "display": "111 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "one seal transaction at the low fee rate",
+    "formula": "seal-tx-vbytes * feerate-low",
+    "inputs": [
+      "seal-tx-vbytes",
+      "feerate-low"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L86"
+  },
+  "seal-cost-median": {
+    "value": 555.0,
+    "display": "555 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "one seal transaction at the median fee rate",
+    "formula": "seal-tx-vbytes * feerate-median",
+    "inputs": [
+      "seal-tx-vbytes",
+      "feerate-median"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L86"
+  },
+  "seal-cost-high": {
+    "value": 11100.0,
+    "display": "11,100 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "one seal transaction at the high fee rate",
+    "formula": "seal-tx-vbytes * feerate-high",
+    "inputs": [
+      "seal-tx-vbytes",
+      "feerate-high"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L86"
+  },
+  "seals-per-day": {
+    "value": 24.0,
+    "display": "24 seals",
+    "unit": "seals",
+    "basis": "derived",
+    "label": "seals a gateway makes in a day",
+    "formula": "blocks-per-day / seal-epoch-blocks",
+    "inputs": [
+      "blocks-per-day",
+      "seal-epoch-blocks"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L89"
+  },
+  "gateway-seal-cost-day-median": {
+    "value": 13320.0,
+    "display": "13,320 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "a gateway's daily sealing cost at the median fee rate",
+    "formula": "seals-per-day * seal-cost-median",
+    "inputs": [
+      "seals-per-day",
+      "seal-cost-median"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L92"
+  },
+  "gateway-seal-cost-day-high": {
+    "value": 266400.0,
+    "display": "266,400 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "a gateway's daily sealing cost at the high fee rate",
+    "formula": "seals-per-day * seal-cost-high",
+    "inputs": [
+      "seals-per-day",
+      "seal-cost-high"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L95"
+  },
+  "agent-seal-cost-day-pooled": {
+    "value": 266.4,
+    "display": "266.4 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "one agent's daily sealing cost in a shared pool, at the high fee rate",
+    "formula": "gateway-seal-cost-day-high / agents-per-pool",
+    "inputs": [
+      "gateway-seal-cost-day-high",
+      "agents-per-pool"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L98"
+  },
+  "seal-blockspace-share-pools": {
+    "value": 0.0185,
+    "display": "1.85%",
+    "unit": "",
+    "basis": "derived",
+    "label": "share of blockspace the assumed number of seal pools would use",
+    "formula": "seals-per-day * seal-pools * seal-tx-vbytes / vbytes-per-day",
+    "inputs": [
+      "seals-per-day",
+      "seal-pools",
+      "seal-tx-vbytes",
+      "vbytes-per-day"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L102"
+  },
+  "bond-deter-p10": {
+    "value": 10000000.0,
+    "display": "10,000,000 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "bond that deters a violation worth the assumed gain when it is caught 10% of the time",
+    "formula": "gain-from-violation / 0.10",
+    "inputs": [
+      "gain-from-violation"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L109"
+  },
+  "bond-deter-p50": {
+    "value": 2000000.0,
+    "display": "2,000,000 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "bond that deters a violation worth the assumed gain when it is caught 50% of the time",
+    "formula": "gain-from-violation / 0.50",
+    "inputs": [
+      "gain-from-violation"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L109"
+  },
+  "bond-deter-p90": {
+    "value": 1111111.111111111,
+    "display": "1,100,000 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "bond that deters a violation worth the assumed gain when it is caught 90% of the time",
+    "formula": "gain-from-violation / 0.90",
+    "inputs": [
+      "gain-from-violation"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L109"
+  },
+  "bond-coverage": {
+    "value": 200000.0,
+    "display": "200,000 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "bond that covers what the agent can spend before anyone can stop it",
+    "formula": "coverage-ratio * allowance-per-lease * leases-at-risk",
+    "inputs": [
+      "coverage-ratio",
+      "allowance-per-lease",
+      "leases-at-risk"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L112"
+  },
+  "swarm-capital": {
+    "value": 2000000000.0,
+    "display": "2,000,000,000 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "capital a swarm of chartered agents must lock",
+    "formula": "swarm-size * bond-coverage",
+    "inputs": [
+      "swarm-size",
+      "bond-coverage"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L117"
+  },
+  "swarm-capital-btc": {
+    "value": 20.0,
+    "display": "20 BTC",
+    "unit": "BTC",
+    "basis": "derived",
+    "label": "the same, in bitcoin",
+    "formula": "swarm-capital / 1e8",
+    "inputs": [
+      "swarm-capital"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L119"
+  },
+  "split-authority-ratio-squared": {
+    "value": 0.0001,
+    "display": "0.00010",
+    "unit": "",
+    "basis": "derived",
+    "label": "total authority of N agents relative to one agent holding the same capital, under squared bond value",
+    "formula": "(N * (C/N)^2) / C^2 = 1/N with N = swarm-size",
+    "inputs": [
+      "swarm-size"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L123"
+  },
+  "clock-2x-extra-hashrate-eh": {
+    "value": 1000.0,
+    "display": "1,000 EH/s",
+    "unit": "EH/s",
+    "basis": "derived",
+    "label": "extra hashrate needed to make blocks come twice as fast until the next retarget",
+    "formula": "hashrate-eh (to double the block rate, add as much hashrate as the network has)",
+    "inputs": [
+      "hashrate-eh"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L128"
+  },
+  "clock-2x-power-gw": {
+    "value": 20.0,
+    "display": "20 GW",
+    "unit": "GW",
+    "basis": "derived",
+    "label": "electric power that extra hashrate draws",
+    "formula": "hashrate-eh * 1e6 TH/EH * fleet-efficiency-j-th / 1e9",
+    "inputs": [
+      "hashrate-eh",
+      "fleet-efficiency-j-th"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L131"
+  },
+  "clock-2x-hours-saved-per-epoch": {
+    "value": 168.0,
+    "display": "168 hours",
+    "unit": "hours",
+    "basis": "derived",
+    "label": "hours a doubled block rate gains over one difficulty period",
+    "formula": "2016 blocks * block-interval-s / 3600 / 2",
+    "inputs": [
+      "block-interval-s"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L134"
+  }
+}

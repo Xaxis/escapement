@@ -1,0 +1,145 @@
+# Escapement's inputs. Every number the model reads starts here.
+# basis: measured | vendor | spec | design | assumption (see model/ledger.py).
+# A measured, vendor or spec input names its source, a key in research/sources.toml.
+
+# The clock
+
+[block-interval-s]
+value = 600
+unit = "s"
+basis = "spec"
+source = "nakamoto2008"
+label = "target time between blocks"
+
+[tier2-delay-blocks]
+value = 6
+unit = "blocks"
+basis = "design"
+label = "delay between a Tier 2 commitment and its effect"
+
+[tier3-delay-blocks]
+value = 144
+unit = "blocks"
+basis = "design"
+label = "delay between a Tier 3 commitment and its effect"
+
+[lease-blocks]
+value = 144
+unit = "blocks"
+basis = "design"
+label = "length of one lease on an agent's authority"
+
+[season-blocks]
+value = 4032
+unit = "blocks"
+basis = "design"
+label = "time a bond must be locked before it backs full authority"
+
+# Blockspace
+
+[block-weight-limit]
+value = 4000000
+unit = "WU"
+basis = "spec"
+source = "bip141"
+label = "consensus limit on a block's weight"
+
+[seal-tx-vbytes]
+value = 111
+unit = "vB"
+basis = "assumption"
+label = "size of a one-input, one-output Taproot seal transaction (to be replaced by a measured value)"
+
+[tier3-blockspace-share]
+value = 0.01
+basis = "assumption"
+fmt = ".0%"
+label = "share of blockspace Tier 3 anchors could take without crowding out other use"
+
+# Fees
+
+[feerate-low]
+value = 1
+unit = "sat/vB"
+basis = "assumption"
+label = "a low fee rate (to be replaced by a measured value)"
+
+[feerate-median]
+value = 5
+unit = "sat/vB"
+basis = "assumption"
+label = "a median fee rate (to be replaced by a measured value)"
+
+[feerate-high]
+value = 100
+unit = "sat/vB"
+basis = "assumption"
+label = "a high fee rate (to be replaced by a measured value)"
+
+# The seal
+
+[seal-epoch-blocks]
+value = 6
+unit = "blocks"
+basis = "design"
+label = "blocks between a gateway's seals"
+
+[agents-per-pool]
+value = 1000
+unit = "agents"
+basis = "assumption"
+label = "agents whose log heads share one seal pool"
+
+[seal-pools]
+value = 1000
+unit = "pools"
+basis = "assumption"
+label = "seal pools worldwide, for the blockspace estimate"
+
+# The bond
+
+[gain-from-violation]
+value = 1000000
+unit = "sats"
+basis = "assumption"
+label = "what a violation is worth to whoever commits it, for the deterrence example"
+
+[allowance-per-lease]
+value = 100000
+unit = "sats"
+basis = "design"
+label = "an example agent's allowance for one lease"
+
+[leases-at-risk]
+value = 2
+unit = "leases"
+basis = "design"
+label = "leases an agent can spend before a lapse or veto stops it"
+
+[coverage-ratio]
+value = 1
+basis = "design"
+fmt = ",.1f"
+label = "bond per sat the agent can spend before it can be stopped"
+
+# Seasoning
+
+[swarm-size]
+value = 10000
+unit = "agents"
+basis = "assumption"
+label = "size of a swarm, for the sybil example"
+
+# Cheating the clock
+
+[hashrate-eh]
+value = 1000
+unit = "EH/s"
+basis = "assumption"
+label = "network hashrate (to be replaced by a measured value)"
+
+[fleet-efficiency-j-th]
+value = 20
+unit = "J/TH"
+basis = "assumption"
+label = "energy per terahash of the mining fleet (to be replaced by a measured value)"

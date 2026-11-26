@@ -1,0 +1,49 @@
+# CLAUDE.md: Escapement
+
+Escapement: an open research program on whether Bitcoin can act as a safety limit on AI, and a
+design that tests the idea. The thesis under test: Bitcoin cannot cap what an AI thinks or computes,
+but it can cap what an agent can spend, commit to or bind itself to, and how fast. The research
+files are the source of truth. README.md has the layout and how to reproduce.
+
+## Rules that shape every change
+
+- **Nothing invented.** Every number comes from `data/inputs.toml` (each input says whether it is
+  measured, a vendor claim, a spec value, a design choice or an assumption, and names its source)
+  or is derived in `model/escapement.py`. Documents cite a number as a ledger link,
+  `[any text](numbers.md#id)` in research/ or `[any text](../research/numbers.md#id)` in paper/, and
+  `make docs` rewrites the link text to the model's value. Never type a model number by hand.
+- **Every citation resolves.** Cite as `[@key]`; the key must be in `research/sources.toml` with a
+  type and an identifier (DOI, arXiv ID, ISBN or URL). Prefer DOIs and arXiv IDs: Paperwright adds
+  sources only by identifier. A source nobody opened is not cited.
+- **Credit what exists.** Each idea in the design is marked as prior work, an application of prior
+  work, or new, in `research/03-novelty.md`, with the closest prior work and the searches tried.
+  "Not found" is a claim about our search, not about the world; say so.
+- **Status is honest.** The design is a design. Nothing in it has been deployed or tested against a
+  real adversary, and the documents say so wherever it matters.
+- **No em dashes** anywhere: research text, code, comments, commit messages. `make check` fails on one.
+- **research/notes/ is raw research** from the survey tracks, kept as written. The design and the
+  paper cite sources through `research/sources.toml`, not through the notes.
+
+## Commands
+
+```sh
+make model     # data/numbers.json and research/numbers.md from inputs and model
+make docs      # rewrite every ledger link to the model's value
+make check     # em dashes, model reproduces, docs synced, citations and sources identified
+make paper     # build/escapement-paper.md, the paper flattened for Paperwright
+python3 model/escapement.py --only ID        # one number, its formula and inputs
+python3 model/escapement.py --set ID=VALUE   # a variant
+```
+
+Gate before committing: `make model docs check` all exit 0.
+
+## Working here
+
+- This repo is **public**. Commit as `Xaxis <396863+Xaxis@users.noreply.github.com>`; the local
+  pre-commit and pre-push hooks refuse any other address and block private project names, local
+  paths and personal addresses in staged text.
+- Python 3.11 or later, standard library only. No site, no deploy: the paper lives in Paperwright
+  and the essay on randoblog.
+- `.claude/skills/verify/` says how to check each feature; update it in the same commit as a
+  feature change.
+- License: MIT for code (model/, tools/, root config), CC BY 4.0 for research/, paper/ and data/.
