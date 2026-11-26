@@ -1,9 +1,12 @@
 # CLAUDE.md: Escapement
 
-Escapement: an open research program on whether Bitcoin can act as a safety limit on AI, and a
-design that tests the idea. The thesis under test: Bitcoin cannot cap what an AI thinks or computes,
-but it can cap what an agent can spend, commit to or bind itself to, and how fast. The research
-files are the source of truth. README.md has the layout and how to reproduce.
+Escapement: an open research program on whether Bitcoin can help AI safety, and a design that
+tests the idea. The thesis under test (recentred 2026-11-26): an AI agent's standing should be an
+unforgeable track record, complete and non-backdatable under an identity that costs locked bitcoin,
+so that honesty is the cheapest way to earn standing and training rewards cannot be faked; and
+verifiable records should make adoption pay for each party that joins. Caps, delays, leases, bonds
+and anchored logs are the enforcement layer. The research files are the source of truth. README.md
+has the layout and how to reproduce.
 
 ## Rules that shape every change
 
@@ -20,6 +23,12 @@ files are the source of truth. README.md has the layout and how to reproduce.
   "Not found" is a claim about our search, not about the world; say so.
 - **Status is honest.** The design is a design. Nothing in it has been deployed or tested against a
   real adversary, and the documents say so wherever it matters.
+- **Every contribution passes every level or is cut.** Each claimed contribution in
+  `research/04-claims.md` has its result recorded in `research/06-verification.md` for each level:
+  an independent prior-art search, a proof, a working build or simulation, a red team, Paperwright's
+  desks and a fresh reviewer. A claim that fails a level is cut or downgraded, never argued around.
+- **Simulation numbers go through the model.** `model/sim.py` is deterministic; its results enter the
+  ledger through `model/escapement.py`, so they are cited as ledger links like any other number.
 - **No em dashes** anywhere: research text, code, comments, commit messages. `make check` fails on one.
 - **research/notes/ is raw research** from the survey tracks, kept as written. The design and the
   paper cite sources through `research/sources.toml`, not through the notes.

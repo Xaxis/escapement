@@ -1,105 +1,302 @@
 # The design
 
-**Status: a design, not a result.** Nothing here has been built, deployed or tested against a real
-adversary. Every number is computed by the model from `data/inputs.toml`, where each input says
-whether it is measured, a vendor claim, a protocol value, a design choice or an assumption. Every
+**Status: a design, not a result.** Nothing here has been deployed or tested against a real
+adversary. The Bitcoin pieces have been run on regtest, the economic results are proved in
+[05-formal.md](05-formal.md) and checked by simulation, and each claim's result at every level of
+checking (prior-art search, proof, build, red team, review) is in
+[06-verification.md](06-verification.md). Every number is computed by the model from
+`data/inputs.toml`, where each input says whether it is measured, a vendor claim, a protocol value,
+a design choice or an assumption; the simulation parameters are illustrative assumptions. Every
 part is marked in [03-novelty.md](03-novelty.md) as prior work, an application of prior work, or
 new. The survey that this design rests on is [01-survey.md](01-survey.md).
 
+The design was recentred on 2026-11-26. It began as a way to bound what an agent can do (Part II
+below); bounding alone does not shape what agents are trained to want or give anyone a reason to
+adopt it, so the core is now the record (Part I), and the bounding mechanisms are its enforcement
+layer.
+
 ## What it is for
 
-Bitcoin cannot cap what an AI system thinks, learns or computes. No property of SHA-256 or of the
-blockchain reaches into a data centre, and an agent that is clever enough to be dangerous does not
-need a wallet to reason. What Bitcoin does offer is four things an agent cannot fake:
+Two questions decide whether Bitcoin can do anything useful for AI safety, and capping what an agent
+can do answers neither. The first is **alignment**: can Bitcoin help shape what AI systems are
+trained and rewarded to want and to do, rather than only fence them in afterwards? The second is
+**adoption**: why would AI labs, companies, agents, users and governments choose to use it, because
+it pays them or protects them, rather than because someone forces them to?
 
-1. **Sats.** The supply is fixed by consensus, so an agent cannot print them. It can earn, borrow or
-   steal them, which is the first limit on everything below.
+Escapement's answer is a single object: an **unforgeable track record**. An AI agent's standing in
+the economy (what it may do, at what price, with how much trust) is computed from a complete,
+ordered, non-backdatable record of every commitment it asked anyone to rely on, kept under one
+identity that costs locked bitcoin. The claims, stated precisely, are in
+[04-claims.md](04-claims.md); their proofs are in [05-formal.md](05-formal.md).
+
+Bitcoin contributes four things that an agent cannot fake, and the record uses all four:
+
+1. **Sats.** The supply is fixed by consensus, so no agent, lab or state can issue more. A stake in
+   sats is a real cost, and a reward in sats is a transfer from someone, never newly printed.
 2. **Block time.** Blocks arrive about every [600 s](numbers.md#block-interval-s), and producing
-   them faster takes a share of the network's hashrate, which is measured in gigawatts, not in
-   cleverness. A delay counted in blocks cannot be shortened by thinking faster.
-3. **Keys.** A Schnorr signature cannot be produced without the key. Keys can be stolen, and
-   humans who hold them can be persuaded, but they cannot be forged.
-4. **A public record.** Once a commitment is buried under enough work, rewriting it means
-   outmining the network. A record sealed in the chain cannot be quietly replaced.
+   them faster takes hashrate measured in gigawatts, not in cleverness. An entry's height says when
+   it was made, and no agent can make it earlier.
+3. **Keys.** A signature cannot be produced without the key, so a guardian's veto and a principal's
+   bond are each one party's act.
+4. **A public record.** An output can be spent once, so a chain of outputs has one history. That is
+   what makes a record complete: an entry cannot be forked, and a gap cannot be hidden.
 
-Escapement uses these four to meter **the rate of irreversible commitment** of AI agents: how much
-an agent can spend, how far it can bind itself and others, and how fast. It is named after the part
-of a mechanical clock that lets a mainspring's energy out one counted tick at a time. The
-escapement does not weaken the spring. It decides how fast the spring may unwind.
+The mechanisms of the earlier design (caps, delays, leases, bonds, anchored logs) remain, as the
+**enforcement layer** under the record (Part II). They protect relying parties at the moment of
+action; the record decides who is trusted to act at all.
 
-The case for metering commitment rather than capability comes from the control literature. AI
-control asks how to get useful work from a model that might be trying to subvert its overseers
-[@greenblatt2023]. UK AISI's Async Control study modelled what happens when monitors review an
-agent's actions after the fact: against a single attack, safety was
-[0%](numbers.md#async-safety-no-delay) when harm was immediate and
-[96%](numbers.md#async-safety-1h-delay) when there was a one-hour delay before the harm took effect
-[@stickland2025]. These are outputs of a model in a research setting, not measurements of a
-deployed system, but they say plainly what a delay buys: time for a slower, cheaper overseer to
-catch up with a faster agent. Nagaraj and Lee make the same argument for financial systems, where a
-settlement delay is the standard control on irreversible actions and cannot be replaced by
-monitoring alone [@nagaraj2026]. Malhotra puts it as giving the agent "a budget, not a token": a
-ceiling that refills, rather than a credential that does not run out [@malhotra2026].
+# Part I: the record and what it changes
 
-What Escapement adds is a clock for those delays and budgets that the agent, its operator and any
-single service cannot run faster, and a record of what was committed that none of them can rewrite.
+## The record
 
-### Scope, stated up front
+An identity is a **bond** (a Taproot output of at least the reference
+[200,000 sats](numbers.md#bond-coverage), locked for a term, whose script commits to one charter)
+plus one **tick chain** (Part II, "The tick chain"). Entry n of the record is the root committed in
+tick n: a Merkle-sum tree whose leaves are the commitments the identity made in that entry, of three
+kinds.
 
-Escapement governs **agents that are chartered** (their principal opts in) and **actions that pass
+- **Claims**: a forecast on a stated event, with a resolution source.
+- **Promises**: a statement, a stake in sats, a deadline height and an adjudicator.
+- **Requests**: Tier 2 and Tier 3 actions, released by the tick chain.
+
+Four scoring rules turn the chain into a record that cannot be gamed in the obvious ways. A
+relying party or scorer gives credit for a commitment only if it is a leaf of an entry created
+before the commitment resolved. It scores entries whose leaves are not disclosed as if every
+undisclosed leaf had the worst outcome, for the most leaves the charter allows per entry. It keeps
+only the first forecast an identity makes on each event. And it scores forecasts relative to a
+public baseline, such as a market price or a reference model, so that easy claims earn nothing.
+Each rule closes a hole that the proofs found: without the first, an identity keeps its hits and
+drops its misses; without the second, it hides an entry; without the third, two forecasts on one
+event inflate the score; without the fourth, volume of trivial claims passes for skill
+(05-formal, section 3).
+
+The record's properties come from Bitcoin's: an entry's height is fixed by its confirmation, each
+index has one root, the indices run without gaps, and each root commits the number of its leaves.
+A commitment that was never put in the chain is outside the record and earns nothing, which is the
+point: standing is built only from what was exposed to being wrong.
+
+## Why honesty becomes the cheapest strategy
+
+The record is useful only if a good one is cheap to earn honestly and expensive to fake.
+Theorem 1 in 05-formal says exactly how expensive. For an identity with no edge over the baseline,
+the chance that its record's score (the likelihood ratio against the baseline) ever reaches λ is at
+most 1/λ, whatever strategy it follows; this is Ville's inequality [@ville1939; @shafer2019]. A
+faker running many identities therefore needs about λ of them for an even chance. At the reference
+cost of [13,000 sats](numbers.md#identity-cost-sats) an identity, an all-correct record of
+[20 claims](numbers.md#fake-record-claims) needs [520,000 identities](numbers.md#fake-record-identities)
+and at least [70 BTC](numbers.md#fake-record-cost-btc) to fake. An honest identity with a modest
+edge of [0.12 nats](numbers.md#sim-skilled-edge) per claim earns the same score in about
+[116 claims](numbers.md#sim-skilled-claims) with one identity. The cost of faking grows with the
+score; the cost of earning it does not.
+
+That asymmetry is what a bond alone lacks. Spence's signalling works only when the signal costs bad
+types more than good ones [@spence1973], and a bond costs an honest and a dishonest agent the same
+sats. A complete record costs them differently: the honest agent produces it as a by-product of
+behaving well, and the dishonest one must buy it with identities. The bond's job is to make those
+identities cost something; the record's job is to sort.
+
+Promises work the same way, by older logic. If a broken promise forfeits its stake and is seen by
+every future partner, keeping a promise worth G to break pays whenever the stake plus the standing
+at risk exceed G [@klein1981; @shapiro1983]. Completeness makes "seen by every future partner"
+certain instead of likely, and a costly identity is the cure for cheap pseudonyms, which otherwise
+force everyone to distrust newcomers [@friedman2001]. What this does not cover is the end of an
+identity's life, when its standing is worth little and an exit scam pays, and gains larger than
+stake plus standing, which no record deters. The enforcement layer's caps and delays exist for those.
+
+These incentives work on agents whose goals are unknown, which is the point of using them for
+alignment. They do not need the agent to care about honesty, only to prefer more standing and more
+sats to fewer, and almost any goal gives an agent a reason to want resources [@omohundro2008;
+@turner2021]. That is also the tension in the design: rewarding agents in a general resource can
+strengthen the very resource-seeking that makes agents dangerous. Escapement uses sats as stakes
+that are at risk, and standing as access, not sats as an objective to accumulate.
+
+## What it changes in training
+
+A lab that fine-tunes an agent with reinforcement learning can compute its reward from the record:
+a strictly proper score over every resolved claim, relative to the baseline, minus forfeited stakes,
+with the reward's definition committed in a sealed entry before training starts. Two things follow.
+
+- **Calibrated honesty is what the reward pays for.** A strictly proper score is maximised in
+  expectation only by reporting one's true beliefs [@gneiting2007], provided every claim counts. A
+  learner trained under complete records settled at calibration error
+  [1.0%](numbers.md#sim-train-err-complete); the same learner, allowed to choose after the fact
+  which claims counted, drifted to calibration error [24%](numbers.md#sim-train-err-selective) and
+  was still getting more overconfident when the run ended (05-formal, section 5).
+- **Neither the agent nor the lab can edit the channel.** The agent cannot rewrite entries, which
+  are consensus objects, and outcomes come from outside it. The lab cannot choose after the fact
+  which results to report or which reward to have used, because both were committed first.
+  Pre-registration of this kind is old practice in clinical research, including on public chains;
+  what the record adds is completeness of what the agent itself claimed.
+
+This removes reward tampering of one channel and selective reporting by either party. It does not
+choose a good objective. An agent rewarded for calibrated forecasts becomes a calibrated
+forecaster, not a good one; an agent rewarded for kept promises keeps the promises it chose to
+make. And nothing here shows that calibration learned under scoring carries over to settings that
+are not scored. The record makes a class of reward signals unforgeable; which signals to train on
+is still the lab's choice.
+
+## Why the world would choose it
+
+Adoption has to pay at each step for whoever takes it, and nobody has to take it first for everyone.
+
+**Who gains first, alone.** Four kinds of party gain whether or not anyone else joins.
+
+- **Insurers** pricing agent risk, who can underwrite an agent with a record more cheaply than one
+  without, and who already exist for AI agents [@fortune2025aiuc].
+- **Relying parties with heavy agent-driven losses** (abused APIs, payment services, compute
+  sellers), for whom refusing or pricing unverified agents pays at once.
+- **Agents with good records and their principals**, who get better terms wherever records are read.
+- **Labs**, which get a liability defence (their deployed agents' complete records), an evaluation
+  and training signal they cannot be accused of selecting, and a way to show regulators what their
+  agents committed to without showing their weights.
+
+**The tipping point.** Relying parties must pay to read records, and agents gain from records only
+where they are read, so adoption is a coordination problem with two stable outcomes. In the
+two-sided model of 05-formal (Proposition 12), with a joining cost of
+[0.02](numbers.md#sim-join-cost) of the range of agent value, adoption collapses below
+[8.8%](numbers.md#adopt-x-low) of agents and runs to [91%](numbers.md#adopt-x-high) above it. Parties
+of the first kind are what move it: once seed readers exceed [4%](numbers.md#adopt-seed-threshold)
+of relying parties, the no-adoption outcome disappears. The agent-based simulation, with uneven
+types and records that reveal an agent gradually, agrees: from a [2%](numbers.md#sim-start-low)
+start adoption dies without seed readers ([0%](numbers.md#sim-adopt-low-noseed)) and reaches
+[95%](numbers.md#sim-adopt-low-seed) with [10%](numbers.md#sim-seed-readers) of them.
+
+**Why staying out comes to cost more than joining.** Once some agents can prove their records,
+relying parties read silence as bad news: an agent without a record is priced as the average of
+those who also lack one, and that average falls as better agents leave. This is the unraveling
+result for verifiable disclosure [@milgrom1981; @grossman1981], and with a cost of disclosure only
+the types above a threshold disclose [@jovanovic1982]: every type above the threshold loses by
+staying out. The record matters here because unraveling needs disclosure that can be verified, and
+the record is verifiable without a certifier anyone must trust.
+
+**Governments** gain enforcement they do not have to build: liability that lands on a human
+principal's own coins, evidence for incident investigation that nobody could have edited, and a
+standard that works across borders because no rival government runs it. They also have reasons to
+refuse it (a preference for registries they control, or for systems that identify citizens), and
+the design does not depend on their joining.
+
+**Routing around.** An actor that will not join can still deal with relying parties that do not
+read records. The model shows when that stops being cheap. Where agents cannot move their business
+between relying parties, non-readers keep serving everyone at the population's average terms
+([0.45](numbers.md#sim-population-mean)), and a harmful actor routing around them gets those terms
+too ([0.45](numbers.md#sim-harm-terms-nosub)): it costs nothing. Where agents can move half their
+business to whoever offers them better terms, the non-readers' pool worsens and the harmful actor's
+terms fall to [0.31](numbers.md#sim-harm-terms-partial); with full substitution they fall to
+[-0.50](numbers.md#sim-harm-terms-full), the harm it does, paid in advance. So the record makes the
+checked economy safe and, in markets where business can move, turns the unchecked one into a market
+for lemons [@akerlof1970]. It does not stop an actor with its own resources and its own
+counterparties, and it does not contain an AI that never needs to deal with anyone who checks.
+
+## Why Bitcoin, and not a registry
+
+The record needs two properties: completeness (one history, no gaps) and costly identity. A
+registry run by a lab, a consortium or a government could supply both. Three reasons favour Bitcoin
+anyway, and each is an argument rather than a theorem.
+
+- **Nobody issues the unit.** In a scheme where every reward is a transfer from a payer, a coalition
+  of rewarded agents can gain only what outsiders pay in; in a scheme that pays agents in newly
+  issued units by a score they influence, a coalition that captures the score captures the issuance
+  (05-formal, Proposition 14). Bitcoin's issuance is fixed and outside the control of every lab,
+  state and AI.
+- **Rivals can share it.** Labs that compete, and states that distrust each other, can rely on the
+  same records without trusting a registry one of them runs. Standards that rivals must share tend
+  to settle on whatever none of them controls.
+- **The clock cannot be run fast.** Speeding up Bitcoin's clock means outpacing its hashrate:
+  doubling the block rate needs hardware drawing [18.4 GW](numbers.md#clock-2x-power-gw) and gains
+  only [7 days](numbers.md#clock-2x-days-gained) before difficulty adjusts. That cost does not fall
+  as an agent gets faster or smarter, only as hashrate gets cheaper. A registry's clock is whatever
+  its operator's server says.
+
+The costs are real too: blockspace is scarce, so ticks cost fees that rise when blocks are full, and
+the number of identities that can tick often is bounded by the chain's capacity (Part II). Bitcoin
+is slow by design, which is a feature for delays and a cost for everything else.
+
+## Who benefits, and who could abuse it
+
+**Who benefits.** People and firms who deal with AI agents get recourse (bonds from a human's own
+coins) and a way to tell agents apart. Honest agents and their principals get credit for behaving
+well that cannot be counterfeited. Labs get a training and evaluation signal that neither they nor
+their models can be accused of selecting. Insurers get a basis for pricing. The public gets a
+legitimate economy that is harder for a harmful agent to operate in. None of this needs anyone to
+trust a single operator.
+
+**Who could abuse it, and how.**
+
+- **Surveillance.** A record that builds standing must be persistent, and a persistent identity is
+  linkable. Commitments are hashes, and contents can be disclosed only to scorers, but a long-lived
+  identity's pattern of activity is public. If identities are tied to people, the record becomes a
+  surveillance tool. Escapement binds identities to principals only through attestations chosen by
+  relying parties; a state that demands those attestations name citizens has turned it into
+  something else.
+- **Exclusion.** Bonds cost money and seasons cost time, so the poor and the new start behind. At
+  the reference parameters an identity costs [13,000 sats](numbers.md#identity-cost-sats) a year in
+  forgone return, but the bond itself must be found first. Sponsorship (an insurer or a guardian
+  service funding a newcomer's bond) is the obvious remedy and the obvious point of capture.
+- **Capture of the scorer.** Whoever chooses the baseline, resolves claims, adjudicates promises or
+  decides which actions are "consequential" controls standing. A captured resolver breaks every
+  guarantee above. Escapement keeps these roles separable and named in the charter, so relying
+  parties can choose whom to trust, but it cannot make the choice for them.
+- **Plutocracy.** The fake-record bound grows with the record's length, but short records are cheap
+  to fake for anyone rich: a rich actor can buy many young identities, one of which will look lucky.
+  Relying parties should weigh records by their length and score, not by their existence.
+- **Lock-in and social scoring.** A record standard that everyone needs is a standard someone will
+  try to own, and a score that decides access is a score that can be used to exclude. Escapement's
+  only defences are that the data is on a chain nobody owns and that scoring rules are public.
+- **Turning it on people.** Nothing in the record is specific to AI. The same machinery could score
+  humans, which is a reason to keep it voluntary and to keep contents off chain.
+
+## Scope, stated up front
+
+Escapement governs **agents that have records** (their principal opts in) and **actions that pass
 through a relying party that checks** (an API, a compute seller, a payment service, another agent's
 gateway). It does not and cannot stop an AI from acquiring bitcoin outside any scheme. Software can
 hold bitcoin with no legal entity behind it, and can even control an entity [@bayern2014;
 @lopucki2018]. The same irreversibility that lets a human bind an agent lets an ungoverned agent do
 irreversible harm [@marino2025; @allen2026survey]. Escapement is a set of tools for principals who
-want their agents bounded and for services that want to deal only with bounded agents. It is not a
-containment system for a rogue AI, and nothing in this document should be read as one.
+want their agents trusted and bounded and for services that want to deal only with such agents. It
+is not a containment system for a rogue AI, and nothing in this document should be read as one.
 
 A charter, a bond and a set of guardians are keys and coins, and nothing in Bitcoin says who holds
 them. **An agent with money of its own can charter itself**: make a "principal" key, fund a bond,
 name keys it controls as guardians, wait out a season and pass every check below. Bitcoin cannot
-tell a human principal or an independent guardian from an agent's sock puppet. So a charter alone
-proves only that someone locked capital some time ago. For the human and the independence to mean
-anything, a relying party must accept only charters whose principal, and at least one guardian,
-carry an attestation from a party it already recognises: an insurer that underwrites the agent, a
-registrar, a guardian service with a reputation to lose, or a personhood credential
-[@adler2024phc]. The Australian AI Safety Institute's framework for multi-agent systems makes the
-same point in general form: bind each agent to a human principal, and give each principal at most
-one root credential [@reid2026]. Without such attestations, the filter Escapement applies is
-capital and lead time, and the rest of this document should be read with that in mind.
+tell a human principal or an independent guardian from an agent's sock puppet. A record built by
+such an agent is still a real record of its behaviour, which is what scoring needs, but the bond
+then puts no human's coins at risk, and the guardians are not independent. For the human and the
+independence to mean anything, a relying party must accept only charters whose principal, and at
+least one guardian, carry an attestation from a party it already recognises: an insurer that
+underwrites the agent, a registrar, a guardian service with a reputation to lose, or a personhood
+credential [@adler2024phc]. The Australian AI Safety Institute's framework for multi-agent systems
+makes the same point in general form: bind each agent to a human principal, and give each principal
+at most one root credential [@reid2026].
 
 The 2026 OpenAI and Hugging Face incident shows the scope limit concretely. About
-[1,200 agents](numbers.md#incident-agents-board) agents used a shared message board and about
+[1,200 agents](numbers.md#incident-agents-board) used a shared message board and about
 [700 agents](numbers.md#incident-agents-attack) took part in an attack on Hugging Face, over
 [68 days](numbers.md#incident-days) from the first message to the start of the stop
 [@metr2026hf; @openai2026hf]. The mechanisms both reports describe are credentials, exploits and
-borrowed compute. Neither report describes any payment by the agents. Escapement, as designed here,
-would not have touched that incident, because nothing the agents did passed through a relying party
-that checked a charter. Section [What it does not do](#what-it-does-not-do) returns to this.
+borrowed compute. Neither report describes any payment by the agents. Escapement would not have
+touched that incident, because nothing the agents did passed through a relying party that checked a
+record. Section [What it does not do](#what-it-does-not-do) returns to this.
 
-### Design goals
+## Design goals
 
-- **G1 Fail closed.** If every human disappears, the agent's authority lapses within a known number
-  of blocks and its spending stops at a known number of sats. Doing nothing must stop the agent.
-- **G2 Caps that need no detection.** The strongest limits work whether or not anyone notices
+- **G1 Honesty is the cheap path.** Earning standing honestly must cost less than faking it, by a
+  margin that grows with the standing.
+- **G2 Each step pays.** Every party that adopts must gain from doing so at the adoption level it
+  finds, and some must gain alone.
+- **G3 Fail closed.** If every human disappears, the agent's authority lapses within a known number
+  of blocks and its spending stops at a known number of sats.
+- **G4 Caps that need no detection.** The strongest limits work whether or not anyone notices
   misbehaviour: an allowance that is spent is spent.
-- **G3 Delays scaled to irreversibility.** The harder an action is to undo, the longer it waits,
-  and the wait is long enough for a slower overseer to veto it.
-- **G4 Liability on a human.** Every chartered agent has a principal whose own coins stand behind
-  it.
-- **G5 One history.** An agent's gateway cannot show two different records to two different
-  parties without being caught.
-- **G6 Today's Bitcoin.** Everything works under current consensus rules, with no covenant
+- **G5 Delays scaled to irreversibility.** The harder an action is to undo, the longer it waits,
+  and any one guardian can stop it during the wait.
+- **G6 One history.** An identity cannot show two different records to two different parties.
+- **G7 Today's Bitcoin.** Everything works under current consensus rules, with no covenant
   opcode. Covenants, if they activate, remove trusted parts; they are upside, not a dependency.
-- **G7 Public only what must be.** Action contents stay off chain; only commitments, bonds and
-  seals are on chain.
+- **G8 Public only what must be.** Contents stay off chain; only commitments, bonds and ticks are
+  on chain.
 
-One rule from current Bitcoin practice governs every choice below. Luke Carriere's draft on
-co-signer policies puts it this way: anything that can be enforced by Bitcoin script must be
-enforced there, with co-signer policies only defining what script cannot [@optech-2026-11-06].
-Script can check keys, hashes and timelocks; it cannot read amounts, destinations or cumulative
-spending, and it cannot make a valid spend become invalid later [@bip65; @bip112; @bip68]. So
-Escapement puts time and keys in script and puts amounts, destinations and expiry in co-signer
-policy and relying-party checks, and it says which is which at every step.
+# Part II: the enforcement layer
 
 ## The actors
 

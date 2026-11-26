@@ -44,6 +44,14 @@
       "tests": []
     },
     {
+      "id": "cli:sim",
+      "kind": "cli",
+      "entry": "model/sim.py",
+      "reach": "python3 model/sim.py (results also enter the ledger through make model)",
+      "area": "sim",
+      "tests": []
+    },
+    {
       "id": "cli:sources",
       "kind": "cli",
       "entry": "tools/sources.py",
