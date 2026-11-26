@@ -17,3 +17,6 @@ out/
 # agent worktrees and local settings
 .claude/worktrees/
 .claude/settings.local.json
+
+# The raw OrangeCheck audit cites private repositories; its public version is 01-orangecheck-blocklore.md
+research/notes/*.private.md
