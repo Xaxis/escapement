@@ -28,6 +28,14 @@
       "tests": []
     },
     {
+      "id": "cli:lab",
+      "kind": "cli",
+      "entry": "lab/run.py",
+      "reach": "make lab (python3 lab/fetch.py; python3 lab/run.py [--only N] [--keep])",
+      "area": "lab",
+      "tests": []
+    },
+    {
       "id": "cli:model",
       "kind": "cli",
       "entry": "model/escapement.py",

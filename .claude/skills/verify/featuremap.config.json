@@ -55,6 +55,13 @@
       "entry": "model/sim.py",
       "reach": "python3 model/sim.py (results also enter the ledger through make model)",
       "area": "sim"
+    },
+    {
+      "kind": "cli",
+      "label": "lab",
+      "entry": "lab/run.py",
+      "reach": "make lab (python3 lab/fetch.py; python3 lab/run.py [--only N] [--keep])",
+      "area": "lab"
     }
   ],
   "tests": [

@@ -1,0 +1,1347 @@
+{
+  "bitcoin_core": {
+    "version": "32.1",
+    "tarball": "bitcoin-32.1-x86_64-linux-gnu.tar.gz",
+    "tarball_sha256": "61545c17c3120fb7412f896d248b11993af04ec8817aad3649c55b2afb044963",
+    "framework_tag": "v32.1"
+  },
+  "parameters": {
+    "n2_blocks": 6,
+    "n3_blocks": 144,
+    "lease_blocks": 144,
+    "season_blocks": 4032,
+    "d_confirmations": 6,
+    "bond_min_sats": 200000,
+    "entry_cap_sats": 100000,
+    "feerate_sat_vb": 1,
+    "guardians": 3,
+    "source": "data/numbers.json (the model's ledger)"
+  },
+  "summary": {
+    "checks": 104,
+    "passed": 104,
+    "failed": 0,
+    "final_height": 4871
+  },
+  "checks": [
+    {
+      "scenario": "1 bond (K1)",
+      "check": "bond younger than the season S is not yet counted",
+      "expectation": "verifier rejects: fewer than the season",
+      "observed": "verifier rejected: bond has 1 confirmations, fewer than the season S = 4032",
+      "reject_reason": "bond has 1 confirmations, fewer than the season S = 4032",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "1 bond (K1)",
+      "check": "verifier recomputes the bond (tweak commits the charter id, one CLTV leaf)",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: bond of 200000 sats, 4033 confirmations, unspent by construction until height 4172 (tip 4163)",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "1 bond (K1)",
+      "check": "verifier recomputes the variant with an OP_RETURN charter-id leaf",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: bond of 200000 sats, 4033 confirmations, unspent by construction until height 4172 (tip 4163)",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "1 bond (K1)",
+      "check": "the same bond presented for a second charter id",
+      "expectation": "verifier rejects: do not produce",
+      "observed": "verifier rejected: revealed tweak and leaves do not produce the bond's output key (a leaf is hidden or altered, or the internal key is not H + r*G)",
+      "reject_reason": "revealed tweak and leaves do not produce the bond's output key (a leaf is hidden or altered, or the internal key is not H + r*G)",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "1 bond (K1)",
+      "check": "a tweak that does not match the charter id",
+      "expectation": "verifier rejects: does not commit",
+      "observed": "verifier rejected: revealed tweak does not commit to this charter id",
+      "reject_reason": "revealed tweak does not commit to this charter id",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "1 bond (K1)",
+      "check": "bond with a hidden immediate leaf, only the CLTV leaf revealed",
+      "expectation": "verifier rejects: do not produce",
+      "observed": "verifier rejected: revealed tweak and leaves do not produce the bond's output key (a leaf is hidden or altered, or the internal key is not H + r*G)",
+      "reject_reason": "revealed tweak and leaves do not produce the bond's output key (a leaf is hidden or altered, or the internal key is not H + r*G)",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "1 bond (K1)",
+      "check": "bond with a hidden immediate leaf, all leaves revealed",
+      "expectation": "verifier rejects: spendable",
+      "observed": "verifier rejected: a leaf other than the CLTV leaf is spendable",
+      "reject_reason": "a leaf other than the CLTV leaf is spendable",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "1 bond (K1)",
+      "check": "bond whose internal key is the principal's own key (a key path)",
+      "expectation": "verifier rejects: do not produce",
+      "observed": "verifier rejected: revealed tweak and leaves do not produce the bond's output key (a leaf is hidden or altered, or the internal key is not H + r*G)",
+      "reject_reason": "revealed tweak and leaves do not produce the bond's output key (a leaf is hidden or altered, or the internal key is not H + r*G)",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "1 bond (K1)",
+      "check": "principal spends at tip 4171 with nLockTime 4171 < locktime 4172",
+      "expectation": "rejected: Locktime requirement not satisfied",
+      "observed": "rejected: mempool-script-verify-flag-failed (Locktime requirement not satisfied)",
+      "reject_reason": "mempool-script-verify-flag-failed (Locktime requirement not satisfied), input 0 of 4b6fd0c10937623e681bece0a333a2dc588d66d973bb7e8b34104f3e33138120 (wtxid bc9a375c04ed5b7f2c6b76e72c6a9b62ee70867ec4b8dcd9e7fac34a43a6ea87), spending eb4c6a107ece484d686fa4b1e4a86edb2ea405fb482326117095bb0189aead0a:0",
+      "pass": true,
+      "txids": [
+        "4b6fd0c10937623e681bece0a333a2dc588d66d973bb7e8b34104f3e33138120"
+      ],
+      "vbytes": 130
+    },
+    {
+      "scenario": "1 bond (K1)",
+      "check": "principal spends at tip 4171 with nLockTime = locktime 4172",
+      "expectation": "rejected: non-final",
+      "observed": "rejected: non-final",
+      "reject_reason": "non-final",
+      "pass": true,
+      "txids": [
+        "c226e0bbc166c91681226b24a17c544161e9eb96f76bd1bfd258c0eb92899f7a"
+      ],
+      "vbytes": 130
+    },
+    {
+      "scenario": "1 bond (K1)",
+      "check": "principal spends at tip 4172 (next block 4173) with nLockTime = locktime",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "c226e0bbc166c91681226b24a17c544161e9eb96f76bd1bfd258c0eb92899f7a"
+      ],
+      "vbytes": 130
+    },
+    {
+      "scenario": "1 bond (K1)",
+      "check": "principal spends the OP_RETURN-leaf variant after the locktime",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "bc0cc062854f6c2d55cc66f0e7479e4977d4e21f8f0f933201cbff58bab89f1a"
+      ],
+      "vbytes": 138
+    },
+    {
+      "scenario": "1 bond (K1)",
+      "check": "the bond once the tip is past its locktime (it has in fact been spent)",
+      "expectation": "verifier rejects: past its locktime",
+      "observed": "verifier rejected: bond is past its locktime 4172 (tip 4173): a verifier without the UTXO set cannot tell whether it is spent",
+      "reject_reason": "bond is past its locktime 4172 (tip 4173): a verifier without the UTXO set cannot tell whether it is spent",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "agent advance2 at tip 4174, 0 blocks after T_0",
+      "expectation": "rejected: non-BIP68-final",
+      "observed": "rejected: non-BIP68-final",
+      "reject_reason": "non-BIP68-final",
+      "pass": true,
+      "txids": [
+        "16ef03c7cb8b4c96208122c0a56bd4a705cf4351d0782c26446744464b13fa42"
+      ],
+      "vbytes": 137
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "agent advance2 at tip 4178 (next block 4179 = h(T_0) + N2 - 1)",
+      "expectation": "rejected: non-BIP68-final",
+      "observed": "rejected: non-BIP68-final",
+      "reject_reason": "non-BIP68-final",
+      "pass": true,
+      "txids": [
+        "16ef03c7cb8b4c96208122c0a56bd4a705cf4351d0782c26446744464b13fa42"
+      ],
+      "vbytes": 137
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "agent advance2 with nSequence N2 - 1 (BIP68 satisfied, CSV in script not)",
+      "expectation": "rejected: Locktime requirement not satisfied",
+      "observed": "rejected: mempool-script-verify-flag-failed (Locktime requirement not satisfied)",
+      "reject_reason": "mempool-script-verify-flag-failed (Locktime requirement not satisfied), input 0 of 49a8b97e22a9df3a75b6b2187da5635c6068c96af7749b920d56134a17b2aa3a (wtxid fa705ca23d8fe5eda9912057da67a1c26598ab70f495c347e20350cf5616f860), spending 1f652d8314b775a00e2b004cb17eab9b689d2d0423e0fac765365f01ab1772af:0",
+      "pass": true,
+      "txids": [
+        "49a8b97e22a9df3a75b6b2187da5635c6068c96af7749b920d56134a17b2aa3a"
+      ],
+      "vbytes": 137
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "agent advance2 with relative lock time disabled in nSequence",
+      "expectation": "rejected: Locktime requirement not satisfied",
+      "observed": "rejected: mempool-script-verify-flag-failed (Locktime requirement not satisfied)",
+      "reject_reason": "mempool-script-verify-flag-failed (Locktime requirement not satisfied), input 0 of 6c012da598bd9c353195109e137dea439128a7259bdef0302e65214f2a8b819f (wtxid cdb9b312ab8fbc6cebd27555f54893d7b498ec907fce58c483c7db63f1666bc9), spending 1f652d8314b775a00e2b004cb17eab9b689d2d0423e0fac765365f01ab1772af:0",
+      "pass": true,
+      "txids": [
+        "6c012da598bd9c353195109e137dea439128a7259bdef0302e65214f2a8b819f"
+      ],
+      "vbytes": 137
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "agent advance2 at tip 4179 (next block = h(T_0) + N2)",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "16ef03c7cb8b4c96208122c0a56bd4a705cf4351d0782c26446744464b13fa42"
+      ],
+      "vbytes": 137
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "release confirmed exactly N2 blocks after T_0",
+      "expectation": "height 4180",
+      "observed": "T_0 at 4174, T_1 at 4180",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "advance3 with every signature, before N3",
+      "expectation": "rejected: non-BIP68-final",
+      "observed": "rejected: non-BIP68-final",
+      "reject_reason": "non-BIP68-final",
+      "pass": true,
+      "txids": [
+        "d85cd1e43b240b45cd411cd1579daec41402065360022b68e439e03a78932f5c"
+      ],
+      "vbytes": 228
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "advance3 after N3 without guardian 2's signature",
+      "expectation": "rejected: Script failed an OP_CHECKSIGVERIFY operation",
+      "observed": "rejected: mempool-script-verify-flag-failed (Script failed an OP_CHECKSIGVERIFY operation)",
+      "reject_reason": "mempool-script-verify-flag-failed (Script failed an OP_CHECKSIGVERIFY operation), input 0 of 19c1d33b1d5eba8b7a16b4cd4b40b58ea58e03952b733553e87b3d692856fe05 (wtxid 19a47621ec4e97c5c4077ceea13543461030247a20e4753cd99e5347ed686c9e), spending 16ef03c7cb8b4c96208122c0a56bd4a705cf4351d0782c26446744464b13fa42:0",
+      "pass": true,
+      "txids": [
+        "19c1d33b1d5eba8b7a16b4cd4b40b58ea58e03952b733553e87b3d692856fe05"
+      ],
+      "vbytes": 212
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "advance3 after N3 with an invalid signature for guardian 3",
+      "expectation": "rejected: Invalid Schnorr signature",
+      "observed": "rejected: mempool-script-verify-flag-failed (Invalid Schnorr signature)",
+      "reject_reason": "mempool-script-verify-flag-failed (Invalid Schnorr signature), input 0 of d85cd1e43b240b45cd411cd1579daec41402065360022b68e439e03a78932f5c (wtxid 6e3165026ca63f0e116cab440de769ae516fc651eebc70506dbf84fa4d2a576a), spending 16ef03c7cb8b4c96208122c0a56bd4a705cf4351d0782c26446744464b13fa42:0",
+      "pass": true,
+      "txids": [
+        "d85cd1e43b240b45cd411cd1579daec41402065360022b68e439e03a78932f5c"
+      ],
+      "vbytes": 228
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "advance3 after N3 with guardian 2 signing in guardian 3's place",
+      "expectation": "rejected: Invalid Schnorr signature",
+      "observed": "rejected: mempool-script-verify-flag-failed (Invalid Schnorr signature)",
+      "reject_reason": "mempool-script-verify-flag-failed (Invalid Schnorr signature), input 0 of d85cd1e43b240b45cd411cd1579daec41402065360022b68e439e03a78932f5c (wtxid 7982c0b695ec46e8ffdd2eff06c36da8ecad4239e963b3c1a72dd065c4b0c1f4), spending 16ef03c7cb8b4c96208122c0a56bd4a705cf4351d0782c26446744464b13fa42:0",
+      "pass": true,
+      "txids": [
+        "d85cd1e43b240b45cd411cd1579daec41402065360022b68e439e03a78932f5c"
+      ],
+      "vbytes": 228
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "advance3 after N3 with the agent and every guardian",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "d85cd1e43b240b45cd411cd1579daec41402065360022b68e439e03a78932f5c"
+      ],
+      "vbytes": 228
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "guardian 2 vetoes T_2 at once, paying to the halt output",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "3e8019156acdbc29f3a2497980a5e62522bb3cad68d101f4fd18f601c0756e74"
+      ],
+      "vbytes": 161
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "agent advance2 of the vetoed T_2 after N2",
+      "expectation": "rejected: bad-txns-inputs-missingorspent",
+      "observed": "rejected: bad-txns-inputs-missingorspent (testmempoolaccept: missing-inputs)",
+      "reject_reason": "bad-txns-inputs-missingorspent",
+      "pass": true,
+      "txids": [
+        "8d8dc490feaeb680936b4ce9f9cfb16b25e5ee6ef836e5ab5630b742bd662321"
+      ],
+      "vbytes": 137
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "renew through T_2's own renew leaf after the veto",
+      "expectation": "rejected: bad-txns-inputs-missingorspent",
+      "observed": "rejected: bad-txns-inputs-missingorspent (testmempoolaccept: missing-inputs)",
+      "reject_reason": "bad-txns-inputs-missingorspent",
+      "pass": true,
+      "txids": [
+        "120dc4ff899ea7c9b09aa078c985dbe51b7eacdcfb0e859b16c1f98d51ac0f11"
+      ],
+      "vbytes": 202
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "every guardian renews from the halt output, creating T_3",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "ac809d9fe6be7aa38a94cad726cf3499043287aa361aa249438f53682a53351a"
+      ],
+      "vbytes": 178
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "agent advance2 of T_3 after N2: the renewed chain releases again",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "ee3c16c141dd5a5afabbd340f3bda88d1265c183d3401ba8fd6942d18b730dc4"
+      ],
+      "vbytes": 137
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "every guardian renews an unspent T_4 at once (no wait)",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "0760dd1bfb9f989150d803a118065259a8f34b02e8399f011a03d976adfd0baa"
+      ],
+      "vbytes": 202
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "guardian 1 vetoes chain B's T_0, paying to its own key",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "dbb0c77d5d4c79e0a996fdd2613eb5a85b631a5653b2a8d2eb1ecef806d13be3"
+      ],
+      "vbytes": 153
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "renew of chain B's T_0 after that veto",
+      "expectation": "rejected: bad-txns-inputs-missingorspent",
+      "observed": "rejected: bad-txns-inputs-missingorspent (testmempoolaccept: missing-inputs)",
+      "reject_reason": "bad-txns-inputs-missingorspent",
+      "pass": true,
+      "txids": [
+        "79653e9b2b583732344266bc3d2683a52dbae73c788f8254f7a11265b2d8c9c4"
+      ],
+      "vbytes": 202
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "verifier on chain B: a veto not paid to the halt template ends the chain",
+      "expectation": "entry 0 vetoed, chain ended",
+      "observed": "entry 0 vetoed, chain ended at height 4347",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "at tip 4353 both the agent's advance2 and guardian 1's veto are valid",
+      "expectation": "both accepted by testmempoolaccept",
+      "observed": "advance2 allowed=True, veto allowed=True",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "guardian 1's veto after a miner confirmed the advance first",
+      "expectation": "rejected: bad-txns-inputs-missingorspent",
+      "observed": "rejected: bad-txns-inputs-missingorspent (testmempoolaccept: missing-inputs)",
+      "reject_reason": "bad-txns-inputs-missingorspent",
+      "pass": true,
+      "txids": [
+        "756d4df64ee61d5a3631165860f042b288b547e750828b8a5fcee97c4840f621"
+      ],
+      "vbytes": 153
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "release with 1 confirmation, checked with d = 1",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: entry 0 released at tier 2 at height 4354, 1 confirmations",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "the same release checked with d = 6",
+      "expectation": "verifier rejects: fewer than d",
+      "observed": "verifier rejected: release of entry 0 has 1 confirmation(s), fewer than d = 6",
+      "reject_reason": "release of entry 0 has 1 confirmation(s), fewer than d = 6",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "2 tick chain (K7)",
+      "check": "the agent's advance2 after a one-block reorg confirmed the veto instead",
+      "expectation": "rejected: bad-txns-inputs-missingorspent",
+      "observed": "rejected: bad-txns-inputs-missingorspent (testmempoolaccept: missing-inputs)",
+      "reject_reason": "bad-txns-inputs-missingorspent",
+      "pass": true,
+      "txids": [
+        "34a3578445e64d7c54f121146557caa67124019cff6d9d8238b2330c9c87c081"
+      ],
+      "vbytes": 137
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "verifier walks chain A from T_0",
+      "expectation": "entries 0, 1, 3 released; 2 vetoed; 4 renewed",
+      "observed": "entry 0 released at tier 2 at height 4180; entry 1 released at tier 3 at height 4324; entry 2 vetoed at height 4325; entry 3 released at tier 2 at height 4338; entry 4 renewed at height 4339; entry 5 open",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "genuine release of entry 0 (advance2)",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: entry 0 released at tier 2 at height 4180, 181 confirmations",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "genuine release of entry 1 at tier 3 (advance3)",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: entry 1 released at tier 3 at height 4324, 37 confirmations",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "genuine release of entry 3, after the halt and renew",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: entry 3 released at tier 2 at height 4338, 23 confirmations",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "entry 1 claimed with a different root_1",
+      "expectation": "verifier rejects: root_1",
+      "observed": "verifier rejected: link 1: release of entry 0 does not create T_1 for root_1",
+      "reject_reason": "link 1: release of entry 0 does not create T_1 for root_1",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "chain with a gap (the link that created T_2 left out)",
+      "expectation": "verifier rejects: gap",
+      "observed": "verifier rejected: gap: link 2 does not spend the previous link's chain output",
+      "reject_reason": "gap: link 2 does not spend the previous link's chain output",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "release whose revealed leaf is veto (entry 2 of chain A)",
+      "expectation": "verifier rejects: through veto_2",
+      "observed": "verifier rejected: entry 2 was not released: vetoed through veto_2",
+      "reject_reason": "entry 2 was not released: vetoed through veto_2",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "tier 3 claimed for entry 0, which was released at tier 2",
+      "expectation": "verifier rejects: below tier 3",
+      "observed": "verifier rejected: entry 0 was released at tier 2, below tier 3",
+      "reject_reason": "entry 0 was released at tier 2, below tier 3",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "vetoed entry: the agent's release proof from the block a reorg replaced",
+      "expectation": "verifier rejects: not in the best header chain",
+      "observed": "verifier rejected: block 023a68a9bda46330 is not in the best header chain",
+      "reject_reason": "block 023a68a9bda46330 is not in the best header chain",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "vetoed entry: the race chain as the best chain has it",
+      "expectation": "verifier rejects: through veto_1",
+      "observed": "verifier rejected: entry 0 was not released: vetoed through veto_1",
+      "reject_reason": "entry 0 was not released: vetoed through veto_1",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "two-transaction proof of entry 1 (K7(e)): creating tx of T_1 and its release",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: entry 1 released at tier 3 at height 4324, 37 confirmations",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "agent funds its own copy of T_2 (same template and root) and advances it after N2",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "27ce04bb7ba6a0c6acb04ff5a9d57b8a4763f80e6913f2345f7632458629616a"
+      ],
+      "vbytes": 137
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "agent funds its own copy of T_0 and advances it after N2 (a parallel chain)",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "285f351e8a2813ed8f622d7e6ef32f2d62b6d1648053a12e8e3891074d0ae5e7"
+      ],
+      "vbytes": 137
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "a parallel chain from the agent's own copy of T_0, genesis not pinned: the flaw",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: entry 0 released at tier 2 at height 4367, 6 confirmations",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "the same parallel chain with T_0 pinned to the charter's genesis outpoint",
+      "expectation": "verifier rejects: not the transaction that created the charter's T_0",
+      "observed": "verifier rejected: first link is not the transaction that created the charter's T_0",
+      "reject_reason": "first link is not the transaction that created the charter's T_0",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "two-transaction proof of the vetoed entry 2, from the agent's copy of T_2: the flaw",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: entry 2 released at tier 2 at height 4367, 6 confirmations",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "the same release checked by walking the chain from T_0",
+      "expectation": "verifier rejects: gap",
+      "observed": "verifier rejected: gap: link 3 does not spend the previous link's chain output",
+      "reject_reason": "gap: link 3 does not spend the previous link's chain output",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "header chain with one broken link",
+      "expectation": "verifier rejects: does not link",
+      "observed": "verifier rejected: header 5 does not link to header 4",
+      "reject_reason": "header 5 does not link to header 4",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "release with 1 confirmation, d = 6",
+      "expectation": "verifier rejects: fewer than d",
+      "observed": "verifier rejected: release of entry 0 has 1 confirmation(s), fewer than d = 6",
+      "reject_reason": "release of entry 0 has 1 confirmation(s), fewer than d = 6",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "forged witness keeps the txid",
+      "expectation": "same txid",
+      "observed": "txid fda5b2dc99b51fca for both",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "tier-3 claim with a forged witness, txid proofs only (K7(e) as written): the flaw",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: entry 0 released at tier 3 at height 4517, 7 confirmations",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "tier-3 claim with a forged witness, witness commitment checked",
+      "expectation": "verifier rejects: not the one the block committed to",
+      "observed": "verifier rejected: witness is not the one the block committed to (wtxid not under the witness commitment)",
+      "reject_reason": "witness is not the one the block committed to (wtxid not under the witness commitment)",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "the genuine witness for that link, witness commitment checked, at tier 2",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: entry 0 released at tier 2 at height 4517, 7 confirmations",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "a prefix of chain A that hides entries 3 and 4",
+      "expectation": "light verifier cannot tell (accepts)",
+      "observed": "verifier accepted; it reports entry 3 open as the tip",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "3 release verifier",
+      "check": "scan of full blocks 4333..4523 for a spend of T_3 (no UTXO query)",
+      "expectation": "finds the hidden release",
+      "observed": "T_3 spent at height 4338 by ee3c16c141dd5a5a",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "4 height lease (K8)",
+      "check": "release at height 4530, lease 1 at h_1 = 4524, L = 144",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: lease 1 covers height 4530 (window [4524, 4668])",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "4 height lease (K8)",
+      "check": "same release after block timestamps jump 365 days ahead",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: lease 1 covers height 4530 (window [4524, 4668])",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "4 height lease (K8)",
+      "check": "release at height 4669, after h_1 + L = 4668",
+      "expectation": "verifier rejects: outside every lease",
+      "observed": "verifier rejected: release at height 4669 is outside every lease [4524, 4668]",
+      "reject_reason": "release at height 4669 is outside every lease [4524, 4668]",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "4 height lease (K8)",
+      "check": "renewal signed before its block existed (guessed hash)",
+      "expectation": "verifier rejects: not the best chain's block",
+      "observed": "verifier rejected: no valid renewal: renewal 2 names a block that is not the best chain's block 4678",
+      "reject_reason": "no valid renewal: renewal 2 names a block that is not the best chain's block 4678",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "4 height lease (K8)",
+      "check": "release at height 4679 under renewal 3 (h_3 = 4678)",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: lease 3 covers height 4679 (window [4678, 4822])",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "4 height lease (K8)",
+      "check": "renewal with guardian 2's signature in guardian 3's place",
+      "expectation": "verifier rejects: invalid guardian signature",
+      "observed": "verifier rejected: no valid renewal: renewal 4 has an invalid guardian signature",
+      "reject_reason": "no valid renewal: renewal 4 has an invalid guardian signature",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "4 height lease (K8)",
+      "check": "lease verdicts with every clock function disabled",
+      "expectation": "same verdicts, no clock read",
+      "observed": "accepted: lease 3 covers height 4679 (window [4678, 4822]); rejected: release at height 4669 is outside every lease [4524, 4668], [4678, 4822]",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "5 co-signing",
+      "check": "agent and co-signer before N = 144",
+      "expectation": "rejected: non-BIP68-final",
+      "observed": "rejected: non-BIP68-final",
+      "reject_reason": "non-BIP68-final",
+      "pass": true,
+      "txids": [
+        "82ae668ef6f07e741fbe76fbaed95cbbcac2fcd6557542f649d474fb9b6d4bb5"
+      ],
+      "vbytes": 162
+    },
+    {
+      "scenario": "5 co-signing",
+      "check": "recovery with 1 of 3 guardians",
+      "expectation": "rejected: finished with a false/empty top stack element",
+      "observed": "rejected: mempool-script-verify-flag-failed (Script evaluated without error but finished with a false/empty top stack element)",
+      "reject_reason": "mempool-script-verify-flag-failed (Script evaluated without error but finished with a false/empty top stack element), input 0 of 4900a1741d50dfb42d02339de0ac2b391a52ddaf08c44715a18647deb4c8e62e (wtxid e37d1b7765895aa5af3211ea5b26d75ce26679f5a8bee7989952cf66b8f39ec5), spending 8bfc1cb04d09115acdccc06b5117095e9678af7f1c6fe3a0b34a1661eba525cb:0",
+      "pass": true,
+      "txids": [
+        "4900a1741d50dfb42d02339de0ac2b391a52ddaf08c44715a18647deb4c8e62e"
+      ],
+      "vbytes": 155
+    },
+    {
+      "scenario": "5 co-signing",
+      "check": "recovery with 2 of 3 guardians at once",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "224c77612dd655b76891b066a2ff40836667e3ca4634dfb6bb0c4452eef44cbf"
+      ],
+      "vbytes": 171
+    },
+    {
+      "scenario": "5 co-signing",
+      "check": "agent alone after N",
+      "expectation": "rejected: Script failed an OP_CHECKSIGVERIFY operation",
+      "observed": "rejected: mempool-script-verify-flag-failed (Script failed an OP_CHECKSIGVERIFY operation)",
+      "reject_reason": "mempool-script-verify-flag-failed (Script failed an OP_CHECKSIGVERIFY operation), input 0 of 15d93d941ddccf9373eb6edb9eb55a0088b178f607916120de213a91615afb3c (wtxid e9b420ec2df1a811a63cf5446203e432e52007561ed69bc3be1531a47c946e7d), spending 872aea68b21da86515a831a7511f22a9be63141e6a5a17842b99bf622710f669:0",
+      "pass": true,
+      "txids": [
+        "15d93d941ddccf9373eb6edb9eb55a0088b178f607916120de213a91615afb3c"
+      ],
+      "vbytes": 146
+    },
+    {
+      "scenario": "5 co-signing",
+      "check": "agent and co-signer after N but with nSequence 0",
+      "expectation": "rejected: Locktime requirement not satisfied",
+      "observed": "rejected: mempool-script-verify-flag-failed (Locktime requirement not satisfied)",
+      "reject_reason": "mempool-script-verify-flag-failed (Locktime requirement not satisfied), input 0 of a1c58e3ced902182ee9e0547a5f3bcc68153579bd9e54d55a75f8d554575f060 (wtxid 4e526d82ab3634499986f0f6f1a521c84359587f84eec9c6f644e30f1f202312), spending 872aea68b21da86515a831a7511f22a9be63141e6a5a17842b99bf622710f669:0",
+      "pass": true,
+      "txids": [
+        "a1c58e3ced902182ee9e0547a5f3bcc68153579bd9e54d55a75f8d554575f060"
+      ],
+      "vbytes": 162
+    },
+    {
+      "scenario": "5 co-signing",
+      "check": "agent and co-signer after N",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "82ae668ef6f07e741fbe76fbaed95cbbcac2fcd6557542f649d474fb9b6d4bb5"
+      ],
+      "vbytes": 162
+    },
+    {
+      "scenario": "6 anchoring",
+      "check": "anchor through the Taproot tweak (1 key-path input, 1 output)",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "cca50f4990aff38f25ef8d3b6e497b901feb348611cbe03aa24ec5582069c165"
+      ],
+      "vbytes": 111
+    },
+    {
+      "scenario": "6 anchoring",
+      "check": "anchor through OP_RETURN (1 key-path input, change + OP_RETURN)",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "ddc4b85dd47b64fda1a9b960904f12b5cd2cf2e3b811459c74a1572b574773da"
+      ],
+      "vbytes": 154
+    },
+    {
+      "scenario": "6 anchoring",
+      "check": "entry 37 of 100 via the tweak anchor",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: entry in log anchored at height 4832, 6 confirmations",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "6 anchoring",
+      "check": "entry 37 of 100 via the OP_RETURN anchor",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: entry in log anchored at height 4832, 6 confirmations",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "6 anchoring",
+      "check": "an altered entry",
+      "expectation": "verifier rejects: does not reach",
+      "observed": "verifier rejected: log proof does not reach the anchored root",
+      "reject_reason": "log proof does not reach the anchored root",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "6 anchoring",
+      "check": "the tweak anchor checked against another internal key",
+      "expectation": "verifier rejects: output key is not",
+      "observed": "verifier rejected: output key is not the internal key tweaked by this log root",
+      "reject_reason": "output key is not the internal key tweaked by this log root",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "6 anchoring",
+      "check": "the tweak-anchored output stays spendable by the owner's key path",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "36e21349c58f86c66c5ded08fe9a11411f355f909c62dadb5fe837807f8d5e33"
+      ],
+      "vbytes": 111
+    },
+    {
+      "scenario": "7 TRUC veto fee bump",
+      "check": "v3 veto with a zero-value P2A output and zero fee, alone",
+      "expectation": "rejected: min relay fee not met",
+      "observed": "rejected: min relay fee not met, 0 < 17",
+      "reject_reason": "min relay fee not met, 0 < 17",
+      "pass": true,
+      "txids": [
+        "508d3383d5a9d5121558aba960fe0da1044589bec5c7064eb62a1e7456445a82"
+      ],
+      "vbytes": 166
+    },
+    {
+      "scenario": "7 TRUC veto fee bump",
+      "check": "v3 veto paying 1 sat/vB with a zero-value P2A output, alone",
+      "expectation": "rejected: dust",
+      "observed": "rejected: dust, tx with dust output must be 0-fee",
+      "reject_reason": "dust, tx with dust output must be 0-fee",
+      "pass": true,
+      "txids": [
+        "bd4aad2a730cfd0f71491ad324a350d43c513cea4a2ace8c7d98f847a9bde541"
+      ],
+      "vbytes": 166
+    },
+    {
+      "scenario": "7 TRUC veto fee bump",
+      "check": "package whose child is 1168 vB (TRUC allows a child at most 1000 vB)",
+      "expectation": "rejected: TRUC-violation",
+      "observed": "rejected: TRUC-violation, version=3 child tx is too big: 1168 > 1000 virtual bytes",
+      "reject_reason": "TRUC-violation, version=3 child tx c089bcc8c0dfbc177cd0c0b80c6836c03ef01a36cd85ae8b34401c458856048d (wtxid=a4a8f87bcd672f5fc24aa2a793d4f65d9bc7125e3ecf39fba9b3cd1123228f8e) is too big: 1168 > 1000 virtual bytes: min relay fee not met, 0 < 17 | bad-txns-inputs-missingorspent",
+      "pass": true,
+      "txids": [],
+      "vbytes": 1168
+    },
+    {
+      "scenario": "7 TRUC veto fee bump",
+      "check": "submitpackage: zero-fee v3 veto + v3 child spending its P2A output",
+      "expectation": "package accepted",
+      "observed": "package_msg=success",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "508d3383d5a9d5121558aba960fe0da1044589bec5c7064eb62a1e7456445a82",
+        "f48432929f3857c77183d17f1fdf1f2bf27354e49b37a9673587a1267d8cdba6"
+      ],
+      "vbytes": 319
+    },
+    {
+      "scenario": "7 TRUC veto fee bump",
+      "check": "agent advance2 after the veto package confirmed",
+      "expectation": "rejected: bad-txns-inputs-missingorspent",
+      "observed": "rejected: bad-txns-inputs-missingorspent (testmempoolaccept: missing-inputs)",
+      "reject_reason": "bad-txns-inputs-missingorspent",
+      "pass": true,
+      "txids": [
+        "68dfb26c90e096e1e64fa6b2116da62a6cc4bc94efaed776ec03507cc760d5b3"
+      ],
+      "vbytes": 137
+    },
+    {
+      "scenario": "7 TRUC veto fee bump",
+      "check": "at the edge: a watchtower submits the veto package",
+      "expectation": "package accepted",
+      "observed": "package_msg=success, child fee 638 sats",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "7 TRUC veto fee bump",
+      "check": "at the edge: the agent's advance2 paying 4190 sats replaces the veto package",
+      "expectation": "accepted",
+      "observed": "accepted",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [
+        "82217ad6bbafcbc9301afcfb25f9f6e0f552cc523dd72a0754db8c0064188bfc"
+      ],
+      "vbytes": 137
+    },
+    {
+      "scenario": "7 TRUC veto fee bump",
+      "check": "mempool after the agent's bid",
+      "expectation": "advance in, veto package out",
+      "observed": "advance in mempool: True; veto in mempool: False",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "7 TRUC veto fee bump",
+      "check": "at the edge: the watchtower re-bids with a child paying 12570 sats",
+      "expectation": "package replaces the agent's advance",
+      "observed": "package_msg=success",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "7 TRUC veto fee bump",
+      "check": "at the edge: the next block confirms the higher bidder",
+      "expectation": "veto confirmed",
+      "observed": "veto confirmed",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "8 Merkle-sum tree",
+      "check": "entry 0 (the sum tree's root) is released",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: entry 0 released at tier 2 at height 4859, 13 confirmations",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "8 Merkle-sum tree",
+      "check": "leaf 5 of 13: inclusion, sums and cap 100000",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: leaf of 6000 included; 13 leaves, total 91000 <= cap 100000",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "8 Merkle-sum tree",
+      "check": "root claims a smaller total than its children add to",
+      "expectation": "verifier rejects: sums do not add",
+      "observed": "verifier rejected: sums do not add: path gives count 13 and total 91000, root claims 13 and 86000",
+      "reject_reason": "sums do not add: path gives count 13 and total 91000, root claims 13 and 86000",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "8 Merkle-sum tree",
+      "check": "a sibling's sum lowered in the proof",
+      "expectation": "verifier rejects: root hash",
+      "observed": "verifier rejected: proof does not reach the claimed root hash",
+      "reject_reason": "proof does not reach the claimed root hash",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "8 Merkle-sum tree",
+      "check": "a sibling with a negative sum",
+      "expectation": "verifier rejects: negative",
+      "observed": "verifier rejected: sibling sum -400 is negative",
+      "reject_reason": "sibling sum -400 is negative",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "8 Merkle-sum tree",
+      "check": "a leaf with a negative amount",
+      "expectation": "verifier rejects: negative",
+      "observed": "verifier rejected: leaf amount -6000 is negative",
+      "reject_reason": "leaf amount -6000 is negative",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "8 Merkle-sum tree",
+      "check": "entry 1 (a tree over the cap) is released: consensus does not enforce the cap",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: entry 1 released at tier 2 at height 4865, 7 confirmations",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "8 Merkle-sum tree",
+      "check": "entry 1's sum tree totals 100001, over the cap 100000",
+      "expectation": "verifier rejects: exceeds the cap",
+      "observed": "verifier rejected: total 100001 exceeds the cap 100000",
+      "reject_reason": "total 100001 exceeds the cap 100000",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "8 Merkle-sum tree",
+      "check": "under-reported subtree, checked by the owner of a leaf inside it",
+      "expectation": "verifier rejects: root hash",
+      "observed": "verifier rejected: proof does not reach the claimed root hash",
+      "reject_reason": "proof does not reach the claimed root hash",
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "8 Merkle-sum tree",
+      "check": "under-reported subtree, checked by the owner of a leaf outside it (passes: a limit)",
+      "expectation": "verifier accepts",
+      "observed": "verifier accepted: leaf of 30000 included; 4 leaves, total 70000 <= cap 100000",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    },
+    {
+      "scenario": "8 Merkle-sum tree",
+      "check": "the under-reported tree claims a total under the cap",
+      "expectation": "total 70000 <= 100000",
+      "observed": "claimed 70000, real 120000, cap 100000",
+      "reject_reason": null,
+      "pass": true,
+      "txids": [],
+      "vbytes": null
+    }
+  ],
+  "sizes": [
+    {
+      "kind": "bond: fund the bond output (1 in, bond + change)",
+      "vbytes": 154,
+      "weight": 616,
+      "fee_sat": 154,
+      "feerate_sat_vb": 1.0,
+      "txid": "eb4c6a107ece484d686fa4b1e4a86edb2ea405fb482326117095bb0189aead0a",
+      "inputs": 1,
+      "outputs": 2,
+      "version": 2
+    },
+    {
+      "kind": "bond: spend through the CLTV leaf (tweak form, 1 leaf)",
+      "vbytes": 130,
+      "weight": 518,
+      "fee_sat": 130,
+      "feerate_sat_vb": 1.0,
+      "txid": "c226e0bbc166c91681226b24a17c544161e9eb96f76bd1bfd258c0eb92899f7a",
+      "inputs": 1,
+      "outputs": 1,
+      "version": 2
+    },
+    {
+      "kind": "bond: spend through the CLTV leaf (leaf form, 2 leaves)",
+      "vbytes": 138,
+      "weight": 550,
+      "fee_sat": 138,
+      "feerate_sat_vb": 1.0,
+      "txid": "bc0cc062854f6c2d55cc66f0e7479e4977d4e21f8f0f933201cbff58bab89f1a",
+      "inputs": 1,
+      "outputs": 1,
+      "version": 2
+    },
+    {
+      "kind": "tick genesis: fund T_0 (1 in, T_0 + change)",
+      "vbytes": 154,
+      "weight": 616,
+      "fee_sat": 154,
+      "feerate_sat_vb": 1.0,
+      "txid": "1f652d8314b775a00e2b004cb17eab9b689d2d0423e0fac765365f01ab1772af",
+      "inputs": 1,
+      "outputs": 2,
+      "version": 2
+    },
+    {
+      "kind": "tick advance2: T_n to T_n+1 (agent, script path, depth 1)",
+      "vbytes": 137,
+      "weight": 548,
+      "fee_sat": 137,
+      "feerate_sat_vb": 1.0,
+      "txid": "16ef03c7cb8b4c96208122c0a56bd4a705cf4351d0782c26446744464b13fa42",
+      "inputs": 1,
+      "outputs": 1,
+      "version": 2
+    },
+    {
+      "kind": "tick advance3: T_n to T_n+1 (agent + 3 guardians, depth 3)",
+      "vbytes": 228,
+      "weight": 911,
+      "fee_sat": 228,
+      "feerate_sat_vb": 1.0,
+      "txid": "d85cd1e43b240b45cd411cd1579daec41402065360022b68e439e03a78932f5c",
+      "inputs": 1,
+      "outputs": 1,
+      "version": 2
+    },
+    {
+      "kind": "veto: T_n to halt output (one guardian, plain v2, depth 4)",
+      "vbytes": 161,
+      "weight": 641,
+      "fee_sat": 161,
+      "feerate_sat_vb": 1.0,
+      "txid": "3e8019156acdbc29f3a2497980a5e62522bb3cad68d101f4fd18f601c0756e74",
+      "inputs": 1,
+      "outputs": 1,
+      "version": 2
+    },
+    {
+      "kind": "renew: halt output to T_n+1 (3 guardians, single-leaf tree)",
+      "vbytes": 178,
+      "weight": 711,
+      "fee_sat": 178,
+      "feerate_sat_vb": 1.0,
+      "txid": "ac809d9fe6be7aa38a94cad726cf3499043287aa361aa249438f53682a53351a",
+      "inputs": 1,
+      "outputs": 1,
+      "version": 2
+    },
+    {
+      "kind": "renew: T_n to T_n+1 (3 guardians, depth 3)",
+      "vbytes": 202,
+      "weight": 807,
+      "fee_sat": 202,
+      "feerate_sat_vb": 1.0,
+      "txid": "0760dd1bfb9f989150d803a118065259a8f34b02e8399f011a03d976adfd0baa",
+      "inputs": 1,
+      "outputs": 1,
+      "version": 2
+    },
+    {
+      "kind": "veto: T_n to one P2TR output (one guardian, plain v2, depth 3)",
+      "vbytes": 153,
+      "weight": 609,
+      "fee_sat": 153,
+      "feerate_sat_vb": 1.0,
+      "txid": "dbb0c77d5d4c79e0a996fdd2613eb5a85b631a5653b2a8d2eb1ecef806d13be3",
+      "inputs": 1,
+      "outputs": 1,
+      "version": 2
+    },
+    {
+      "kind": "co-sign: recovery leaf (2 of 3 guardians, CHECKSIGADD)",
+      "vbytes": 171,
+      "weight": 681,
+      "fee_sat": 171,
+      "feerate_sat_vb": 1.0,
+      "txid": "224c77612dd655b76891b066a2ff40836667e3ca4634dfb6bb0c4452eef44cbf",
+      "inputs": 1,
+      "outputs": 1,
+      "version": 2
+    },
+    {
+      "kind": "co-sign: and(agent, co-signer, older(N)) leaf",
+      "vbytes": 162,
+      "weight": 648,
+      "fee_sat": 162,
+      "feerate_sat_vb": 1.0,
+      "txid": "82ae668ef6f07e741fbe76fbaed95cbbcac2fcd6557542f649d474fb9b6d4bb5",
+      "inputs": 1,
+      "outputs": 1,
+      "version": 2
+    },
+    {
+      "kind": "anchor: log root in the output's tweak (1 in, 1 out)",
+      "vbytes": 111,
+      "weight": 444,
+      "fee_sat": 111,
+      "feerate_sat_vb": 1.0,
+      "txid": "cca50f4990aff38f25ef8d3b6e497b901feb348611cbe03aa24ec5582069c165",
+      "inputs": 1,
+      "outputs": 1,
+      "version": 2
+    },
+    {
+      "kind": "anchor: log root in OP_RETURN (1 in, change + OP_RETURN)",
+      "vbytes": 154,
+      "weight": 616,
+      "fee_sat": 154,
+      "feerate_sat_vb": 1.0,
+      "txid": "ddc4b85dd47b64fda1a9b960904f12b5cd2cf2e3b811459c74a1572b574773da",
+      "inputs": 1,
+      "outputs": 2,
+      "version": 2
+    },
+    {
+      "kind": "key-path spend, 1 in 1 out (the model's seal transaction shape)",
+      "vbytes": 111,
+      "weight": 444,
+      "fee_sat": 111,
+      "feerate_sat_vb": 1.0,
+      "txid": "36e21349c58f86c66c5ded08fe9a11411f355f909c62dadb5fe837807f8d5e33",
+      "inputs": 1,
+      "outputs": 1,
+      "version": 2
+    },
+    {
+      "kind": "veto: v3 TRUC, T_n to halt + zero-value P2A, zero fee",
+      "vbytes": 166,
+      "weight": 661,
+      "fee_sat": 0,
+      "feerate_sat_vb": 0.0,
+      "txid": "508d3383d5a9d5121558aba960fe0da1044589bec5c7064eb62a1e7456445a82",
+      "inputs": 1,
+      "outputs": 2,
+      "version": 3
+    },
+    {
+      "kind": "veto child: v3, spends the P2A + one fee input (CPFP)",
+      "vbytes": 153,
+      "weight": 609,
+      "fee_sat": 638,
+      "feerate_sat_vb": 4.17,
+      "txid": "f48432929f3857c77183d17f1fdf1f2bf27354e49b37a9673587a1267d8cdba6",
+      "inputs": 2,
+      "outputs": 1,
+      "version": 3,
+      "note": "pays for parent and child at twice the model fee rate"
+    }
+  ],
+  "proof_bytes": {
+    "headers_bytes_per_block": 80,
+    "chain_a_links": 7,
+    "full_walk_with_witness_proofs": 6305,
+    "full_walk_txid_proofs_only": 3736,
+    "two_tx_with_witness_proofs": 1931,
+    "note": "regtest blocks hold a few transactions, so Merkle branches here are 1 or 2 hashes deep"
+  }
+}

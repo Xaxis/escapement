@@ -1,7 +1,7 @@
 # Escapement. Python 3.11 or later, standard library only.
 PY ?= python3
 
-.PHONY: all model docs check paper sources
+.PHONY: all model docs check paper sources lab
 
 all: sources model docs check
 
@@ -19,3 +19,7 @@ paper:  ## build/escapement-paper.md, the paper with ledger links flattened, for
 
 sources:  ## research/sources.toml from the notes' YAML, the manual sources and the Crossref DOIs (needs PyYAML)
 	$(PY) tools/sources.py
+
+lab:  ## the Bitcoin regtest lab: fetch the pinned Bitcoin Core, run every scenario, write lab/results.json
+	$(PY) lab/fetch.py
+	$(PY) lab/run.py

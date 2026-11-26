@@ -1,0 +1,24 @@
+# Bitcoin Core pinned for the lab. lab/fetch.py reads this file and refuses anything that does not
+# match. Nothing listed here is stored in the repository: fetch.py puts it under
+# ~/.cache/escapement/.
+#
+# The release tarball, checked against the release's SHA256SUMS and against the hash below.
+version 32.1
+release_url https://bitcoincore.org/bin/bitcoin-core-32.1/
+tarball bitcoin-32.1-x86_64-linux-gnu.tar.gz
+tarball_sha256 61545c17c3120fb7412f896d248b11993af04ec8817aad3649c55b2afb044963
+#
+# Bitcoin Core's functional test framework (MIT licence), at the tag that matches the binary, for
+# Taproot construction, BIP340 signing, sighashes and transaction serialisation.
+tag v32.1
+source_url https://raw.githubusercontent.com/bitcoin/bitcoin/v32.1/test/functional/test_framework/
+file __init__.py e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+file key.py 733b2eb9e5ffd71efddb0f7b52c164d6a6fd59230251fa0609e5bb0bd8dfab4c
+file script.py 82e250fadd393b972ae9d5d508f458fc872ea0dd947ca162693a006c3e488bbf
+file messages.py 976c1f77654f2a172397cfc380bdc5f323b7582bd71d995c91d4be01bebe8408
+file segwit_addr.py fbeb2a01fdae651877262c4902d237dd28d56f0e35b0fc137d3dd97854b18b08
+file util.py c456da7fbad0692dd42ca56537e8dc736b23040474d879e8d835e9048e801e30
+file descriptors.py 8c2a4490c1b2a09c6c6e209eda090b160214d8156e20d6db671459cb4090a16a
+file crypto/secp256k1.py bc85664039adca82749609df9efe50a5c8acf1a336cc1ab6e70fab90236fbfb7
+file crypto/ripemd160.py 99da6dafa9804d3ca5490a736354027b10ec3d517206caad6ea28c0e097f6b9a
+file crypto/siphash.py 395fb94ebc7fb7d38bfe86bc3dbfb4df2e94d3c1e3cd1c41b66cc19d0d5e76e3
