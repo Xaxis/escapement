@@ -37,8 +37,8 @@ Final verdicts, after the fresh reviewer (nothing is new):
 
 - `research/04-claims.md`: the claims as repaired, each with what changed and why.
 - `research/05-formal.md`: the proofs, second version.
-- `research/notes/novelty-independent-a.md`, `-b.md`, `red-team.md`, `fresh-eyes.md`: the raw
-  reports of the helpers, kept as written.
+- `research/notes/novelty-independent-a.md`, `-b.md`, `red-team.md`, `fresh-eyes.md`, `paperwright-desks.md`:
+  the raw reports of the helpers and the desks, kept as written.
 - `model/sim.py`: deterministic simulations; results enter the ledger through `model/escapement.py`.
 - `lab/`: the regtest build, `make lab`, 104 checks on Bitcoin Core 32.1; `make lab-fresh-eyes`
   reproduces the two breaks.
@@ -46,9 +46,10 @@ Final verdicts, after the fresh reviewer (nothing is new):
 
 ## Open items
 
-- The paper was built and reviewed in a local Paperwright instance, not in the owner's account.
-  Putting it into the live account needs the owner's connector or token; the repo's `paper/` and
-  `build/` are the source to bring in.
+- The paper was built and reviewed in a local Paperwright instance that does not persist, so it is
+  gone; the owner's live account does not have it. To bring it in: `python3 tools/paper.py --draft`
+  gives the sections and tables, `--ids` the identifiers for `add_sources`, and the URL-only sources
+  go in as BibTeX. `paper/exports/` holds the final PDF and Markdown.
 - Tests that would settle the cut and conditional claims are listed in `paper/12-limits.md`: an
   adoption model with agents that plan ahead and amortised identity costs; a training experiment on
   exogenous events; a baseline provider that meets H0 in practice.

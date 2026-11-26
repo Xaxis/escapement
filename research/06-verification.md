@@ -239,7 +239,8 @@ Paperwright's desks are recorded under "Paper review" below.
 
 ## Paper review
 
-Paperwright ran its three desks on the draft of the paper (before the fresh reviewer's cuts).
+Paperwright ran its three desks on the draft of the paper (before the fresh reviewer's cuts). Their
+reports and every note, as filed, are in `notes/paperwright-desks.md`.
 
 - **Integrity desk:** [30 notes](numbers.md#desk-notes-integrity), [5 notes](numbers.md#desk-notes-integrity-important)
   marked important. It checked each cited claim against its source. By its categories: 10
