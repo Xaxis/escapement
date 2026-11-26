@@ -36,6 +36,14 @@
       "tests": []
     },
     {
+      "id": "cli:lab-fresh-eyes",
+      "kind": "cli",
+      "entry": "lab/fresh_eyes.py",
+      "reach": "make lab-fresh-eyes (python3 lab/fresh_eyes.py)",
+      "area": "lab",
+      "tests": []
+    },
+    {
       "id": "cli:model",
       "kind": "cli",
       "entry": "model/escapement.py",

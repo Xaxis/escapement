@@ -18,6 +18,7 @@ make lab                         # fetch (first time only), then every scenario;
 python3 lab/fetch.py             # only fetch and verify the binary and framework files
 python3 lab/run.py --only 2 --only 3   # some scenarios (3 uses the chains 2 builds)
 python3 lab/run.py --keep        # keep the node's datadir to inspect it
+make lab-fresh-eyes              # the two breaks the fresh reviewer found (below)
 ```
 
 Needs Python 3.11 or later on x86_64 Linux, and network access for the first fetch (about 90 MB).
@@ -201,9 +202,12 @@ These are the results that matter. Each is reproduced by a check in `results.jso
    decides, and a one-block reorg turned a confirmed release into a confirmed veto (the reverse is
    equally possible). In the mempool the edge is a fee auction under full RBF: the agent's advance
    paying 4,190 sats evicted the veto package, and the watchtower took it back with a child paying
-   12,570 sats. The agent can bid only out of T_n's value (extra inputs break the one-input link
-   rule, and T_n+1 cannot be spent early to bump it), so a watchtower whose fee reserve exceeds the
-   tick output's value can outbid it, but not out-of-band payments to miners.
+   12,570 sats. The first version of this README said the agent could bid only out of T_n's value.
+   That is false: the verifier checks one input and output 0, so an advance may carry a
+   pay-to-anchor output beside T_n+1, and a child spending it can pay from any coin. The fresh
+   reviewer's check (below) evicted a veto package with an outside child paying 150,000 sats
+   against T_n's 100,000, and the release was counted. A veto is safe only if it confirms well
+   before the edge; at the edge the agent's budget is not bounded by the chain.
 5. **K1(c) and K7(d): completeness at the tip is not light-verifiable.** A prefix of the chain
    that hides entries 3 and 4 passed the light verifier, which cannot show that the last output is
    unspent without the UTXO set. Scanning every full block since T_3 (checked against the headers)
@@ -238,6 +242,31 @@ Two smaller things. Bitcoin Core 32.1 reports script failures in the mempool as
 older releases. And the framework's `TaprootSignatureMsg` default `codeseparator_pos=-1` no longer
 serialises at v32.1; the lab passes 0xffffffff, BIP342's value for "no OP_CODESEPARATOR".
 
+## Found by the fresh reviewer
+
+A last reviewer that had seen none of the work found two breaks the eight scenarios miss, and built
+both from the lab's own modules. [`fresh_eyes.py`](fresh_eyes.py) reruns them; each prints a
+`BREAK:` line when the attack succeeds. It is not part of `make lab` or its 104 checks, because it
+records what fails rather than what holds.
+
+1. **The agent outbids a veto with outside money.** At the window's edge the watchtower's veto
+   package (a zero-fee v3 veto with a pay-to-anchor output, and a child paying 20,000 sats) was
+   accepted. The agent then submitted a zero-fee v3 `advance2` with outputs [T_1, pay-to-anchor]
+   and a child paying 150,000 sats from a coin outside the chain, when T_0 held 100,000. The
+   package was accepted, the veto left the mempool, and after one block and d more the verifier
+   counted entry 0 as released at tier 2. Forbidding any output beyond T_n+1 would stop this, but
+   would also stop the agent from adding fees, so a chain's life would be bounded by T_0's value
+   divided by the fee per release.
+2. **Nothing on chain binds a chain to its identity.** Two tick chains under one charter id, with
+   different roots for entry 1, each released entry 0, and the verifier accepted both, each from
+   its own pin (output: "entry 0 released at tier 2 at height 151, 7 confirmations" for both, with
+   root_1 = b46712fb... and f9e373ef...). The pin is a parameter handed to the verifier. As
+   specified, it is also circular: T_0's key commits the charter id, and the charter is meant to
+   name T_0's outpoint. So the rate limit, one root per index and completeness hold per pinned
+   chain, not per identity, and one bond can back as many chains as its owner likes. A binding
+   (identity = bond outpoint, T_0 = a named output of the bond's own transaction) is proposed and
+   not built, and it does not yet say how a record survives renewing a one-year bond.
+
 ## What the lab does not prove
 
 - **Nothing about a live network.** One regtest node: no peers, so no relay (package relay between
@@ -255,8 +284,8 @@ serialises at v32.1; the lab passes 0xffffffff, BIP342's value for "no OP_CODESE
   Bitcoin Core's, including the duplicate-node check, but only the cases above were tried.
 - **Keys are test keys.** No key management, no MuSig2, no hardware, no watchtower software, no
   guardian behaviour.
-- **The halt output and the pinned T_0 are the lab's fixes**, not part of the claims; neither has
-  been reviewed.
+- **The halt output and the pinned T_0 are the lab's fixes**, not part of the claims. The fresh
+  reviewer showed the pin is only a parameter: nothing on chain binds it to the identity (above).
 - **Sizes are for these templates.** Three guardians, this tree shape, single-input transactions,
   SIGHASH_DEFAULT; other choices change them (see above).
 - **Whether any of this makes an AI agent safer.** The lab tests mechanisms, not the thesis.
@@ -273,6 +302,7 @@ serialises at v32.1; the lab passes 0xffffffff, BIP342's value for "no OP_CODESE
 | [`verify.py`](verify.py) | the relying party's verifier: headers, Merkle and witness proofs, chain walk, lease, bond, anchor, sum tree; no RPC |
 | [`scenarios.py`](scenarios.py) | the eight scenarios |
 | [`run.py`](run.py) | runs them, prints the summary, writes `results.json` |
+| [`fresh_eyes.py`](fresh_eyes.py) | the fresh reviewer's two breaks: an outside-money bid, and two chains under one charter |
 | [`results.json`](results.json) | the last full run |
 
 ## Every check

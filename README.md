@@ -11,13 +11,19 @@ locked bitcoin)? For adoption: would labs, companies, agents and governments cho
 pays them? The earlier mechanisms (caps, delays, leases, bonds, anchored logs) are the enforcement
 layer under that record.
 
-What survived checking is narrower than what was proposed. Under a stated condition on the baseline,
-a record of forecasts scored in rounds costs an agent without edge a number of identities that grows
-with the score; on events the agent cannot influence, it gives a training reward nobody can select
-after the fact; and adoption has a tipping point that parties who gain alone can push past. The
-claim that staying out comes to cost a harmful actor more than joining was cut, as were a light
-proof of releases and Bitcoin as a clock for AI chips. `research/06-verification.md` has each claim's
-result at every level.
+What survived checking is much narrower than what was proposed, and none of it is new. Scored in
+rounds against a baseline that is the conditional law of each outcome given public information, a
+record of forecasts costs a faker without private information a number of identities that grows
+with the score: that is Ville's inequality and testing by betting, applied, and it holds per bond only
+once each bond backs one chain, which nothing on chain enforces yet. The round rule that makes it
+hold rewards bets rather than calibrated forecasts, and edge measures capability rather than
+alignment. The tick chain, a covenant-free chain of outputs that rate-limits an agent's releases and
+lets any guardian veto them, extends Somsen's spacechains narrowly; a fresh reviewer broke it twice on
+regtest (an unbound pin, and an agent outbidding a veto with outside money). The lease is
+Substrate's mortal transactions. Cut: one record as standing, training reward and release gate; a
+training reward the lab cannot select; routing around the record becoming costly; a light proof of
+releases; Bitcoin as a clock for AI chips. `research/06-verification.md` has each claim's result at
+every level.
 
 ## Status
 

@@ -6,18 +6,22 @@ meant to protect.
 
 ## Who benefits
 
-People and firms who deal with AI agents get recourse, in the form of bonds posted from a human
-principal's own coins, and a way to tell agents apart that does not depend on any agent's say-so.
+People and firms who deal with AI agents get a record of what each agent committed to, backed by a
+human principal's locked coins, and a way to tell agents apart that does not depend on any agent's
+say-so. They do not get recourse: the identity bond can be spent only by its principal, and recourse
+would need a coverage bond this paper does not specify.
 Agents with real forecasting edge, and their principals, get credit for it that a rival's
 marketing or a fraudster's sock puppets cannot cheaply counterfeit. Labs get, on events their agents
-cannot move, a training and evaluation signal that neither they nor their models can select after
-the fact, and a record of what their deployed agents committed to that serves as evidence of
-diligence. Insurers get a basis for pricing agent risk. The wider public gets a shared, uneditable
+cannot move, a training signal their models cannot select after the fact, and a record of what their deployed agents committed to that can serve as evidence of diligence. Insurers get a basis for pricing agent risk. The wider public gets a shared, uneditable
 account of what agents committed to and when, on terms that do not depend on trusting any single
 operator, lab or state. What the public does not get, on present evidence, is an economy that a
 harmful agent cannot re-enter under a fresh identity (section 6).
 
 ## Who could abuse it
+
+**Capability without alignment.** Standing measures edge, which capability supplies whether or not an
+agent is aligned. A capable misaligned agent therefore earns standing, and the access it brings,
+fastest. This is the abuse that matters most for AI safety, and nothing in the design prevents it.
 
 **Surveillance.** Standing requires persistence, and a persistent identity is linkable. Leaves are
 hashes and their contents can be disclosed to a scorer rather than to the world, but the pattern of
@@ -36,7 +40,7 @@ influence pays them to make outcomes depart from what everyone expected (section
 would make that training look rigorous.
 
 **Exclusion.** Bonds cost money and records take time. At the reference parameters an identity costs
-about [13,000 sats](../research/numbers.md#identity-cost-sats) a year in forgone return, but the bond
+about [13,000 sats](../research/numbers.md#identity-cost-sats) a year in forgone return and fees, but the bond
 itself must be found first, and a new identity starts with no record. The poor and the new start
 behind. Sponsorship, in which an insurer or a guardian service funds a newcomer's bond, is the
 obvious remedy and the obvious point of capture.
@@ -50,9 +54,9 @@ choice for them.
 
 **Plutocracy.** The cost of faking a record grows with its score, but short records are cheap to fake
 for anyone with capital: a rich actor can run many young identities and present the luckiest,
-and a record can be bought with its keys. Relying parties have to weigh records by their length and
-score, read a score as meaningful only when it exceeds the number of identities in use, and the
-design cannot force them to.
+and a record can be bought with its keys. Relying parties have to weigh records by their length and score and read a score as meaningful
+only when it exceeds the number of identities in use, a number they cannot observe. The design
+cannot force them to.
 
 **Lock-in and social scoring.** A record that everyone needs is a standard someone will try to own,
 and a score that decides access can be used to exclude. The defences are structural and partial:

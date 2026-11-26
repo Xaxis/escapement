@@ -237,6 +237,17 @@ def build(overrides: dict | None = None) -> Ledger:
     d("fake-record-cost-btc", lambda q: q["fake-record-identities"] * q["identity-cost-sats"] / 1e8,
       "fake-record-identities * identity-cost-sats / 1e8", "BTC", fmt="sig2",
       label="what faking that record costs at least", defined_in=here())
+    d("identity-cost-season-sats",
+      lambda q: q["bond-coverage"] * q["capital-cost-rate"] * q["season-days"] / 365.25
+      + 2 * q["seal-tx-vbytes"] * q["feerate-2023"],
+      "bond-coverage * capital-cost-rate * season-days / 365.25 + 2 * seal-tx-vbytes * feerate-2023",
+      "sats", fmt="sig2",
+      label="cost of an identity whose bond is locked only for the season the rules require",
+      defined_in=here())
+    d("fake-record-cost-season-btc",
+      lambda q: q["fake-record-identities"] * q["identity-cost-season-sats"] / 1e8,
+      "fake-record-identities * identity-cost-season-sats / 1e8", "BTC", fmt="sig2",
+      label="what faking the record costs at least with season-length bonds", defined_in=here())
 
     def faking(q):
         return sim.record_faking(int(q["sim-identities"]), int(q["sim-log2-lambda"]),
@@ -302,6 +313,38 @@ def build(overrides: dict | None = None) -> Ledger:
     d("sim-skilled-round-claims", lambda q: skilled_rounds(q)["claims-median"],
       "sim-skilled-rounds * sim-round-claims", "claims", fmt=",.0f",
       label="claims it makes in those rounds", defined_in=here())
+
+    # Properness of the round rule (fresh eyes): n independent yes/no claims with true probability
+    # p against baseline b, the same report r on each, equal weights. Exact expected log growth.
+    def round_growth(p, b, n, r):
+        from math import comb, log
+        return sum(comb(n, k) * p ** k * (1 - p) ** (n - k)
+                   * log((k * r / b + (n - k) * (1 - r) / (1 - b)) / n) for k in range(n + 1))
+
+    def best_report(p, b, n):
+        return max((round_growth(p, b, n, r / 1000), r / 1000) for r in range(500, 1000))
+
+    d("round-growth-truthful", lambda q: round_growth(q["edge-p"], q["edge-b"], int(q["sim-round-claims"]),
+                                                      q["edge-p"]),
+      "expected log growth a round, reporting edge-p on sim-round-claims claims against edge-b",
+      "nats", fmt=".3f", label="growth a round of a truthful report under the round rule",
+      defined_in=here())
+    d("round-best-report", lambda q: best_report(q["edge-p"], q["edge-b"], int(q["sim-round-claims"]))[1],
+      "the report r in [0.5, 0.999] that maximises expected log growth a round", fmt=".3f",
+      label="the report that maximises the round-rule score when the truth is edge-p",
+      defined_in=here())
+    d("round-growth-best", lambda q: best_report(q["edge-p"], q["edge-b"], int(q["sim-round-claims"]))[0],
+      "expected log growth a round at round-best-report", "nats", fmt=".3f",
+      label="growth a round at that report", defined_in=here())
+    d("rounds-close-single", lambda q: q["edge-target-log2"] * math.log(2)
+      / round_growth(q["edge-p"], q["edge-b-close"], 1, q["edge-p"]),
+      "edge-target-log2 * ln 2 / expected log growth of one truthful claim a round against edge-b-close",
+      "rounds", fmt=",.0f", label="one-claim rounds a truthful identity with a small edge needs, on average",
+      defined_in=here())
+    d("rounds-close-ten", lambda q: q["edge-target-log2"] * math.log(2)
+      / round_growth(q["edge-p"], q["edge-b-close"], int(q["sim-round-claims"]), q["edge-p"]),
+      "the same with sim-round-claims truthful claims a round", "rounds", fmt=",.0f",
+      label="rounds of ten claims it needs, on average", defined_in=here())
 
     # Training (section 5): the learned confidence parameter, 1 when calibrated.
     d("sim-train-a-complete", lambda q: sim.training("complete", 3000, 64, 0.5, 0.5, 4)["a"],

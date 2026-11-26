@@ -24,7 +24,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 **2,016 blocks**: blocks between difficulty adjustments
 
 - basis: spec
-- source: [@nakamoto2008]
+- source: [@bip54]
 - defined in: `data/inputs.toml#L16`
 
 <a id="hashrate-eh"></a>
@@ -504,7 +504,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 <a id="sim-harmful-share"></a>
 ### sim-harmful-share
 
-**5%**: share of agents that are harmful and never join
+**5%**: share of agents that are harmful (true value negative), free to join and leave
 
 - basis: assumption
 - defined in: `data/inputs.toml#L427`
@@ -667,6 +667,110 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: measured
 - source: [@escapement-lab], 2026-11-26
 - defined in: `data/inputs.toml#L556`
+
+<a id="edge-p"></a>
+### edge-p
+
+**0.60**: true probability of each claim's outcome in the round-rule properness example
+
+- basis: assumption
+- defined in: `data/inputs.toml#L564`
+
+<a id="edge-b"></a>
+### edge-b
+
+**0.50**: the baseline's probability in that example
+
+- basis: assumption
+- defined in: `data/inputs.toml#L570`
+
+<a id="edge-b-close"></a>
+### edge-b-close
+
+**0.55**: a baseline closer to the truth: a smaller, more realistic edge
+
+- basis: assumption
+- defined in: `data/inputs.toml#L576`
+
+<a id="edge-target-log2"></a>
+### edge-target-log2
+
+**20**: the score whose time to reach is reported, as a power of 2
+
+- basis: design
+- defined in: `data/inputs.toml#L582`
+
+<a id="lab-bid-child-sats"></a>
+### lab-bid-child-sats
+
+**150,000 sats**: fee the agent's CPFP child paid from outside the chain, evicting a watchtower's veto at the window's edge
+
+- basis: measured
+- source: [@escapement-lab], 2026-11-26
+- defined in: `data/inputs.toml#L587`
+
+<a id="lab-bid-tick-sats"></a>
+### lab-bid-tick-sats
+
+**100,000 sats**: value held by the tick output in that check
+
+- basis: measured
+- source: [@escapement-lab], 2026-11-26
+- defined in: `data/inputs.toml#L595`
+
+<a id="redteam-findings"></a>
+### redteam-findings
+
+**36 findings**: findings the red team returned (RT-01 to RT-36)
+
+- basis: measured
+- source: [@escapement-redteam], 2026-11-26
+- defined in: `data/inputs.toml#L603`
+
+<a id="desk-notes-integrity"></a>
+### desk-notes-integrity
+
+**30 notes**: notes the integrity desk filed
+
+- basis: measured
+- source: [@escapement-verification], 2026-11-26
+- defined in: `data/inputs.toml#L611`
+
+<a id="desk-notes-integrity-important"></a>
+### desk-notes-integrity-important
+
+**5 notes**: of those, marked important
+
+- basis: measured
+- source: [@escapement-verification], 2026-11-26
+- defined in: `data/inputs.toml#L619`
+
+<a id="desk-notes-reviewer"></a>
+### desk-notes-reviewer
+
+**73 notes**: notes the reviewer desk filed
+
+- basis: measured
+- source: [@escapement-verification], 2026-11-26
+- defined in: `data/inputs.toml#L627`
+
+<a id="desk-notes-editor"></a>
+### desk-notes-editor
+
+**61 notes**: notes the editor desk filed
+
+- basis: measured
+- source: [@escapement-verification], 2026-11-26
+- defined in: `data/inputs.toml#L635`
+
+<a id="desk-suggestions-accepted"></a>
+### desk-suggestions-accepted
+
+**55 suggestions**: suggested rewordings accepted as written, of 57 offered
+
+- basis: measured
+- source: [@escapement-verification], 2026-11-26
+- defined in: `data/inputs.toml#L643`
 
 <a id="blocks-per-day"></a>
 ### blocks-per-day
@@ -1188,6 +1292,26 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - inputs: [fake-record-identities](#fake-record-identities), [identity-cost-sats](#identity-cost-sats)
 - defined in: `model/escapement.py#L239`
 
+<a id="identity-cost-season-sats"></a>
+### identity-cost-season-sats
+
+**4,100 sats**: cost of an identity whose bond is locked only for the season the rules require
+
+- basis: derived
+- formula: `bond-coverage * capital-cost-rate * season-days / 365.25 + 2 * seal-tx-vbytes * feerate-2023`
+- inputs: [bond-coverage](#bond-coverage), [capital-cost-rate](#capital-cost-rate), [season-days](#season-days), [seal-tx-vbytes](#seal-tx-vbytes), [feerate-2023](#feerate-2023)
+- defined in: `model/escapement.py#L246`
+
+<a id="fake-record-cost-season-btc"></a>
+### fake-record-cost-season-btc
+
+**21 BTC**: what faking the record costs at least with season-length bonds
+
+- basis: derived
+- formula: `fake-record-identities * identity-cost-season-sats / 1e8`
+- inputs: [fake-record-identities](#fake-record-identities), [identity-cost-season-sats](#identity-cost-season-sats)
+- defined in: `model/escapement.py#L250`
+
 <a id="sim-fake-p"></a>
 ### sim-fake-p
 
@@ -1196,7 +1320,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `simulated share of 4,000 trials in which any identity reaches the score`
 - inputs: [sim-identities](#sim-identities), [sim-log2-lambda](#sim-log2-lambda)
-- defined in: `model/escapement.py#L247`
+- defined in: `model/escapement.py#L258`
 
 <a id="sim-fake-bound"></a>
 ### sim-fake-bound
@@ -1206,7 +1330,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `sim-identities / 2^sim-log2-lambda (Theorem 1)`
 - inputs: [sim-identities](#sim-identities), [sim-log2-lambda](#sim-log2-lambda)
-- defined in: `model/escapement.py#L250`
+- defined in: `model/escapement.py#L261`
 
 <a id="sim-selective-claims"></a>
 ### sim-selective-claims
@@ -1216,7 +1340,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `simulated mean claims until the shown record reaches the score`
 - inputs: [sim-log2-lambda](#sim-log2-lambda)
-- defined in: `model/escapement.py#L255`
+- defined in: `model/escapement.py#L266`
 
 <a id="sim-skilled-edge"></a>
 ### sim-skilled-edge
@@ -1226,7 +1350,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `mean KL(p || 1/2) for p uniform on [sim-skilled-p-low, sim-skilled-p-high]`
 - inputs: [sim-skilled-log2-lambda](#sim-skilled-log2-lambda), [sim-skilled-p-low](#sim-skilled-p-low), [sim-skilled-p-high](#sim-skilled-p-high)
-- defined in: `model/escapement.py#L262`
+- defined in: `model/escapement.py#L273`
 
 <a id="sim-skilled-claims"></a>
 ### sim-skilled-claims
@@ -1236,7 +1360,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `simulated median claims until the likelihood ratio first reaches 2^sim-skilled-log2-lambda`
 - inputs: [sim-skilled-log2-lambda](#sim-skilled-log2-lambda), [sim-skilled-p-low](#sim-skilled-p-low), [sim-skilled-p-high](#sim-skilled-p-high)
-- defined in: `model/escapement.py#L266`
+- defined in: `model/escapement.py#L277`
 
 <a id="sim-skilled-identities-faker"></a>
 ### sim-skilled-identities-faker
@@ -1246,7 +1370,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `fake-record-success * 2^sim-skilled-log2-lambda`
 - inputs: [fake-record-success](#fake-record-success), [sim-skilled-log2-lambda](#sim-skilled-log2-lambda)
-- defined in: `model/escapement.py#L270`
+- defined in: `model/escapement.py#L281`
 
 <a id="sim-corr-product-p"></a>
 ### sim-corr-product-p
@@ -1256,7 +1380,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `simulated share of 4,000 trials in which some identity reaches 2^sim-log2-lambda, product rule`
 - inputs: [sim-corr-identities](#sim-corr-identities), [sim-corr-claims](#sim-corr-claims), [sim-corr-r](#sim-corr-r), [sim-log2-lambda](#sim-log2-lambda), [sim-corr-rounds](#sim-corr-rounds)
-- defined in: `model/escapement.py#L280`
+- defined in: `model/escapement.py#L291`
 
 <a id="sim-corr-round-p"></a>
 ### sim-corr-round-p
@@ -1266,7 +1390,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `the same under the round rule (a round counts as the mean of its ratios)`
 - inputs: [sim-corr-identities](#sim-corr-identities), [sim-corr-claims](#sim-corr-claims), [sim-corr-r](#sim-corr-r), [sim-log2-lambda](#sim-log2-lambda), [sim-corr-rounds](#sim-corr-rounds)
-- defined in: `model/escapement.py#L283`
+- defined in: `model/escapement.py#L294`
 
 <a id="sim-corr-bound"></a>
 ### sim-corr-bound
@@ -1276,7 +1400,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `sim-corr-identities / 2^sim-log2-lambda`
 - inputs: [sim-corr-identities](#sim-corr-identities), [sim-log2-lambda](#sim-log2-lambda)
-- defined in: `model/escapement.py#L286`
+- defined in: `model/escapement.py#L297`
 
 <a id="tail-product-score"></a>
 ### tail-product-score
@@ -1286,7 +1410,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `(1 / (1 - tail-fail-p)) ^ tail-claims`
 - inputs: [tail-fail-p](#tail-fail-p), [tail-claims](#tail-claims)
-- defined in: `model/escapement.py#L290`
+- defined in: `model/escapement.py#L301`
 
 <a id="tail-round-score"></a>
 ### tail-round-score
@@ -1296,7 +1420,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `1 / (1 - tail-fail-p): the mean of the claims' ratios`
 - inputs: [tail-fail-p](#tail-fail-p)
-- defined in: `model/escapement.py#L293`
+- defined in: `model/escapement.py#L304`
 
 <a id="sim-skilled-rounds"></a>
 ### sim-skilled-rounds
@@ -1306,7 +1430,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `simulated median rounds until the round-rule score first reaches 2^sim-skilled-log2-lambda`
 - inputs: [sim-skilled-log2-lambda](#sim-skilled-log2-lambda), [sim-skilled-p-low](#sim-skilled-p-low), [sim-skilled-p-high](#sim-skilled-p-high), [sim-round-claims](#sim-round-claims)
-- defined in: `model/escapement.py#L301`
+- defined in: `model/escapement.py#L312`
 
 <a id="sim-skilled-round-claims"></a>
 ### sim-skilled-round-claims
@@ -1316,7 +1440,57 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `sim-skilled-rounds * sim-round-claims`
 - inputs: [sim-skilled-log2-lambda](#sim-skilled-log2-lambda), [sim-skilled-p-low](#sim-skilled-p-low), [sim-skilled-p-high](#sim-skilled-p-high), [sim-round-claims](#sim-round-claims)
-- defined in: `model/escapement.py#L304`
+- defined in: `model/escapement.py#L315`
+
+<a id="round-growth-truthful"></a>
+### round-growth-truthful
+
+**0.037 nats**: growth a round of a truthful report under the round rule
+
+- basis: derived
+- formula: `expected log growth a round, reporting edge-p on sim-round-claims claims against edge-b`
+- inputs: [edge-p](#edge-p), [edge-b](#edge-b), [sim-round-claims](#sim-round-claims)
+- defined in: `model/escapement.py#L331`
+
+<a id="round-best-report"></a>
+### round-best-report
+
+**0.999**: the report that maximises the round-rule score when the truth is edge-p
+
+- basis: derived
+- formula: `the report r in [0.5, 0.999] that maximises expected log growth a round`
+- inputs: [edge-p](#edge-p), [edge-b](#edge-b), [sim-round-claims](#sim-round-claims)
+- defined in: `model/escapement.py#L335`
+
+<a id="round-growth-best"></a>
+### round-growth-best
+
+**0.143 nats**: growth a round at that report
+
+- basis: derived
+- formula: `expected log growth a round at round-best-report`
+- inputs: [edge-p](#edge-p), [edge-b](#edge-b), [sim-round-claims](#sim-round-claims)
+- defined in: `model/escapement.py#L338`
+
+<a id="rounds-close-single"></a>
+### rounds-close-single
+
+**2,722 rounds**: one-claim rounds a truthful identity with a small edge needs, on average
+
+- basis: derived
+- formula: `edge-target-log2 * ln 2 / expected log growth of one truthful claim a round against edge-b-close`
+- inputs: [edge-target-log2](#edge-target-log2), [edge-p](#edge-p), [edge-b-close](#edge-b-close)
+- defined in: `model/escapement.py#L343`
+
+<a id="rounds-close-ten"></a>
+### rounds-close-ten
+
+**1,449 rounds**: rounds of ten claims it needs, on average
+
+- basis: derived
+- formula: `the same with sim-round-claims truthful claims a round`
+- inputs: [edge-target-log2](#edge-target-log2), [edge-p](#edge-p), [edge-b-close](#edge-b-close), [sim-round-claims](#sim-round-claims)
+- defined in: `model/escapement.py#L347`
 
 <a id="sim-train-a-complete"></a>
 ### sim-train-a-complete
@@ -1326,7 +1500,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `stochastic gradient ascent from a = 0.5, complete records`
 - inputs: 
-- defined in: `model/escapement.py#L310`
+- defined in: `model/escapement.py#L353`
 
 <a id="sim-train-err-complete"></a>
 ### sim-train-err-complete
@@ -1336,7 +1510,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `mean |q - p| of the learned policy`
 - inputs: 
-- defined in: `model/escapement.py#L314`
+- defined in: `model/escapement.py#L357`
 
 <a id="sim-train-a-selective"></a>
 ### sim-train-a-selective
@@ -1346,7 +1520,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `stochastic gradient ascent from a = 1 (calibrated), after-the-fact selection`
 - inputs: 
-- defined in: `model/escapement.py#L318`
+- defined in: `model/escapement.py#L361`
 
 <a id="sim-train-err-selective"></a>
 ### sim-train-err-selective
@@ -1356,7 +1530,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `mean |q - p| of the learned policy`
 - inputs: 
-- defined in: `model/escapement.py#L322`
+- defined in: `model/escapement.py#L365`
 
 <a id="adopt-theta-star-uniform"></a>
 ### adopt-theta-star-uniform
@@ -1366,7 +1540,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `2 * sim-join-cost (Proposition 11, uniform types)`
 - inputs: [sim-join-cost](#sim-join-cost)
-- defined in: `model/escapement.py#L331`
+- defined in: `model/escapement.py#L374`
 
 <a id="adopt-x-low"></a>
 ### adopt-x-low
@@ -1376,7 +1550,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `(1 - sqrt(1 - 8 c / a)) / 2 (Proposition 12)`
 - inputs: [sim-join-cost](#sim-join-cost), [sim-gain-over-k](#sim-gain-over-k)
-- defined in: `model/escapement.py#L334`
+- defined in: `model/escapement.py#L377`
 
 <a id="adopt-x-high"></a>
 ### adopt-x-high
@@ -1386,7 +1560,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `(1 + sqrt(1 - 8 c / a)) / 2 (Proposition 12)`
 - inputs: [sim-join-cost](#sim-join-cost), [sim-gain-over-k](#sim-gain-over-k)
-- defined in: `model/escapement.py#L337`
+- defined in: `model/escapement.py#L380`
 
 <a id="adopt-seed-threshold"></a>
 ### adopt-seed-threshold
@@ -1396,7 +1570,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `2 * sim-join-cost (Proposition 12)`
 - inputs: [sim-join-cost](#sim-join-cost)
-- defined in: `model/escapement.py#L340`
+- defined in: `model/escapement.py#L383`
 
 <a id="sim-adopt-low-noseed"></a>
 ### sim-adopt-low-noseed
@@ -1406,7 +1580,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `agent-based, no seed readers, low start, no substitution`
 - inputs: [sim-start-low](#sim-start-low), [sim-join-cost](#sim-join-cost), [sim-gain-over-k](#sim-gain-over-k), [sim-harmful-share](#sim-harmful-share), [sim-tenure-tau](#sim-tenure-tau)
-- defined in: `model/escapement.py#L343`
+- defined in: `model/escapement.py#L386`
 
 <a id="sim-adopt-high-noseed"></a>
 ### sim-adopt-high-noseed
@@ -1416,7 +1590,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `agent-based, no seed readers, high start, no substitution`
 - inputs: [sim-start-high](#sim-start-high), [sim-join-cost](#sim-join-cost), [sim-gain-over-k](#sim-gain-over-k), [sim-harmful-share](#sim-harmful-share), [sim-tenure-tau](#sim-tenure-tau)
-- defined in: `model/escapement.py#L346`
+- defined in: `model/escapement.py#L389`
 
 <a id="sim-adopt-low-seed"></a>
 ### sim-adopt-low-seed
@@ -1426,7 +1600,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `agent-based, seed readers, low start, no substitution`
 - inputs: [sim-seed-readers](#sim-seed-readers), [sim-start-low](#sim-start-low), [sim-join-cost](#sim-join-cost), [sim-gain-over-k](#sim-gain-over-k), [sim-harmful-share](#sim-harmful-share), [sim-tenure-tau](#sim-tenure-tau)
-- defined in: `model/escapement.py#L349`
+- defined in: `model/escapement.py#L392`
 
 <a id="sim-population-mean"></a>
 ### sim-population-mean
@@ -1436,7 +1610,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `mean type of all agents, harmful included`
 - inputs: [sim-start-low](#sim-start-low), [sim-join-cost](#sim-join-cost), [sim-gain-over-k](#sim-gain-over-k), [sim-harmful-share](#sim-harmful-share), [sim-tenure-tau](#sim-tenure-tau)
-- defined in: `model/escapement.py#L352`
+- defined in: `model/escapement.py#L395`
 
 <a id="sim-harm-payoff-nosub"></a>
 ### sim-harm-payoff-nosub
@@ -1446,7 +1620,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `harmful actors' mean realised payoff over the last 20 periods, joining allowed, no substitution`
 - inputs: [sim-seed-readers](#sim-seed-readers), [sim-start-low](#sim-start-low), [sim-join-cost](#sim-join-cost), [sim-gain-over-k](#sim-gain-over-k), [sim-harmful-share](#sim-harmful-share), [sim-tenure-tau](#sim-tenure-tau)
-- defined in: `model/escapement.py#L356`
+- defined in: `model/escapement.py#L399`
 
 <a id="sim-harm-payoff-partial"></a>
 ### sim-harm-payoff-partial
@@ -1456,7 +1630,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `the same with partial substitution`
 - inputs: [sim-seed-readers](#sim-seed-readers), [sim-start-low](#sim-start-low), [sim-substitution-partial](#sim-substitution-partial), [sim-join-cost](#sim-join-cost), [sim-gain-over-k](#sim-gain-over-k), [sim-harmful-share](#sim-harmful-share), [sim-tenure-tau](#sim-tenure-tau)
-- defined in: `model/escapement.py#L360`
+- defined in: `model/escapement.py#L403`
 
 <a id="sim-harm-payoff-full"></a>
 ### sim-harm-payoff-full
@@ -1466,7 +1640,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `the same with full substitution`
 - inputs: [sim-seed-readers](#sim-seed-readers), [sim-start-low](#sim-start-low), [sim-join-cost](#sim-join-cost), [sim-gain-over-k](#sim-gain-over-k), [sim-harmful-share](#sim-harmful-share), [sim-tenure-tau](#sim-tenure-tau)
-- defined in: `model/escapement.py#L363`
+- defined in: `model/escapement.py#L406`
 
 <a id="sim-harm-switch"></a>
 ### sim-harm-switch
@@ -1476,7 +1650,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `share of harmful actors changing state each period, last 10 periods`
 - inputs: [sim-seed-readers](#sim-seed-readers), [sim-start-low](#sim-start-low), [sim-join-cost](#sim-join-cost), [sim-gain-over-k](#sim-gain-over-k), [sim-harmful-share](#sim-harmful-share), [sim-tenure-tau](#sim-tenure-tau)
-- defined in: `model/escapement.py#L366`
+- defined in: `model/escapement.py#L409`
 
 <a id="sim-harm-payoff-instant-nosub"></a>
 ### sim-harm-payoff-instant-nosub
@@ -1486,7 +1660,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `harmful payoff when a record reveals type at once (tau = 0), no substitution`
 - inputs: [sim-join-cost](#sim-join-cost), [sim-gain-over-k](#sim-gain-over-k), [sim-seed-readers](#sim-seed-readers), [sim-harmful-share](#sim-harmful-share), [sim-start-low](#sim-start-low)
-- defined in: `model/escapement.py#L375`
+- defined in: `model/escapement.py#L418`
 
 <a id="sim-harm-payoff-instant-full"></a>
 ### sim-harm-payoff-instant-full
@@ -1496,7 +1670,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `harmful payoff when a record reveals type at once (tau = 0), full substitution`
 - inputs: [sim-join-cost](#sim-join-cost), [sim-gain-over-k](#sim-gain-over-k), [sim-seed-readers](#sim-seed-readers), [sim-harmful-share](#sim-harmful-share), [sim-start-low](#sim-start-low)
-- defined in: `model/escapement.py#L379`
+- defined in: `model/escapement.py#L422`
 
 <a id="sim-readers-final"></a>
 ### sim-readers-final
@@ -1506,7 +1680,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `share of relying parties reading records at the end, seed case`
 - inputs: [sim-seed-readers](#sim-seed-readers), [sim-start-low](#sim-start-low), [sim-join-cost](#sim-join-cost), [sim-gain-over-k](#sim-gain-over-k), [sim-harmful-share](#sim-harmful-share), [sim-tenure-tau](#sim-tenure-tau)
-- defined in: `model/escapement.py#L382`
+- defined in: `model/escapement.py#L425`
 
 <a id="tick-release-cost-2026"></a>
 ### tick-release-cost-2026
@@ -1516,7 +1690,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `lab-advance2-vbytes * feerate-2026`
 - inputs: [lab-advance2-vbytes](#lab-advance2-vbytes), [feerate-2026](#feerate-2026)
-- defined in: `model/escapement.py#L387`
+- defined in: `model/escapement.py#L430`
 
 <a id="tick-release-cost-halving"></a>
 ### tick-release-cost-halving
@@ -1526,7 +1700,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `lab-advance2-vbytes * feerate-halving`
 - inputs: [lab-advance2-vbytes](#lab-advance2-vbytes), [feerate-halving](#feerate-halving)
-- defined in: `model/escapement.py#L390`
+- defined in: `model/escapement.py#L433`
 
 <a id="veto-cost-halving"></a>
 ### veto-cost-halving
@@ -1536,7 +1710,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `lab-veto-package-vbytes * feerate-halving`
 - inputs: [lab-veto-package-vbytes](#lab-veto-package-vbytes), [feerate-halving](#feerate-halving)
-- defined in: `model/escapement.py#L393`
+- defined in: `model/escapement.py#L436`
 
 <a id="tick-releases-per-day-max"></a>
 ### tick-releases-per-day-max
@@ -1546,7 +1720,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `vbytes-per-day / lab-advance2-vbytes`
 - inputs: [vbytes-per-day](#vbytes-per-day), [lab-advance2-vbytes](#lab-advance2-vbytes)
-- defined in: `model/escapement.py#L396`
+- defined in: `model/escapement.py#L439`
 
 <a id="tick-identities-max"></a>
 ### tick-identities-max
@@ -1556,7 +1730,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `tick-releases-per-day-max / (144 / tier2-delay-blocks)`
 - inputs: [vbytes-per-day](#vbytes-per-day), [lab-advance2-vbytes](#lab-advance2-vbytes), [tier2-delay-blocks](#tier2-delay-blocks)
-- defined in: `model/escapement.py#L400`
+- defined in: `model/escapement.py#L443`
 
 <a id="chain-proof-bytes-per-link"></a>
 ### chain-proof-bytes-per-link
@@ -1566,7 +1740,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `lab-chain-proof-bytes / lab-chain-links`
 - inputs: [lab-chain-proof-bytes](#lab-chain-proof-bytes), [lab-chain-links](#lab-chain-links)
-- defined in: `model/escapement.py#L404`
+- defined in: `model/escapement.py#L447`
 
 <a id="veto-miss-tier2-half"></a>
 ### veto-miss-tier2-half
@@ -1576,7 +1750,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `veto-censor-share ^ tier2-delay-blocks`
 - inputs: [veto-censor-share](#veto-censor-share), [tier2-delay-blocks](#tier2-delay-blocks)
-- defined in: `model/escapement.py#L409`
+- defined in: `model/escapement.py#L452`
 
 <a id="veto-miss-tier3-half"></a>
 ### veto-miss-tier3-half
@@ -1586,7 +1760,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `veto-censor-share ^ tier3-delay-blocks`
 - inputs: [veto-censor-share](#veto-censor-share), [tier3-delay-blocks](#tier3-delay-blocks)
-- defined in: `model/escapement.py#L412`
+- defined in: `model/escapement.py#L455`
 
 <a id="sim-veto-miss-tier2"></a>
 ### sim-veto-miss-tier2
@@ -1596,7 +1770,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `simulated share of 200,000 windows`
 - inputs: [tier2-delay-blocks](#tier2-delay-blocks), [veto-censor-share](#veto-censor-share)
-- defined in: `model/escapement.py#L416`
+- defined in: `model/escapement.py#L459`
 
 <a id="block-energy-mwh"></a>
 ### block-energy-mwh
@@ -1606,4 +1780,4 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `hashrate-eh * 1e6 * asic-efficiency-j-th * block-interval-s / 3.6e9`
 - inputs: [hashrate-eh](#hashrate-eh), [asic-efficiency-j-th](#asic-efficiency-j-th), [block-interval-s](#block-interval-s)
-- defined in: `model/escapement.py#L420`
+- defined in: `model/escapement.py#L463`

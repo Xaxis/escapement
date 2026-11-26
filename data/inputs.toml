@@ -17,7 +17,7 @@ label = "target time between blocks"
 value = 2016
 unit = "blocks"
 basis = "spec"
-source = "nakamoto2008"
+source = "bip54"
 label = "blocks between difficulty adjustments"
 
 [hashrate-eh]
@@ -428,7 +428,7 @@ label = "share of relying parties that read records whatever others do (insurers
 value = 0.05
 basis = "assumption"
 fmt = ".0%"
-label = "share of agents that are harmful and never join"
+label = "share of agents that are harmful (true value negative), free to join and leave"
 
 [sim-start-low]
 value = 0.02
@@ -560,3 +560,90 @@ basis = "measured"
 source = "escapement-lab"
 date = "2026-11-26"
 label = "checks in the regtest lab, all passing on Bitcoin Core 32.1"
+
+[edge-p]
+value = 0.6
+basis = "assumption"
+fmt = ".2f"
+label = "true probability of each claim's outcome in the round-rule properness example"
+
+[edge-b]
+value = 0.5
+basis = "assumption"
+fmt = ".2f"
+label = "the baseline's probability in that example"
+
+[edge-b-close]
+value = 0.55
+basis = "assumption"
+fmt = ".2f"
+label = "a baseline closer to the truth: a smaller, more realistic edge"
+
+[edge-target-log2]
+value = 20
+basis = "design"
+label = "the score whose time to reach is reported, as a power of 2"
+
+[lab-bid-child-sats]
+value = 150000
+unit = "sats"
+basis = "measured"
+source = "escapement-lab"
+date = "2026-11-26"
+label = "fee the agent's CPFP child paid from outside the chain, evicting a watchtower's veto at the window's edge"
+
+[lab-bid-tick-sats]
+value = 100000
+unit = "sats"
+basis = "measured"
+source = "escapement-lab"
+date = "2026-11-26"
+label = "value held by the tick output in that check"
+
+[redteam-findings]
+value = 36
+unit = "findings"
+basis = "measured"
+source = "escapement-redteam"
+date = "2026-11-26"
+label = "findings the red team returned (RT-01 to RT-36)"
+
+[desk-notes-integrity]
+value = 30
+unit = "notes"
+basis = "measured"
+source = "escapement-verification"
+date = "2026-11-26"
+label = "notes the integrity desk filed"
+
+[desk-notes-integrity-important]
+value = 5
+unit = "notes"
+basis = "measured"
+source = "escapement-verification"
+date = "2026-11-26"
+label = "of those, marked important"
+
+[desk-notes-reviewer]
+value = 73
+unit = "notes"
+basis = "measured"
+source = "escapement-verification"
+date = "2026-11-26"
+label = "notes the reviewer desk filed"
+
+[desk-notes-editor]
+value = 61
+unit = "notes"
+basis = "measured"
+source = "escapement-verification"
+date = "2026-11-26"
+label = "notes the editor desk filed"
+
+[desk-suggestions-accepted]
+value = 55
+unit = "suggestions"
+basis = "measured"
+source = "escapement-verification"
+date = "2026-11-26"
+label = "suggested rewordings accepted as written, of 57 offered"

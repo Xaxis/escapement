@@ -22,22 +22,24 @@ mechanism exists and the claim adds a stated element), **new** (as far as the tw
 
 ## The summary
 
-| Contribution | Verdict | Novelty | Formal | Working | Adversarial | Outcome |
+| Contribution | Two searches | Formal | Working | Adversarial | Fresh eyes | Final verdict |
 |---|---|---|---|---|---|---|
-| C1. One complete record as standing, training reward and release gate, under costly identity | Extends prior work | Partial, close (A) | Props 3, 4 | Lab: bond, chain, verifier, sum tree pass | Downgraded | Kept, narrowed |
-| C2. Fake-record bound under costly identity, with the round rule | Extends prior work | Partial, close to prior (A); round rule is Vovk and Wang | Theorem 1, as a conditional theorem | Product rule broken in simulation; round rule within bound | Broken, then repaired; conditional on the baseline | Kept, narrowed |
-| C3. Training reward that neither agent nor lab can select after the fact | Extends prior work | Claim 1 prior, claim 2 partial (A) | Props 9, 10, 10b | Learner calibrates under complete records | Downgraded: manipulation | Kept for exogenous events only |
-| C4. Two-sided adoption with seed readers | Extends prior work (application) | Partial (A) | Prop 12 | Tipping point and seeding reproduced | Downgraded: conditions | Kept, conditional |
-| C4b. Routing around becomes costly | Prior economics, partial for AI | Prior / partial (A) | Prop 13 (about readers only) | Corrected simulation: false | Fatal | **Cut** |
-| C5. Tick chain: consensus rate limit and veto on releases of off-chain commitments | Extends prior work | Partial; parts prior (B) | Props 1 to 5 | Lab: 60 checks pass; two claims broken | Downgraded; light proof fatal | Kept, narrowed; light proof **cut** |
-| C6. Height-difference lease | Extends prior work, close to prior | Partial, close (B: Yee) | Prop 6 | Lab: 7 checks pass, held as claimed | Survives with stated limits | Kept |
-| C7. A clock an AI cannot speed up, its cost quantified | Extends prior work | Partial (B) | Ledger arithmetic | Model numbers | Downgraded: below a majority only | Kept, narrowed |
-| C8. Blockspace as an aggregate limit on releases | New, as far as the searches found | Not found (B) | Ledger arithmetic | Measured release size | Weak (batching, fee auction) | Kept as an observation, not a safety claim |
-| C9. Bitcoin headers as a chip's licence clock | Extends prior work | Partial (B) | (none) | Not built | Fatal | **Cut** |
-| K3. Bonded promises | Prior work | Prior (A) | Prop 8 | (none) | Downgraded | Building block, not a contribution |
-| K6. A neutral unit and clock | Prior work; argument | Prior (A) | Prop 14 (elementary) | (none) | Narrowed | Argument, not a contribution |
+| C1. One complete record as standing, training reward and release gate, under costly identity | Partial, close | Props 3, 4 | Lab passes; light verifier misses newest entries | Downgraded | Does not work as stated: chain not bound to bond (regtest); standing and reward ask for different reports | **Cut** as a contribution |
+| C2. Fake-record bound under costly identity, with the round rule | Partial, close; round rule is Vovk and Wang | Theorem 1, conditional | Product rule broken; round rule within bound | Broken, then repaired | Prior work; hypothesis mis-stated; round rule not proper | **Prior work**, applied, with corrected hypotheses |
+| C3. Training reward that neither agent nor lab can select | Claim 1 prior, claim 2 partial | Props 9, 10, 10b | Learner calibrates | Downgraded: manipulation | Does not work for the lab; agent side textbook | **Cut**; agent side is prior work |
+| C4. Two-sided adoption with seed readers | Partial | Prop 12 | Tipping point reproduced | Downgraded: conditions | Prior work (critical mass); toy model | **Prior work**, applied |
+| C4b. Routing around becomes costly | Prior / partial | Prop 13 (readers only) | Corrected simulation: false | Fatal | (cut before review) | **Cut** |
+| C5. Tick chain: rate limit and veto on releases of off-chain commitments | Partial; parts prior | Props 1 to 5 | Lab passes; light proof broken | Light proof fatal | Extends prior work narrowly (spacechains); pin unbound; outside-money bid (regtest) | **Extends prior work narrowly**, per pinned chain |
+| C6. Height-difference lease | Partial, close (Yee) | Prop 6 | Lab: 7 checks pass | Survives, stated limits | Prior work (Substrate's mortal transactions); works | **Prior work**, applied |
+| C7. The clock's cost, below a majority | Partial | Ledger arithmetic | Model numbers | Narrowed | Prior work; not load-bearing | **Prior work** |
+| C8. Blockspace as an aggregate limit | Not found | Ledger arithmetic | Measured release size | Weak | Prior method, applied; a scaling ceiling | **Prior method**, an observation |
+| C9. Bitcoin headers as a chip's licence clock | Partial | (none) | Not built | Fatal | (cut before review) | **Cut** |
+| K3. Bonded promises | Prior | Prop 8 | (none) | Downgraded | (not reviewed) | **Prior work**, a building block |
+| K6. A neutral unit and clock | Prior | Prop 14 | (none) | Narrowed | (not reviewed) | **Prior work**, an argument |
 
-Paperwright's desks and the fresh reviewer are recorded per claim below.
+Nothing survived as new. The one contribution that extends prior work, the covenant-free tick chain,
+does so narrowly and holds per pinned chain until a binding of chain to bond is specified and built.
+Paperwright's desks are recorded under "Paper review" below.
 
 ## C1. One complete record under costly identity
 
@@ -59,6 +61,15 @@ Paperwright's desks and the fresh reviewer are recorded per claim below.
   one of them can end the identity.
 - **Change.** Resolution heights in clear, overdue leaves scored as failures, the margin, the pinned
   T_0, scores from genesis, and the limits above.
+- **Fresh eyes.** Extends prior work as an assembly only, and does not work as stated. Nothing on
+  chain binds a tick chain to its bond; on regtest one charter id carried two chains with different
+  roots at entry 1, each accepted from its own pin, so non-forkability, the rate limit and the cost
+  of multiplying identities hold per pin, not per bond. The record is complete per identity, not per
+  operator. Standing (the round rule) and the training reward (a proper score) ask for different
+  reports from the same leaves. Scoring silence as the worst outcome is prior work
+  [@infinite-games]. None of the paper's results needs the three roles to share one record.
+- **Final.** Cut as a contribution. A binding (identity = bond outpoint, T_0 an output of the bond's
+  own transaction) and a leaf that carries a forecast and a separate stake are proposed, not built.
 
 ## C2. The fake-record bound
 
@@ -86,6 +97,19 @@ Paperwright's desks and the fresh reviewer are recorded per claim below.
   only up to the cost of moving it.
 - **Change.** The round rule; H0 restated as a property of the baseline; "or honest" and "tail-risk
   strategies included" cut. The record separates edge over the baseline, not honesty.
+- **Fresh eyes.** Prior work: a union bound on Ville's inequality, with the round rule being
+  Shafer's testing by betting with a unit stake split across open bets and Vovk and Wang's averaging
+  [@shafer2021; @vovk2021]; Numerai priced lucky accounts with stakes [@craib2021numerai]; the closest
+  statistical work is Al-Najjar and Weinstein's comparative test [@alnajjar2008] and Choe and
+  Ramdas's sequential comparison of forecasters [@choe2024]. The proof is correct, but H0 also needs
+  the agent to use only public information and not to move outcomes, so "a property of the baseline,
+  not of the agent" was wrong. With more than one claim a round the round rule is not proper: a
+  truthful report grows [0.037 nats](numbers.md#round-growth-truthful) a round where a report of
+  [0.999](numbers.md#round-best-report) grows [0.143 nats](numbers.md#round-growth-best) (Proposition 7b, reproduced
+  exactly). The price assumes a one-year bond; at the season's length an identity costs
+  [4,100 sats](numbers.md#identity-cost-season-sats) and the fake [21 BTC](numbers.md#fake-record-cost-season-btc). A
+  truthful identity with a small edge needs about [2,722 rounds](numbers.md#rounds-close-single) of one claim.
+- **Final.** Prior work, applied, with H0 restated in 05-formal.
 
 ## C3. A training reward neither party can select
 
@@ -104,6 +128,12 @@ Paperwright's desks and the fresh reviewer are recorded per claim below.
 - **Change.** Restricted to exogenous events, an assumption the scheme cannot check; "removes
   reward tampering" limited to the commitment channel; the lab's commitment must sit on a chain bound
   to the lab.
+- **Fresh eyes.** Application of prior work [@turtel2025; @damani2025; @banioharouni2025;
+  @cheng2025peerbench]. It does not work for the lab: in training the lab's harness commits the
+  agent's claims under keys the lab holds, the lab can commit many definitions under many
+  identities, and nothing binds what it actually trains on. Propositions 9, 10 and 10b do not
+  address selection, so the table's earlier "proved" was wrong.
+- **Final.** Claim 2 cut. The agent-side property is the textbook result for proper scores.
 
 ## C4. Adoption
 
@@ -124,6 +154,11 @@ Paperwright's desks and the fresh reviewer are recorded per claim below.
   the high equilibrium needs a > 8c, readers never exceed a share a, seeding decides the standard,
   and a cheaper signal could win.
 - **Change.** Routing around **cut**; two-sided adoption kept with its conditions.
+- **Fresh eyes.** Prior work: critical mass in two-sided platforms [@evans2010platform;
+  @farrell1985], with seed readers a special case of insulating tariffs [@weyl2010]. The algebra and
+  the simulation check out (it tips between a 5% and a 9% start); a > 8c holds for uniform types and
+  costs only, and nothing is measured.
+- **Final.** Prior work, applied, as a toy model.
 
 ## C5. The tick chain
 
@@ -143,6 +178,15 @@ Paperwright's desks and the fresh reviewer are recorded per claim below.
   write entries), RT-21 (the cap needs the guardians to check the whole tree).
 - **Change.** The halt output, the pinned T_0, the chain proof with witness commitments; the light
   proof **cut**; the veto restated as final only at depth.
+- **Fresh eyes.** Extends prior work narrowly: Somsen's spacechains chain spends one per block from a
+  NUMS key tweaked by a commitment, under a covenant [@somsen-spacechains]; Revault supplies the
+  cancel, BitVM2 the challenge window, Catena the log. Propositions 1 to 5 hold for a pinned chain,
+  and the lab's checks were rerun and pass. Two faults, both reproduced on regtest by
+  `lab/fresh_eyes.py`: the pin is a trusted input, so one charter id carried two chains, each
+  accepted from its own pin; and at the window's edge the agent outbid a watchtower's veto with a
+  child paying [150,000 sats](numbers.md#lab-bid-child-sats) from outside the chain, more than T_n's
+  [100,000 sats](numbers.md#lab-bid-tick-sats), and the verifier counted the release.
+- **Final.** Extends prior work narrowly. Its properties hold per pinned chain, not per identity.
 
 ## C6. The height-difference lease
 
@@ -156,6 +200,10 @@ Paperwright's desks and the fresh reviewer are recorded per claim below.
 - **Adversarial.** Survives on an honest chain with stated limits (RT-22: it bounds when a release
   is made, not used; eclipse; reorganisation near the boundary). Cut for chips (RT-24).
 - **Change.** Renamed "no release counted after h* + L".
+- **Fresh eyes.** Prior work: Substrate's mortal transactions sign a block's hash and are valid
+  only in a window after it, checked at the inclusion height [@substrate-mortality]. Proposition 6
+  is correct and the lab's checks pass.
+- **Final.** Prior work, applied as a lease.
 
 ## C7. The clock
 
@@ -165,6 +213,10 @@ Paperwright's desks and the fresh reviewer are recorded per claim below.
 - **Adversarial.** RT-23 and RT-25: the cost binds only actors below a hashrate majority (timewarp,
   until BIP-54), and borrowing existing hashrate may get cheaper with capability.
 - **Change.** Narrowed to actors below a majority.
+- **Fresh eyes.** Prior work [@trubetskoy2018; @yang2022]. The arithmetic is right but not
+  load-bearing: a pool with [27.8%](numbers.md#pool-largest-share) of blocks beats a six-block veto with
+  probability up to [8.9%](numbers.md#reorg-p-largest-6) without speeding the clock.
+- **Final.** Prior work.
 
 ## C8. Blockspace
 
@@ -175,6 +227,10 @@ Paperwright's desks and the fresh reviewer are recorded per claim below.
 - **Adversarial.** Weak as a safety limit: releases batch many commitments, and the fee auction
   excludes the poor first.
 - **Change.** Kept as an observation about the design's capacity, not offered as a safety limit.
+- **Fresh eyes.** The method is the capacity arithmetic used for payment channels, applied; the
+  arithmetic is right. Read honestly it is a ceiling on the design: about
+  [44,000 identities](numbers.md#tick-identities-max) releasing every window would fill every block.
+- **Final.** Prior method, an observation.
 
 ## C9. The chip clock
 
@@ -183,8 +239,46 @@ Paperwright's desks and the fresh reviewer are recorded per claim below.
 
 ## Paper review
 
-Recorded when Paperwright's desks have run.
+Paperwright ran its three desks on the draft of the paper (before the fresh reviewer's cuts).
+
+- **Integrity desk:** [30 notes](numbers.md#desk-notes-integrity), [5 notes](numbers.md#desk-notes-integrity-important)
+  marked important. It checked each cited claim against its source. By its categories: 10
+  overstatements, 5 misattributions, 3 conclusions beyond the results, 2 cases of prior work
+  presented as the paper's own, 2 results the paper could not trace, 2 attributions, 3 numbers not in
+  or not matching the ledger, an uncited input, an unsupported citation and a stray table placement.
+  The misattributions: the whitepaper cited for the 2,016-block retarget (now BIP 54); Friedman and
+  Resnick credited with proposing bonds (they discuss entry fees and prefer unreplaceable
+  pseudonyms); Chan and colleagues credited with advice to seed early adopters (they advise
+  high-stakes settings first); Witkowski and colleagues cited for selective participation; and Salib
+  and Goldstein credited with a tension nothing held shows them noting. The important notes: the
+  lease credited to the paper though Yee checks the window at the including block; a formal appendix
+  the paper does not contain (now the formal statements, cited as supplementary material); a fresh
+  review reported without its findings (now section 9); and a training reward said to be beyond the
+  lab's selection (cut). All corrected.
+- **Reviewer desk:** [73 notes](numbers.md#desk-notes-reviewer), recommending major revision. Its main
+  points: the record's value over a witnessed transparency log is not shown (now section 7, "The
+  stronger alternatives", and left open); H0 is stronger than stated and constrains the agent too
+  (restated); standing measures capability, not alignment (now sections 4, 10 and 12); the training
+  claim's lab half does not follow (cut); the adoption model's seed readers were underspecified
+  (z = max(z_0, min(1, a·x)) added to Proposition 12); the identity bond cannot be forfeited, so
+  "recourse" and "liability" overclaimed (withdrawn); the lab's checks show behaviour on one node
+  without an adversary (now said).
+- **Editor desk:** [61 notes](numbers.md#desk-notes-editor): units, dates, undefined terms (tiers, roles,
+  now a table in section 3), and sentences that said more than the evidence.
+- **Suggestions:** of 57 rewordings offered, [55 suggestions](numbers.md#desk-suggestions-accepted) were
+  accepted as written and two dismissed as superseded by the fresh-eyes rewrite. The comments were
+  answered by the major revision of every section and then dismissed.
+
+Paperwright counts a citation inside a table cell as uncited; the three sources cited only in the
+building-blocks table are now also cited in prose.
 
 ## Fresh eyes
 
-Recorded when the fresh reviewer has reported.
+The last reviewer read the claims, the proofs, the paper, the model and the lab, and none of the
+novelty searches or this file (`notes/fresh-eyes.md`). It reran the whole lab (104 of 104 checks
+pass) and 31 ledger numbers (all match), and built two regtest checks of its own from the lab's
+modules, now `lab/fresh_eyes.py`. Its verdicts are in the summary table and under each claim. Every
+finding it made that this program could check was reproduced before anything was changed: the
+properness table by exact calculation, and both regtest breaks by rerunning them. It broke or
+downgraded every claim, and nothing was argued back. It also listed 21 sentences that said more than
+the evidence; each was corrected in the paper, the claims, the proofs or the lab's README.

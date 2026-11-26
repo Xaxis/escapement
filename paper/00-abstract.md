@@ -1,18 +1,18 @@
 # Abstract
 
 Bounding what an AI agent can do is not enough; the harder questions are what agents are rewarded
-for and why anyone would adopt the means of checking them. This paper asks what Bitcoin, the one
-widely shared resource that no participant can issue, backdate or edit, can contribute to both. It
-proposes Escapement: an agent's standing is computed from a complete track record of the
-commitments it asked anyone to rely on, kept on Bitcoin under an identity that costs locked coins,
-with an enforcement layer of rate limits, vetoes and leases built from today's script. Each claimed
-contribution was put through six levels of verification: two independent prior-art searches,
-proofs, a regtest build of [104 checks](../research/numbers.md#lab-checks) and simulations, a red team, editorial review and a fresh
-reviewer. What survived is narrower than what was proposed. Under a stated condition on the
-baseline it is scored against, a record of forecasts scored in rounds cannot be faked except by
-running a number of identities that grows with the score; on events the agent cannot influence, it
-gives a training reward that neither agent nor lab can select after the fact; and adoption has a
-tipping point that parties who gain alone can push past. The claim that staying out would come to
-cost a harmful actor more than joining did not survive, nor did a light proof of releases or
-Bitcoin as a clock for AI chips. No mechanism or theorem here is new; the contribution is an
-integration, with its limits stated.
+for and why anyone would adopt the means of checking them. This paper asks what Bitcoin can
+contribute to both. It designs Escapement, in which an agent's standing is computed in part from a
+track record of its commitments, kept on Bitcoin under an identity backed by locked coins, with rate
+limits, vetoes and leases built from today's script. Every claimed contribution was then checked at
+six levels: two prior-art searches, proofs, a regtest build of [104 checks](../research/numbers.md#lab-checks) with
+simulations, a red team, editorial review and a fresh reviewer. None survived as new. The bound on
+faking a record of forecasts is prior work, holds only for fakers that use public information alone
+and cannot move outcomes, and rewards bets rather than calibrated forecasts and capability rather
+than alignment. Nothing on chain yet binds a record to its identity's bond, so one bond can back many
+records. A training reward that the lab cannot select was not achieved. Adoption tips only in a toy
+model with unmeasured parameters, routing around the record was not made costly, and the lease is
+Substrate's mortal transactions. One part extends prior work narrowly: a covenant-free chain of
+outputs that rate-limits an agent's releases and lets any guardian veto them, though one guardian can
+end an identity and the guardians together can write its record. Nothing has been deployed or tested
+against a real adversary. The paper's value is in what broke, and why.

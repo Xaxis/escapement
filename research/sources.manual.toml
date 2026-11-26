@@ -604,3 +604,138 @@ year = 2021
 venue = "The Annals of Statistics 49(3)"
 doi = "10.1214/20-AOS2020"
 supports = "e-values, closely related to likelihood ratios and bets, can be merged by averaging them, whatever their dependence"
+
+[source.substrate-mortality]
+type = "official-docs"
+title = "CheckMortality: check for transaction mortality (frame_system, Polkadot SDK)"
+authors = ["Parity Technologies"]
+year = 2026
+venue = "Polkadot SDK reference documentation"
+url = "https://paritytech.github.io/polkadot-sdk/master/frame_system/struct.CheckMortality.html"
+supports = "a transaction signs the hash of the block at its era's birth and is valid only for inclusion in the period after it, checked against the inclusion height"
+
+[source.infinite-games]
+type = "code"
+title = "Infinite Games: a Bittensor subnet for forecasting"
+authors = ["Infinite Games"]
+year = 2025
+venue = "GitHub, niels-ma/infinite_games"
+url = "https://github.com/niels-ma/infinite_games"
+supports = "a miner that submits no prediction gets the worst possible score under the peer scoring rule"
+
+[source.craib2021numerai]
+type = "essay"
+title = "Numerai: decentralized hedge fund (Foresight Institute seminar summary)"
+authors = ["Richard Craib"]
+year = 2021
+venue = "Foresight Institute"
+url = "https://foresight.org/?p=6249"
+supports = "thousands of accounts swamped the signal market with random signals hoping to get lucky; staking with slashing was introduced in response"
+
+[source.somsen-spacechains]
+type = "code"
+title = "Spacechains: blind merged mined sidechains"
+authors = ["Ruben Somsen"]
+year = 2019
+venue = "GitHub, RubenSomsen/spacechains; first proposed on the bitcoin-dev list, December 2019"
+url = "https://github.com/RubenSomsen/spacechains"
+supports = "a chain of pre-signed covenant transactions, one per block, each spendable only by the next; a NUMS internal key tweaked by a commitment"
+
+[source.choe2024]
+type = "peer-reviewed"
+title = "Comparing Sequential Forecasters"
+authors = ["Yo Joong Choe", "Aaditya Ramdas"]
+year = 2024
+venue = "Operations Research"
+arxiv = "2110.00115"
+supports = "anytime-valid e-processes for comparing two forecasters under any scoring rule"
+
+[source.alnajjar2008]
+type = "peer-reviewed"
+title = "Comparative Testing of Experts"
+authors = ["Nabil I. Al-Najjar", "Jonathan Weinstein"]
+year = 2008
+venue = "Econometrica 76(3)"
+doi = "10.1111/j.1468-0262.2008.00846.x"
+supports = "a simple reputation-style likelihood test can identify which of two experts is informed"
+
+[source.cheng2025peerbench]
+type = "preprint"
+title = "Benchmarking is Broken: Don't Let AI be its Own Judge"
+authors = ["Zerui Cheng", "Stella Wohnig", "Ruchika Gupta", "Samiul Alam", "Tassallah Abdullahi"]
+year = 2025
+venue = "arXiv"
+arxiv = "2510.07575"
+supports = "selective reporting by model developers; sealed execution, item banking with rolling renewal and delayed transparency"
+
+[source.evans2010platform]
+type = "peer-reviewed"
+title = "Failure to Launch: Critical Mass in Platform Businesses"
+authors = ["David S. Evans", "Richard Schmalensee"]
+year = 2010
+venue = "Review of Network Economics 9(4)"
+doi = "10.2202/1446-9022.1256"
+supports = "two-sided platforms must pass an initial critical mass, below which they collapse"
+
+[source.weyl2010]
+type = "peer-reviewed"
+title = "A Price Theory of Multi-Sided Platforms"
+authors = ["E. Glen Weyl"]
+year = 2010
+venue = "American Economic Review 100(4)"
+doi = "10.1257/aer.100.4.1642"
+supports = "insulating tariffs let a platform avoid coordination failure between its sides"
+
+[source.yang2022]
+type = "preprint"
+title = "Toward Timed-Release Encryption in Web3: An Efficient Dual-Purpose Proof-of-Work Consensus"
+authors = ["Fanghao Yang", "Xingqiu Yuan"]
+year = 2022
+venue = "arXiv"
+arxiv = "2205.09020"
+supports = "a release timed by proof of work can be advanced only by overtaking the network's total hashrate"
+
+[source.laurie2013ct]
+type = "spec"
+title = "Certificate Transparency"
+authors = ["Ben Laurie", "Adam Langley", "Emilia Kasper"]
+year = 2013
+venue = "RFC 6962, IETF"
+doi = "10.17487/RFC6962"
+supports = "append-only public logs with auditable inclusion and consistency proofs, watched by monitors"
+
+[source.syta2016]
+type = "peer-reviewed"
+title = "Keeping Authorities \"Honest or Bust\" with Decentralized Witness Cosigning"
+authors = ["Ewa Syta", "Iulia Tamas", "Dylan Visher", "David Isaac Wolinsky", "Philipp Jovanovic", "Linus Gasser", "Nicolas Gailly", "Ismail Khoffi", "Bryan Ford"]
+year = 2016
+venue = "2016 IEEE Symposium on Security and Privacy"
+doi = "10.1109/SP.2016.38"
+supports = "an authority's statements are valid only when cosigned by many independent witnesses, which prevents equivocation"
+
+[source.escapement-formal]
+type = "code"
+title = "Escapement: formal statements and proofs (supplementary material)"
+authors = ["Xaxis"]
+year = 2026
+venue = "GitHub, Xaxis/escapement, research/05-formal.md"
+url = "https://github.com/Xaxis/escapement/blob/main/research/05-formal.md"
+supports = "Propositions 1 to 14 and Theorem 1, with proofs and the conditions under which each fails"
+
+[source.escapement-redteam]
+type = "code"
+title = "Escapement: red-team findings and fresh-eyes review (supplementary material)"
+authors = ["Xaxis"]
+year = 2026
+venue = "GitHub, Xaxis/escapement, research/notes/red-team.md and research/notes/fresh-eyes.md"
+url = "https://github.com/Xaxis/escapement/tree/main/research/notes"
+supports = "the red team's findings RT-01 to RT-36 and the fresh reviewer's verdicts, as written"
+
+[source.escapement-verification]
+type = "code"
+title = "Escapement: verification of each claim at six levels (supplementary material)"
+authors = ["Xaxis"]
+year = 2026
+venue = "GitHub, Xaxis/escapement, research/06-verification.md"
+url = "https://github.com/Xaxis/escapement/blob/main/research/06-verification.md"
+supports = "each claim's result at every level, the editorial desks' notes and how each was resolved"

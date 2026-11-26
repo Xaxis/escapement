@@ -20,7 +20,7 @@
     "label": "blocks between difficulty adjustments",
     "formula": "",
     "inputs": [],
-    "source": "nakamoto2008",
+    "source": "bip54",
     "date": "",
     "note": "",
     "defined_in": "data/inputs.toml#L16"
@@ -758,7 +758,7 @@
     "display": "5%",
     "unit": "",
     "basis": "assumption",
-    "label": "share of agents that are harmful and never join",
+    "label": "share of agents that are harmful (true value negative), free to join and leave",
     "formula": "",
     "inputs": [],
     "source": "",
@@ -1012,6 +1012,162 @@
     "date": "2026-11-26",
     "note": "",
     "defined_in": "data/inputs.toml#L556"
+  },
+  "edge-p": {
+    "value": 0.6,
+    "display": "0.60",
+    "unit": "",
+    "basis": "assumption",
+    "label": "true probability of each claim's outcome in the round-rule properness example",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L564"
+  },
+  "edge-b": {
+    "value": 0.5,
+    "display": "0.50",
+    "unit": "",
+    "basis": "assumption",
+    "label": "the baseline's probability in that example",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L570"
+  },
+  "edge-b-close": {
+    "value": 0.55,
+    "display": "0.55",
+    "unit": "",
+    "basis": "assumption",
+    "label": "a baseline closer to the truth: a smaller, more realistic edge",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L576"
+  },
+  "edge-target-log2": {
+    "value": 20.0,
+    "display": "20",
+    "unit": "",
+    "basis": "design",
+    "label": "the score whose time to reach is reported, as a power of 2",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L582"
+  },
+  "lab-bid-child-sats": {
+    "value": 150000.0,
+    "display": "150,000 sats",
+    "unit": "sats",
+    "basis": "measured",
+    "label": "fee the agent's CPFP child paid from outside the chain, evicting a watchtower's veto at the window's edge",
+    "formula": "",
+    "inputs": [],
+    "source": "escapement-lab",
+    "date": "2026-11-26",
+    "note": "",
+    "defined_in": "data/inputs.toml#L587"
+  },
+  "lab-bid-tick-sats": {
+    "value": 100000.0,
+    "display": "100,000 sats",
+    "unit": "sats",
+    "basis": "measured",
+    "label": "value held by the tick output in that check",
+    "formula": "",
+    "inputs": [],
+    "source": "escapement-lab",
+    "date": "2026-11-26",
+    "note": "",
+    "defined_in": "data/inputs.toml#L595"
+  },
+  "redteam-findings": {
+    "value": 36.0,
+    "display": "36 findings",
+    "unit": "findings",
+    "basis": "measured",
+    "label": "findings the red team returned (RT-01 to RT-36)",
+    "formula": "",
+    "inputs": [],
+    "source": "escapement-redteam",
+    "date": "2026-11-26",
+    "note": "",
+    "defined_in": "data/inputs.toml#L603"
+  },
+  "desk-notes-integrity": {
+    "value": 30.0,
+    "display": "30 notes",
+    "unit": "notes",
+    "basis": "measured",
+    "label": "notes the integrity desk filed",
+    "formula": "",
+    "inputs": [],
+    "source": "escapement-verification",
+    "date": "2026-11-26",
+    "note": "",
+    "defined_in": "data/inputs.toml#L611"
+  },
+  "desk-notes-integrity-important": {
+    "value": 5.0,
+    "display": "5 notes",
+    "unit": "notes",
+    "basis": "measured",
+    "label": "of those, marked important",
+    "formula": "",
+    "inputs": [],
+    "source": "escapement-verification",
+    "date": "2026-11-26",
+    "note": "",
+    "defined_in": "data/inputs.toml#L619"
+  },
+  "desk-notes-reviewer": {
+    "value": 73.0,
+    "display": "73 notes",
+    "unit": "notes",
+    "basis": "measured",
+    "label": "notes the reviewer desk filed",
+    "formula": "",
+    "inputs": [],
+    "source": "escapement-verification",
+    "date": "2026-11-26",
+    "note": "",
+    "defined_in": "data/inputs.toml#L627"
+  },
+  "desk-notes-editor": {
+    "value": 61.0,
+    "display": "61 notes",
+    "unit": "notes",
+    "basis": "measured",
+    "label": "notes the editor desk filed",
+    "formula": "",
+    "inputs": [],
+    "source": "escapement-verification",
+    "date": "2026-11-26",
+    "note": "",
+    "defined_in": "data/inputs.toml#L635"
+  },
+  "desk-suggestions-accepted": {
+    "value": 55.0,
+    "display": "55 suggestions",
+    "unit": "suggestions",
+    "basis": "measured",
+    "label": "suggested rewordings accepted as written, of 57 offered",
+    "formula": "",
+    "inputs": [],
+    "source": "escapement-verification",
+    "date": "2026-11-26",
+    "note": "",
+    "defined_in": "data/inputs.toml#L643"
   },
   "blocks-per-day": {
     "value": 144.0,
@@ -1846,6 +2002,41 @@
     "note": "",
     "defined_in": "model/escapement.py#L239"
   },
+  "identity-cost-season-sats": {
+    "value": 4096.598220396989,
+    "display": "4,100 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "cost of an identity whose bond is locked only for the season the rules require",
+    "formula": "bond-coverage * capital-cost-rate * season-days / 365.25 + 2 * seal-tx-vbytes * feerate-2023",
+    "inputs": [
+      "bond-coverage",
+      "capital-cost-rate",
+      "season-days",
+      "seal-tx-vbytes",
+      "feerate-2023"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L246"
+  },
+  "fake-record-cost-season-btc": {
+    "value": 21.477972877754965,
+    "display": "21 BTC",
+    "unit": "BTC",
+    "basis": "derived",
+    "label": "what faking the record costs at least with season-length bonds",
+    "formula": "fake-record-identities * identity-cost-season-sats / 1e8",
+    "inputs": [
+      "fake-record-identities",
+      "identity-cost-season-sats"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L250"
+  },
   "sim-fake-p": {
     "value": 0.229,
     "display": "22.9%",
@@ -1860,7 +2051,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L247"
+    "defined_in": "model/escapement.py#L258"
   },
   "sim-fake-bound": {
     "value": 0.25,
@@ -1876,7 +2067,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L250"
+    "defined_in": "model/escapement.py#L261"
   },
   "sim-selective-claims": {
     "value": 20.00475,
@@ -1891,7 +2082,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L255"
+    "defined_in": "model/escapement.py#L266"
   },
   "sim-skilled-edge": {
     "value": 0.11525193549842,
@@ -1908,7 +2099,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L262"
+    "defined_in": "model/escapement.py#L273"
   },
   "sim-skilled-claims": {
     "value": 116.0,
@@ -1925,7 +2116,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L266"
+    "defined_in": "model/escapement.py#L277"
   },
   "sim-skilled-identities-faker": {
     "value": 524288.0,
@@ -1941,7 +2132,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L270"
+    "defined_in": "model/escapement.py#L281"
   },
   "sim-corr-product-p": {
     "value": 0.9975,
@@ -1960,7 +2151,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L280"
+    "defined_in": "model/escapement.py#L291"
   },
   "sim-corr-round-p": {
     "value": 0.01125,
@@ -1979,7 +2170,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L283"
+    "defined_in": "model/escapement.py#L294"
   },
   "sim-corr-bound": {
     "value": 0.015625,
@@ -1995,7 +2186,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L286"
+    "defined_in": "model/escapement.py#L297"
   },
   "tail-product-score": {
     "value": 23163.565103592104,
@@ -2011,7 +2202,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L290"
+    "defined_in": "model/escapement.py#L301"
   },
   "tail-round-score": {
     "value": 1.0101010101010102,
@@ -2026,7 +2217,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L293"
+    "defined_in": "model/escapement.py#L304"
   },
   "sim-skilled-rounds": {
     "value": 74.0,
@@ -2044,7 +2235,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L301"
+    "defined_in": "model/escapement.py#L312"
   },
   "sim-skilled-round-claims": {
     "value": 740.0,
@@ -2062,7 +2253,93 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L304"
+    "defined_in": "model/escapement.py#L315"
+  },
+  "round-growth-truthful": {
+    "value": 0.037427308170565554,
+    "display": "0.037 nats",
+    "unit": "nats",
+    "basis": "derived",
+    "label": "growth a round of a truthful report under the round rule",
+    "formula": "expected log growth a round, reporting edge-p on sim-round-claims claims against edge-b",
+    "inputs": [
+      "edge-p",
+      "edge-b",
+      "sim-round-claims"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L331"
+  },
+  "round-best-report": {
+    "value": 0.999,
+    "display": "0.999",
+    "unit": "",
+    "basis": "derived",
+    "label": "the report that maximises the round-rule score when the truth is edge-p",
+    "formula": "the report r in [0.5, 0.999] that maximises expected log growth a round",
+    "inputs": [
+      "edge-p",
+      "edge-b",
+      "sim-round-claims"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L335"
+  },
+  "round-growth-best": {
+    "value": 0.1431304217747649,
+    "display": "0.143 nats",
+    "unit": "nats",
+    "basis": "derived",
+    "label": "growth a round at that report",
+    "formula": "expected log growth a round at round-best-report",
+    "inputs": [
+      "edge-p",
+      "edge-b",
+      "sim-round-claims"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L338"
+  },
+  "rounds-close-single": {
+    "value": 2721.633253255364,
+    "display": "2,722 rounds",
+    "unit": "rounds",
+    "basis": "derived",
+    "label": "one-claim rounds a truthful identity with a small edge needs, on average",
+    "formula": "edge-target-log2 * ln 2 / expected log growth of one truthful claim a round against edge-b-close",
+    "inputs": [
+      "edge-target-log2",
+      "edge-p",
+      "edge-b-close"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L343"
+  },
+  "rounds-close-ten": {
+    "value": 1448.825950114962,
+    "display": "1,449 rounds",
+    "unit": "rounds",
+    "basis": "derived",
+    "label": "rounds of ten claims it needs, on average",
+    "formula": "the same with sim-round-claims truthful claims a round",
+    "inputs": [
+      "edge-target-log2",
+      "edge-p",
+      "edge-b-close",
+      "sim-round-claims"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L347"
   },
   "sim-train-a-complete": {
     "value": 1.0640980117415904,
@@ -2075,7 +2352,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L310"
+    "defined_in": "model/escapement.py#L353"
   },
   "sim-train-err-complete": {
     "value": 0.009655863732526415,
@@ -2088,7 +2365,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L314"
+    "defined_in": "model/escapement.py#L357"
   },
   "sim-train-a-selective": {
     "value": 10.407660372442608,
@@ -2101,7 +2378,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L318"
+    "defined_in": "model/escapement.py#L361"
   },
   "sim-train-err-selective": {
     "value": 0.23829625954772063,
@@ -2114,7 +2391,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L322"
+    "defined_in": "model/escapement.py#L365"
   },
   "adopt-theta-star-uniform": {
     "value": 0.04,
@@ -2129,7 +2406,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L331"
+    "defined_in": "model/escapement.py#L374"
   },
   "adopt-x-low": {
     "value": 0.08768943743823399,
@@ -2145,7 +2422,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L334"
+    "defined_in": "model/escapement.py#L377"
   },
   "adopt-x-high": {
     "value": 0.912310562561766,
@@ -2161,7 +2438,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L337"
+    "defined_in": "model/escapement.py#L380"
   },
   "adopt-seed-threshold": {
     "value": 0.04,
@@ -2176,7 +2453,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L340"
+    "defined_in": "model/escapement.py#L383"
   },
   "sim-adopt-low-noseed": {
     "value": 0.0,
@@ -2195,7 +2472,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L343"
+    "defined_in": "model/escapement.py#L386"
   },
   "sim-adopt-high-noseed": {
     "value": 1.0,
@@ -2214,7 +2491,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L346"
+    "defined_in": "model/escapement.py#L389"
   },
   "sim-adopt-low-seed": {
     "value": 1.0,
@@ -2234,7 +2511,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L349"
+    "defined_in": "model/escapement.py#L392"
   },
   "sim-population-mean": {
     "value": 0.45165779949455787,
@@ -2253,7 +2530,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L352"
+    "defined_in": "model/escapement.py#L395"
   },
   "sim-harm-payoff-nosub": {
     "value": 0.25286717596809594,
@@ -2273,7 +2550,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L356"
+    "defined_in": "model/escapement.py#L399"
   },
   "sim-harm-payoff-partial": {
     "value": 0.24892219290067166,
@@ -2294,7 +2571,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L360"
+    "defined_in": "model/escapement.py#L403"
   },
   "sim-harm-payoff-full": {
     "value": 0.09880621406998495,
@@ -2314,7 +2591,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L363"
+    "defined_in": "model/escapement.py#L406"
   },
   "sim-harm-switch": {
     "value": 0.6,
@@ -2334,7 +2611,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L366"
+    "defined_in": "model/escapement.py#L409"
   },
   "sim-harm-payoff-instant-nosub": {
     "value": -0.050341689738816676,
@@ -2353,7 +2630,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L375"
+    "defined_in": "model/escapement.py#L418"
   },
   "sim-harm-payoff-instant-full": {
     "value": -0.5,
@@ -2372,7 +2649,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L379"
+    "defined_in": "model/escapement.py#L422"
   },
   "sim-readers-final": {
     "value": 0.55,
@@ -2392,7 +2669,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L382"
+    "defined_in": "model/escapement.py#L425"
   },
   "tick-release-cost-2026": {
     "value": 137.0,
@@ -2408,7 +2685,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L387"
+    "defined_in": "model/escapement.py#L430"
   },
   "tick-release-cost-halving": {
     "value": 27400.0,
@@ -2424,7 +2701,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L390"
+    "defined_in": "model/escapement.py#L433"
   },
   "veto-cost-halving": {
     "value": 63800.0,
@@ -2440,7 +2717,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L393"
+    "defined_in": "model/escapement.py#L436"
   },
   "tick-releases-per-day-max": {
     "value": 1051094.8905109488,
@@ -2456,7 +2733,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L396"
+    "defined_in": "model/escapement.py#L439"
   },
   "tick-identities-max": {
     "value": 43795.620437956204,
@@ -2473,7 +2750,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L400"
+    "defined_in": "model/escapement.py#L443"
   },
   "chain-proof-bytes-per-link": {
     "value": 900.7142857142857,
@@ -2489,7 +2766,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L404"
+    "defined_in": "model/escapement.py#L447"
   },
   "veto-miss-tier2-half": {
     "value": 0.015625,
@@ -2505,7 +2782,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L409"
+    "defined_in": "model/escapement.py#L452"
   },
   "veto-miss-tier3-half": {
     "value": 4.484155085839415e-44,
@@ -2521,7 +2798,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L412"
+    "defined_in": "model/escapement.py#L455"
   },
   "sim-veto-miss-tier2": {
     "value": 0.01571,
@@ -2537,7 +2814,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L416"
+    "defined_in": "model/escapement.py#L459"
   },
   "block-energy-mwh": {
     "value": 3068.3333333333335,
@@ -2554,6 +2831,6 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L420"
+    "defined_in": "model/escapement.py#L463"
   }
 }

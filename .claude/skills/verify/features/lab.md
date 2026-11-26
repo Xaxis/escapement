@@ -7,7 +7,7 @@ veto and the Merkle-sum tree. `lab/fetch.py` downloads and verifies the binary a
 test framework files into `~/.cache/escapement/`; `lab/run.py` starts a throwaway node, runs every
 scenario, writes `lab/results.json` and exits 1 on any failed check.
 
-<!-- covers: cli:lab -->
+<!-- covers: cli:lab, cli:lab-fresh-eyes -->
 
 ## Sub-features
 
@@ -16,6 +16,8 @@ scenario, writes `lab/results.json` and exits 1 on any failed check.
   and deleted on exit or SIGTERM).
 - templates: `lab/templates.py` (scripts, NUMS keys, lease message, log and sum trees).
 - builder: `lab/chain.py`; verifier: `lab/verify.py` (no RPC); scenarios: `lab/scenarios.py`.
+- fresh eyes: `lab/fresh_eyes.py` (`make lab-fresh-eyes`), the fresh reviewer's two breaks of the
+  tick chain, kept outside `make lab` and its checks because it records what fails.
 
 ## How to check it
 
@@ -23,6 +25,7 @@ scenario, writes `lab/results.json` and exits 1 on any failed check.
 make lab
 python3 lab/run.py --only 3      # one scenario; 3 needs 2's chains, so run --only 2 --only 3
 ps -eo pid,args | grep '[e]scapement-regtest' || echo "no lab node left"
+make lab-fresh-eyes             # the fresh reviewer's two breaks
 ```
 
 Expect: `make lab` prints every check as PASS, then the size table, then "N of N checks passed"
@@ -30,3 +33,9 @@ and "wrote lab/results.json", in about 30 s after the first fetch (about 90 MB),
 failed check prints FAIL with the expected and observed outcome and exits 1. Afterwards no
 bitcoind with an `escapement-regtest` datadir is left running and no such datadir is left in the
 temp directory.
+
+`make lab-fresh-eyes` prints two `BREAK:` lines and exits 0: an outside-money child paying
+150,000 sats evicts a veto package and the release is counted, and two chains under one charter id
+are each accepted from their own pin. A `HELD:` line instead means the attack failed, which would
+change what research/06-verification.md records. It exits non-zero only on a crash, and leaves no
+node running.

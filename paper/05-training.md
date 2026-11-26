@@ -4,18 +4,22 @@ The first half of the alignment question is what an agent does once deployed; th
 is trained to want. Reinforcement learning shapes a model by its rewards, and two failures of
 rewards are well known: the agent finds a way to raise the reward without doing what the reward
 was meant to measure, and the people computing the reward choose, after the fact, which results to
-count. The record addresses one channel of each.
+count. The record addresses less of either than this paper first claimed. During training the lab's
+harness decides which claims count, so an agent dropping its misses after the fact is a deployment
+threat, not a training one; in training the selection that matters is the lab's, and the record
+does not stop it.
 
 ## A reward computed from the record
 
 A lab that fine-tunes an agent with reinforcement learning can compute part of its reward from the
-agent's record: the sum of a strictly proper score over every resolved claim, measured relative to
-the baseline, minus every forfeited stake. This is a per-claim sum, not the round rule of section 4:
+agent's record: the sum of a strictly proper score (here the log score) over every resolved
+claim, measured relative to the baseline. Forfeited stakes are settled in sats and are not part of
+this reward, which is dimensionless. This is a per-claim sum, not the round rule of section 4:
 the round rule protects a bound on how likely a high score is, while a training reward needs an
 expectation that the truth maximises, and the expectation of a sum is the sum of expectations
-whatever the claims' correlation. Before training starts, the lab commits the reward's definition,
-and the hash of any held-out evaluation set, in an entry of a chain bound to the lab's own
-identity.
+whatever the claims' correlation. Before training starts, the lab can commit the reward's
+definition, and the hash of any held-out evaluation set, in an entry of its own chain. That binds
+what it reported, not what it computed.
 
 **Proposition 9.** If every claim counts, the expected reward is maximised by reporting the true
 probability for every event. The log score is strictly proper, so its expectation under the true
@@ -23,7 +27,7 @@ distribution is maximised only by that distribution [@gneiting2007], and the bas
 depend on the report.
 
 **Proposition 10.** If the agent may choose, after outcomes are known, which claims count, and keeps
-those that fell on the side it favoured, its expected reward rises without limit as it grows more
+those that fell on the side it favoured, its expected reward increases towards a finite bound, with no finite maximiser, as it grows more
 confident. A kept claim scores the log of the larger of q and 1 − q, less the baseline, which rises
 as q moves away from one half, and the misses that would penalise confidence never count.
 
@@ -45,43 +49,48 @@ a > 1 is overconfident. Under complete records it settled at a =
 selection, it reached a = [10.4](../research/numbers.md#sim-train-a-selective) and was still
 rising when the run ended, with calibration error
 [24%](../research/numbers.md#sim-train-err-selective). This is the textbook behaviour of proper
-scores surviving a noisy learner [@banioharouni2025; @damani2025], nothing more, and the simulated
-learner cannot act on outcomes, so it does not test the manipulation problem below; its link to Bitcoin is that the record is what makes
-the complete regime enforceable rather than a promise by whoever keeps the books.
+scores surviving a noisy learner [@banioharouni2025; @damani2025], nothing more. The simulated
+learner cannot act on outcomes, so it does not test the manipulation problem below, and no
+experiment here uses an actual model. The proposal is conceptual: fine-tuning needs many rewarded
+samples, while real events resolve over days to months.
 
 ## When the agent can move the outcome
 
 Everything above assumes that the agent forecasts outcomes it cannot change. Drop that, and the
 reward turns against its purpose. If the agent can act to move an outcome's law from the baseline b
-to some π, at a cost, and reports calibrated forecasts, its expected reward is the
-Kullback-Leibler divergence of π from b, less the cost (Proposition 10b of the formal appendix): the
+to some ρ, at a cost, and reports calibrated forecasts, its expected reward is the
+Kullback-Leibler divergence of ρ from b, less the cost (Proposition 10b of the formal statements
+[@escapement-formal]): the
 further it pushes events away from what everyone expected, the more it earns, while its reports
 stay perfectly calibrated. This is performative prediction [@perdomo2020] in its starkest form, and
 it is the red team's most serious finding against this section. Training on the record is therefore
 claimed only for events whose outcomes the agent cannot affect, and that is an assumption the
-scheme cannot check. A lab that trains agents to act in the world on rewards from the same events
-the agents act on would be training them to make surprises.
+scheme cannot check. That excludes the case that matters most, agents that act in the world, and
+leaves forecasting on exogenous events. A lab that trains agents to act in the world on rewards from
+the same events the agents act on would be training them to make surprises.
 
-## What neither party can select
+## What the record cannot stop
 
-Under that assumption, the agent cannot select which of its claims count: entries are consensus
-objects, outcomes come from resolvers it does not choose, and silence scores as failure. The lab
-cannot choose after the fact which results to report or which reward it meant to use, because both
-were committed first on its own chain. The lab can still choose the event list, and can commit many
-reward definitions and use one; only what it committed is bound. Pre-registration is old practice,
-and so is training on rewards from real outcomes [@turtel2025; @han2026futureworld]; what the
-record adds is completeness of what the agent itself claimed, which no pre-registration of the
-lab's protocol can supply. It removes selection and tampering in this one channel and nowhere
-else [@everitt2019].
+On events the agent cannot move, a strictly proper score over every resolved claim gives a reward
+the agent cannot raise by choosing which claims count; that is the textbook property of proper
+scores. An earlier draft claimed more: that the lab, too, could not choose after the fact, because
+it committed its reward definition first. That claim is withdrawn. The lab holds the agent's keys
+during training, can commit many reward definitions under many identities and use one, can train
+many models and report the best, and chooses the event list; and nothing binds what it actually
+trains on to what it committed. Sealed and delayed-disclosure evaluation is the established answer to
+selective reporting by developers [@cheng2025peerbench], and training on rewards from real outcomes
+has precedent [@turtel2025; @han2026futureworld]; anchoring a pre-registration on Bitcoin adds a
+timestamp nobody can move, and nothing more. Nor does the record remove reward tampering in Everitt
+and colleagues' sense: an agent that deceives or captures a resolver tampers with the reward's input
+[@everitt2019].
 
 ## What it does not do
 
 It does not choose a good objective. An agent rewarded for calibrated forecasts becomes a calibrated
 forecaster, not a good one; an agent rewarded for kept promises keeps the promises it chose to make.
 Nothing here shows that calibration learned under scoring carries over to settings that are not
-scored, and a model that behaves well where it is recorded and otherwise elsewhere is exactly the
-failure that a record of recorded behaviour cannot see. The record makes one class of reward signal
-unselectable after the fact, on events the agent cannot move. Which signals are worth training on remains the lab's judgement and
+scored, and a model that behaves well where it is recorded and differently elsewhere is exactly the failure that a record cannot see. The record makes one class of reward signal
+unselectable by the agent after the fact, on events the agent cannot move, and no more. Which signals are worth training on remains the lab's judgement and
 the field's open problem.
 
 There is also a tension the design does not resolve. Stakes in a general resource are what make the

@@ -10,6 +10,12 @@ two independent prior-art searches, a regtest build and a red team. Where a leve
 the claim was cut or narrowed here, and each section ends with what changed and which finding forced
 it (RT-nn are the red team's findings in `research/notes/red-team.md`; "the lab" is `lab/`).
 
+A last reviewer that had seen none of the work then judged each claim (`research/notes/fresh-eyes.md`).
+It broke or downgraded every one, and its two regtest breaks are rerun by `lab/fresh_eyes.py`. Each
+section now ends with what that review changed, under *After fresh eyes*. **Nothing in this file is
+claimed as new.** One part, the covenant-free tick chain, extends prior work narrowly; the rest is
+prior work, applied, or cut.
+
 Notation: a **principal** is the human or organisation answerable for an AI agent; a **relying
 party** is anyone who acts on the agent's word or request (an API, a merchant, a counterparty, a
 lab's evaluator, an insurer); **guardians** are independent key holders who can stop the agent; N,
@@ -25,13 +31,21 @@ consequences are claimed, each only under its stated conditions.
 1. For forecasts on events from an exogenous list, scored in rounds against a baseline published by
    a party independent of the agent and the scorer, a record showing a given edge over that
    baseline costs an agent without that edge a number of identities that grows in proportion to the
-   score. The record measures edge over the baseline. It does not measure honesty.
-2. On events whose outcomes the agent cannot affect, a lab can train on rewards computed from such a
-   record, which neither the agent nor the lab can select after the fact.
-3. Requiring records is a coordination game with a tipping point. Parties that gain from reading
+   score, provided its forecasts use only public information, its actions do not move outcomes, and
+   each identity's chain is bound to its bond (a binding not yet specified or built). The record
+   measures edge over the baseline. It does not measure honesty. This is prior work, applied.
+2. On events whose outcomes the agent cannot affect, a strictly proper score summed over every
+   resolved claim gives a reward the agent cannot raise by choosing which claims count (prior work).
+   The claim that the lab cannot select is **cut**: it can commit many reward definitions, and no
+   commitment binds what it actually trains on.
+3. Requiring records is a coordination game with a tipping point (prior work, applied). Parties that gain from reading
    records whatever others do can move it past the tipping point when the gain from reading exceeds
    eight times the cost of joining. Whether staying out becomes costlier than joining for a harmful
    actor is **not** shown: in the corrected simulation it does not.
+
+The three share one record only in name. Standing, scored by the round rule, rewards bets; the
+training reward, a proper score, rewards calibrated forecasts; the same leaves cannot serve both
+unless each carries a forecast and a separate stake.
 
 ## Contributions to be tested
 
@@ -64,7 +78,19 @@ consequences are claimed, each only under its stated conditions.
 *Changed:* resolution heights in clear, scoring of overdue leaves, the d-block margin, the pinned
 T_0 and the light-verifier limit (RT-06, RT-08, RT-14, RT-16, RT-19, RT-33, RT-34; the lab, items 2
 and 5). The searches found every property prior (Catena, OpenTimestamps, fidelity bonds,
-Merkle-sum trees); the assembly and the worst-case scoring of silence were not found.
+Merkle-sum trees); the assembly was not found, and the fresh reviewer later found the worst-case
+scoring of silence in a forecasting subnet.
+
+*After fresh eyes:* **cut as a contribution.** Nothing on chain binds a tick chain to its bond. T_0's
+key commits the charter id, so a charter that also named T_0's outpoint would be circular, and the
+lab handed the pin to the verifier. On regtest one charter id carried two chains with different
+roots at entry 1, each accepted from its own pin. Properties (b), (c) and (d) therefore hold per
+pinned chain, not per identity, and one bond can back many chains. A binding is proposed (the
+identity is the bond's outpoint, and T_0 is a named output of the bond's own transaction) but not
+built, and it collides with renewing a bond without losing the record. The record is complete per
+identity, not per operator: an operator can hide whole identities, which the bound prices and
+completeness does not prevent. Scoring silence as the worst outcome is prior work (Infinite Games).
+Standing and the training reward ask for different reports from the same leaves (K2).
 
 ### K2. The fake-record bound
 
@@ -74,12 +100,14 @@ if their entry is confirmed after that. Each claim i in a round has a forecast q
 committed in the entry (the weights sum to one) and a baseline b_i. The round multiplies the score
 by the weighted mean of the claims' likelihood ratios, Σ w_i q_i(y_i) / b_i(y_i).
 
-- **Hypothesis H0** (a property of the baseline, not of the agent): each b_i is the law of outcome
-  y_i given everything public at the height of the entry that opens the round, and is committed
-  publicly, before any forecast on the event is visible, by a party independent of the agent and
-  of the scorer. Events come from an exogenous list; the agent cannot choose the resolver.
-- **Claim.** Under H0 the score is a nonnegative martingale over rounds whatever the agent does and
-  however the claims within a round are correlated, so the probability that it ever reaches λ is at
+- **Hypothesis H0** (a condition on the baseline and on the agent together): each b_i is the law of
+  outcome y_i given everything public at the height of the entry that opens the round, and is
+  committed publicly, before any forecast on the event is visible, by a party independent of the
+  agent and of the scorer; the agent's forecasts and weights use only that public information; and
+  its actions do not move the outcomes. Events come from an exogenous list; the agent cannot choose
+  the resolver.
+- **Claim.** Under H0 the score is a nonnegative martingale over rounds for any strategy that meets
+  it, however the claims within a round are correlated, so the probability that it ever reaches λ is at
   most 1/λ (Ville's inequality). An adversary with K identities gets one record of λ or more with
   probability at most K/λ; success with probability π needs at least πλ identities and costs at
   least πλ·c_id. An identity whose forecasts beat the baseline reaches λ with one identity in a
@@ -99,7 +127,23 @@ scored about [23,000](numbers.md#tail-product-score) (RT-01). The round rule res
 which claims are correlated; its mathematics is prior work (Vovk and Wang: a mean of e-values is an
 e-value under any dependence), added after the searches ran. "Or honest" and "tail-risk strategies included" are cut (RT-07, RT-01).
 The searches found the logic in Resnick and Sami's influence limiter; the closed form under costly
-identities and the round rule were not found.
+identities and the round rule were not found by them.
+
+*After fresh eyes:* **downgraded to prior work.** K ≥ πλ is a union bound on Ville's inequality, and
+the round rule is Shafer's testing by betting with a unit stake split across open bets, plus Vovk and
+Wang's averaging. Numerai answered lucky accounts with stakes; Al-Najjar and Weinstein's comparative
+test of experts and Choe and Ramdas's sequential comparison of forecasters are the closest
+statistical work. H0 had been mis-stated as a property of the baseline alone: an agent with private
+information or influence over outcomes breaks it. With more than one claim a round the round rule is
+a betting score, not a proper score: with a true probability of [0.60](numbers.md#edge-p) against a baseline
+of [0.50](numbers.md#edge-b) on ten claims, a truthful report grows the score [0.037 nats](numbers.md#round-growth-truthful)
+a round and a report of [0.999](numbers.md#round-best-report) grows it [0.143 nats](numbers.md#round-growth-best). The
+price assumes a one-year bond, which nothing requires: with a bond locked only for the season an
+identity costs [4,100 sats](numbers.md#identity-cost-season-sats) and the fake record
+[21 BTC](numbers.md#fake-record-cost-season-btc) rather than [70 BTC](numbers.md#fake-record-cost-btc). A truthful
+identity with a smaller edge, [0.60](numbers.md#edge-p) against [0.55](numbers.md#edge-b-close), needs about
+[2,722 rounds](numbers.md#rounds-close-single) of one claim, or [1,449 rounds](numbers.md#rounds-close-ten) of ten, to
+reach 2^20. And the price per identity rests on the binding K1 lacks.
 
 ### K3. Bonded promises (prior work, kept as a building block)
 
@@ -126,9 +170,9 @@ the lab's own identity.
 - **Claim 1 (prior work).** With every claim counted and a strictly proper score, calibrated
   reporting maximises expected reward; when misses can be dropped after the fact, the learned
   policy is overconfident. Correlation among claims does not change the expected-reward optimum.
-- **Claim 2.** On a fixed exogenous event list whose outcomes do not depend on the agent, neither
-  the agent nor the lab can select after the fact which claims count, because the record is
-  complete and the reward definition was committed first.
+- **Claim 2 (cut).** On a fixed exogenous event list whose outcomes do not depend on the agent,
+  neither the agent nor the lab can select after the fact which claims count, because the record
+  is complete and the reward definition was committed first.
 - **Limits.** Where the agent can affect outcomes, the reward pays it to make outcomes depart from
   the baseline: its reports stay calibrated while its actions turn manipulative. The scheme cannot
   check that outcomes are outside the agent's influence; it is an assumption. The lab can still
@@ -137,6 +181,15 @@ the lab's own identity.
 *Changed:* "removes reward tampering" is limited to the commitment channel; "outcomes come from
 outside it" is now an assumption; "selected by the lab" needs the lab's own chain (RT-04, RT-05,
 RT-10). Claim 1 is prior work (Bani-Harouni et al.; Damani et al.).
+
+*After fresh eyes:* **claim 2 is cut.** In training, the agent's claims are produced and committed by
+the lab's harness under keys the lab holds, so the agent selecting after the fact is not a threat
+the record answers. The lab can commit many definitions under many identities, and no commitment
+binds what it actually trains on: a commitment binds a report, not a computation. Propositions 9, 10
+and 10b prove properties of proper scores, not that either party cannot select. What remains is prior
+work: reinforcement learning on resolved outcomes (Turtel et al.), proper-score rewards for
+calibration (Damani et al.; Bani-Harouni et al.) and sealed or pre-registered evaluation against
+selective reporting (PeerBench), with the pre-registration anchored on Bitcoin.
 
 ### K5. Adoption
 
@@ -156,6 +209,11 @@ RT-10). Claim 1 is prior work (Bani-Harouni et al.; Damani et al.).
 *Changed:* the routing-around claim is cut. The first simulation barred harmful actors from
 joining, which hid their best response (RT-26). The simulation now shows a tipping point and the
 effect of seed readers, and nothing more (RT-27, RT-28, RT-29, RT-30).
+
+*After fresh eyes:* **prior work, applied.** The tipping point is critical mass in two-sided platforms
+(Evans and Schmalensee; Farrell and Saloner), and seed readers are a special case of Weyl's
+insulating tariffs. The constant a > 8c holds for uniform types and uniform costs only. The algebra
+and the simulation check out; nothing in them is measured. It is a toy model.
 
 ### K6. A neutral unit and clock (argument, not a contribution)
 
@@ -207,7 +265,19 @@ txid proofs leave out the witness (RT-14, RT-15; lab items 1 and 2). The halt ou
 because a veto spends T_n and leaves `renew` nothing to spend (RT-20; lab item 3). The veto is
 restated as final only at depth (RT-17; lab item 4). The searches found every part prior (Revault,
 vaults, Catena, Pikachu, single-use seals, BitVM connectors, Chia's rate-limited wallet); its use to
-rate-limit and veto releases of off-chain commitments was not found.
+rate-limit and veto releases of off-chain commitments was not found by them.
+
+*After fresh eyes:* **extends prior work narrowly**, the only part of the program that does.
+Somsen's spacechains already chain spends one per block from a NUMS key tweaked by a commitment,
+enforced there by a covenant; Revault supplies the cancel, BitVM2 the challenge window and Catena the
+log. What is added is the covenant-free version, with relying parties' template rules in place of
+the covenant. Propositions 1 to 5 hold for a pinned chain, and the lab confirms them. Two problems
+the claims missed: the pin is a trusted input (K1), so the rate limit and one root per index hold per
+chain, not per identity; and at the window's edge the agent can outbid a veto with money from
+outside T_n, through an anchor output and a child that pays the fee. On regtest a child paying
+[150,000 sats](numbers.md#lab-bid-child-sats), more than T_n's [100,000 sats](numbers.md#lab-bid-tick-sats), evicted the
+veto, and the verifier counted the release. A veto is safe only if it confirms well before the
+edge.
 
 ### K8. The height-difference lease
 
@@ -226,7 +296,12 @@ best chain.
 *Changed:* renamed from a "not after" bound (RT-22); its use for chips is cut (RT-24). The lab
 confirmed it as stated, with verdicts unchanged when block times jumped a year. The searches found
 the predicate in Yee's "short leashes" and a Bitcoin-height freshness window in verifiers; the
-guardian-unanimous renewal checked against the release's confirmation height was not found.
+guardian-unanimous renewal checked against the release's confirmation height was not found by them.
+
+*After fresh eyes:* **downgraded to prior work.** Substrate's mortal transactions sign the hash of a
+block and are valid only for inclusion in a window after it, checked against the inclusion height;
+a unanimous renewal is an n-of-n signer. Proposition 6 holds, and the lab's checks pass. It is used
+here as a lease, credited to Substrate and Yee.
 
 ### K9. The clock and the blockspace
 
@@ -244,6 +319,14 @@ guardian-unanimous renewal checked against the release's confirmation height was
   forged fork serves a whole fleet.
 
 *Changed:* (a) limited to actors below a majority (RT-23, RT-25); (c) cut (RT-24).
+
+*After fresh eyes:* (a) is **prior work** (proof of work as a clock; Yang and Yuan on releases timed
+by proof of work), and it is not what protects the waits: a pool with
+[27.8%](numbers.md#pool-largest-share) of blocks reorganises a six-block veto with probability up to
+[8.9%](numbers.md#reorg-p-largest-6) without speeding the clock, and a briber can buy the window's edge.
+(b) is a **prior method applied**, and better read as a ceiling on the design than as a limit on
+agents: about [44,000 identities](numbers.md#tick-identities-max) releasing every window would fill every
+block.
 
 ## Building blocks, credited as prior work
 

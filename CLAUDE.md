@@ -5,7 +5,10 @@ tests the idea. The thesis under test (recentred 2026-11-26): an AI agent's stan
 unforgeable track record, complete and non-backdatable under an identity that costs locked bitcoin,
 so that honesty is the cheapest way to earn standing and training rewards cannot be faked; and
 verifiable records should make adoption pay for each party that joins. Caps, delays, leases, bonds
-and anchored logs are the enforcement layer. The research files are the source of truth. README.md
+and anchored logs are the enforcement layer. Result after six levels of checking: no claim survived as new.
+The fake-record bound and adoption model are prior work applied, the tick chain extends prior work
+narrowly (per pinned chain), and the single-record, training and routing-around claims are cut;
+`research/06-verification.md` has each claim at each level. The research files are the source of truth. README.md
 has the layout and how to reproduce.
 
 ## Rules that shape every change

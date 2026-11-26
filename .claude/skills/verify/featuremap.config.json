@@ -62,6 +62,13 @@
       "entry": "lab/run.py",
       "reach": "make lab (python3 lab/fetch.py; python3 lab/run.py [--only N] [--keep])",
       "area": "lab"
+    },
+    {
+      "kind": "cli",
+      "label": "lab-fresh-eyes",
+      "entry": "lab/fresh_eyes.py",
+      "reach": "make lab-fresh-eyes (python3 lab/fresh_eyes.py)",
+      "area": "lab"
     }
   ],
   "tests": [

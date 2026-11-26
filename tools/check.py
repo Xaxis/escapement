@@ -137,7 +137,8 @@ def check_sources() -> None:
     cited: dict[str, list[str]] = {}
     for folder in ("research", "paper"):
         for path in sorted((ROOT / folder).rglob("*.md")):
-            if "notes" in path.parts:
+            # notes are raw research; exports are Paperwright's, cited against their own bib
+            if "notes" in path.parts or "exports" in path.parts:
                 continue
             for i, line in enumerate(path.read_text().splitlines(), 1):
                 for group in CITE_GROUP.findall(line):

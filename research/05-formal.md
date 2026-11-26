@@ -11,6 +11,13 @@ four statements of the first: the light proof of a release (Proposition 5), the 
 operated), and the adoption simulation's treatment of harmful actors. Each is restated or cut
 below, and the place says so.
 
+A fresh reviewer (`notes/fresh-eyes.md`) then found four more faults, corrected here: H0 had been
+stated as a property of the baseline alone, when the theorem also needs the agent to use only public
+information and not to move outcomes (section 3); the round rule is not a proper score once a round
+has more than one claim (Proposition 7b); nothing on chain binds a tick chain to its identity, so
+the pin is a trusted input (section 1); and no proposition shows that the lab cannot select its
+training reward, a claim now cut (section 5). The lease's predicate is Substrate's (section 2).
+
 ## Assumptions
 
 - **B1, consensus as deployed.** Relative timelocks (BIP68 and BIP112) count blocks from the
@@ -43,6 +50,15 @@ rules, checked by recomputing keys from the template: output 0 of each advance o
 the template output for the next index; a veto must pay to the halt output of its index, and a
 veto paid anywhere else ends the chain; only links that descend from the pinned T_0 count; and each
 link is proved with its witness (below).
+
+**The pin is a trusted input.** Nothing on chain ties T_0 to the identity's bond. T_0's key commits
+the charter id, so a charter id that hashed a charter naming T_0's outpoint would be circular, and
+the lab handed the pin to the verifier. On regtest one charter id carried two chains, with different
+roots at entry 1, each accepted from its own pin (`lab/fresh_eyes.py`). Every proposition in this
+section therefore holds per pinned chain: one bond can back many chains, and two relying parties
+holding different pins see different records. A binding is proposed and not built: the identity is
+the bond's outpoint, and T_0 is a named output of the bond's own transaction. It must also survive
+the renewal of a bond whose term ends.
 
 **Proposition 1 (rate).** If entry n is released by a spend through `advance2`, the spend's height
 is at least h(T_n) + N2. Consecutive releases of one pinned chain are therefore at least N2 blocks
@@ -157,6 +173,12 @@ hash(h_k), which cannot be known before block h_k exists (B3), and every guardia
 so h_k ≤ h*. Hence h ≤ h* + L. The release's height is fixed by its confirmation (B1), so the agent
 cannot place it lower. ∎
 
+The predicate is prior work. Substrate's mortal transactions sign the hash of a block and are valid
+only for inclusion in a window after it, checked against the inclusion height
+[@substrate-mortality], and Yee's short leashes state it for transactions in general [@yee2022]. A
+renewal signed by every guardian is an n-of-n signer. The lease is that predicate applied to an
+agent's authority.
+
 **When it fails.** It bounds when a release is made, not when the released action is carried out;
 an execution deadline needs a fresh view of the tip, and a relying party that is eclipsed sees an
 old one [@riard2020]. A reorganisation near h_k + L can move a release across the boundary, and one
@@ -175,17 +197,21 @@ distribution over outcomes), a weight w_i committed in the entry (w_i ≥ 0, Σ 
 b_i and an outcome y_i. Let F_k be everything public when round k settles. The round multiplies the
 score by M_k = Σ_i w_i·q_i(y_i)/b_i(y_i), and the record's score is Λ_K = Π_{k ≤ K} M_k.
 
-**H0 (a property of the baseline).** Each b_i is the law of y_i given F_{k−1}, that is, given
-everything public when round k opens, and is committed publicly by a party independent of the agent
-and of the scorer before any forecast on the event is visible. Events come from an exogenous list,
-and the agent cannot choose who resolves them.
+**H0 (a condition on the baseline and on the agent).** (i) Each b_i is the law of y_i given
+F_{k−1}, that is, given everything public when round k opens, and is committed publicly by a party
+independent of the agent and of the scorer before any forecast on the event is visible. (ii) The
+forecasts and weights of round k are functions of F_{k−1} and of randomness independent of the
+outcomes: the agent uses no private information. (iii) The agent's actions do not move the law of
+any y_i. Events come from an exogenous list, and the agent cannot choose who resolves them.
 
-**Theorem 1.** Under H0, for any strategy, adaptive or coordinated with other identities, and
+**Theorem 1.** Under H0, for any strategy that meets (ii) and (iii), adaptive or coordinated with
+other identities, and
 however the outcomes within a round are correlated, P(sup_K Λ_K ≥ λ) ≤ 1/λ. An adversary
 controlling K identities obtains at least one record with Λ ≥ λ with probability at most K/λ. To
 succeed with probability π it needs at least πλ identities, at a cost of at least πλ·c_id.
 
-*Proof.* The forecasts and weights of round k are fixed before it opens, so given F_{k−1},
+*Proof.* By (ii) the forecasts and weights of round k are functions of F_{k−1} and of independent
+randomness, so given F_{k−1}, using (i) and (iii),
 E[M_k] = Σ_i w_i·E[q_i(y_i)/b_i(y_i)] = Σ_i w_i·Σ_y b_i(y)·q_i(y)/b_i(y) = Σ_i w_i = 1, by
 linearity of expectation, which needs nothing about the joint law of the outcomes: each ratio is an
 e-value, and a mean of e-values is an e-value under any dependence [@vovk2021]. So Λ is a
@@ -193,8 +219,21 @@ nonnegative martingale over rounds with Λ_0 = 1, and Ville's inequality gives
 P(sup Λ_K ≥ λ) ≤ 1/λ [@ville1939; @shafer2019; @shafer2021]. The union bound over identities gives
 K/λ. ∎
 
+**What H0 excludes, and why it matters.** Condition (ii) is what "no edge" means: an agent with
+private information is an agent with edge, about which Theorem 1 says nothing (Proposition 7 covers
+it), so the theorem bounds fakers, not forecasters. Condition (iii) cannot be checked by the scheme:
+an agent that can make y_i equal its forecast multiplies its score by 1/b_i each round under a
+baseline that meets (i), so influence over outcomes breaks the bound on standing exactly as
+Proposition 10b breaks training. The first statement of this theorem called H0 a property of the
+baseline, not of the agent; that was wrong. The mathematics is prior work: Ville's inequality, a
+union bound, and Shafer's testing by betting with a unit stake split across open bets, merged by
+Vovk and Wang's averaging [@shafer2021; @vovk2021]. Pricing lucky accounts with stakes is Numerai's
+answer to the same attack [@craib2021numerai], and comparing an expert with a second forecaster by
+likelihood is Al-Najjar and Weinstein's comparative test [@alnajjar2008], made sequential and
+anytime-valid by Choe and Ramdas [@choe2024].
+
 **Why rounds and means.** The first version multiplied every claim's ratio and took H0 to say that
-the agent has no edge. But H0 is a property of the baseline, and a marginal baseline is not the
+the agent has no edge. But a marginal baseline is not the
 conditional law of an outcome once the agent picks claims that move together. The red team broke it
 two ways (RT-01). With claims that mostly follow one common coin, 16 identities each betting a
 side on every claim reached 2^10 in [99.8%](numbers.md#sim-corr-product-p) of simulated trials,
@@ -214,12 +253,29 @@ tight.
 
 **Proposition 7 (an identity with edge).** If an identity's forecasts are the true conditional laws
 p_i, which the baseline does not have, then with one claim per round E[ln Λ_K] = Σ_k KL(p_k ‖ b_k),
-and it reaches λ after about ln(λ)/D rounds, D being its mean edge per claim. More claims per round
-raise the growth per round only up to a limit, since a mean of ratios grows at most like
-ln(1 + χ²(p ‖ b)) per round.
+and it reaches λ after about ln(λ)/D rounds, D being its mean edge per claim. With truthful reports,
+more claims per round raise the growth per round only up to a limit, ln(1 + χ²(p ‖ b)) per round.
 
 *Proof.* E[ln(p(y)/b(y))] under p is the Kullback-Leibler divergence; sum over rounds. For many
-claims per round, the mean of the ratios tends to its expectation under p, which is 1 + χ²(p ‖ b). ∎
+truthful claims per round, the mean of the ratios tends to its expectation under p, which is
+1 + χ²(p ‖ b). ∎
+
+**Proposition 7b (the round rule is not proper).** With more than one claim in a round, the report
+that maximises the expected log growth of the score is in general not the truth. With ten
+independent claims of true probability [0.60](numbers.md#edge-p) against a baseline of [0.50](numbers.md#edge-b), a
+truthful report grows the score [0.037 nats](numbers.md#round-growth-truthful) a round, and a report of
+[0.999](numbers.md#round-best-report) on each grows it [0.143 nats](numbers.md#round-growth-best) (exact binomial sums
+in the model).
+
+*Why.* A round's factor is the return on a unit stake split across bets at the baseline's odds.
+With one bet the log-optimal stake is the truth, which is why the log score is proper; with many
+independent bets the split portfolio is less variable, and the log-optimal stake on each bet is
+larger than the truth warrants. ∎
+
+So standing scored by the round rule rewards bets, not forecasts, and a record's reports cannot be
+read as probabilities unless each round holds one claim, which is proper but slow, or each leaf
+carries a forecast and a separate stake. The training reward (section 5) is a per-claim proper score
+and asks for the truth, so the same leaves cannot serve standing and training as committed.
 
 The example in the ledger is an identity that knows each event's probability p, drawn uniformly
 from [0.1](numbers.md#sim-skilled-p-low) to [0.9](numbers.md#sim-skilled-p-high), when the best
@@ -227,7 +283,10 @@ public forecast is 1/2: the knowledge is private, which is what edge means here.
 of [0.12 nats](numbers.md#sim-skilled-edge) per claim and reaches 2^20 in a median of
 [116 claims](numbers.md#sim-skilled-claims) made one a round, or
 [74 rounds](numbers.md#sim-skilled-rounds) of [10 claims](numbers.md#sim-round-claims), with one
-identity.
+identity. That edge is large. A truthful identity with a smaller one, [0.60](numbers.md#edge-p) against a
+baseline of [0.55](numbers.md#edge-b-close), needs about [2,722 rounds](numbers.md#rounds-close-single) of one claim, or
+[1,449 rounds](numbers.md#rounds-close-ten) of ten, to reach 2^20 on average. Rounds are serial for one
+identity, and each lasts at least until its slowest claim resolves: with daily events that is years.
 
 **In numbers.** With an identity costing [13,000 sats](numbers.md#identity-cost-sats) (the return
 forgone on the reference bond for a year at [5%/yr](numbers.md#capital-cost-rate), plus two
@@ -235,7 +294,11 @@ transactions' fees), an all-correct record of [20 claims](numbers.md#fake-record
 against a baseline of 1/2 has λ = [1,000,000](numbers.md#fake-record-lambda); faking it with a
 [50%](numbers.md#fake-record-success) chance needs
 [520,000 identities](numbers.md#fake-record-identities) and at least
-[70 BTC](numbers.md#fake-record-cost-btc). In simulation a faker running
+[70 BTC](numbers.md#fake-record-cost-btc). That price assumes a one-year bond, which nothing in the
+rules requires: with a bond locked only for the season an identity costs
+[4,100 sats](numbers.md#identity-cost-season-sats) and the same fake [21 BTC](numbers.md#fake-record-cost-season-btc),
+unless relying parties demand a minimum remaining term. And it holds only if each identity has one
+chain, which section 1 shows it need not. In simulation a faker running
 [256 identities](numbers.md#sim-identities) reached 2^10 in [22.9%](numbers.md#sim-fake-p) of
 trials against a bound of [25.0%](numbers.md#sim-fake-bound); allowed to hide its misses, one
 identity reached it in about [20 claims](numbers.md#sim-selective-claims). The record separates
@@ -271,7 +334,8 @@ honest.
 **The objection to track records.** Foster and Young show that return histories cannot separate
 skilled from unskilled portfolio managers, because a manager without skill can buy a good-looking
 record by taking hidden tail risk [@foster2010]. Under the round rule and H0, Theorem 1 holds for
-every strategy, tail-risk strategies included, because a round's factor is a mean of fair bets;
+every strategy that uses only public information and does not move outcomes, tail-risk strategies
+included, because a round's factor is a mean of fair bets;
 under the product rule it did not. The answer covers forecasts only. Records of promises behave
 like returns, since an agent can keep many small promises and break one large one, so promise
 history counts only against an agent (section 4), and the caps and delays of the enforcement layer,
@@ -354,9 +418,16 @@ calibrated.
 This is the performative-prediction problem [@perdomo2020] in its starkest form, and the red team's
 RT-04: Proposition 9 stays true while the policy it rewards is manipulative. Claim K4 therefore
 holds only on events whose outcomes the agent cannot affect, an assumption the scheme cannot check.
-The record removes selection after the fact by the agent, and by the lab if the lab commits its
-reward definition on a chain of its own; it does not stop the lab choosing the event list, and it
-does not remove tampering with anything but the commitment channel (RT-10).
+The record does not stop selection by the lab, and the claim that it does is cut (fresh eyes). In
+training the agent's claims are produced and committed by the lab's harness under keys the lab
+holds; the lab can commit many reward definitions under many identities and use one; and nothing
+binds what the lab actually trains on to what it committed, since a commitment binds a report, not
+a computation. Propositions 9, 10 and 10b are properties of proper scores, and none of them shows
+that either party cannot select. The lab can also choose the event list, and the record does not
+remove tampering with anything but the commitment channel (RT-10). What remains is prior work:
+reinforcement learning on resolved outcomes [@turtel2025], proper-score rewards for calibration
+[@damani2025; @banioharouni2025], and sealed, pre-registered evaluation against selective
+reporting [@cheng2025peerbench].
 
 What this does not show: that a large model trained this way generalises calibration to other
 settings, or that it stays honest where it is not scored. It is the textbook property of proper
@@ -396,8 +467,8 @@ share of transactions with readers and a = g/K. An agent of type θ gains z·(θ
 readers satisfy z = min(1, a·x). If a < 8c, the only equilibrium is no adoption. If a > 8c and
 a·x stays below 1, there are three: x = 0 (stable), x_low = (1 − √(1 − 8c/a))/2 (unstable, the
 tipping point) and x_high = (1 + √(1 − 8c/a))/2 (stable). A share z_0 of readers who read
-regardless of x (insurers pricing agent risk, relying parties with heavy fraud losses) removes the
-no-adoption equilibrium when z_0 > 2c, and moves the system to x_high when 1 − 2c/z_0 > x_low.
+regardless of x (insurers pricing agent risk, relying parties with heavy fraud losses), so that
+z = max(z_0, min(1, a·x)), removes the no-adoption equilibrium when z_0 > 2c, and moves the system to x_high when 1 − 2c/z_0 > x_low.
 
 *Proof.* The marginal joiner satisfies z·(t − t/2) = c, so t = 2c/z and x = 1 − t. Substituting
 z = a·x gives a·x² − a·x + 2c = 0, with real roots exactly when a ≥ 8c. Under best-response
@@ -494,12 +565,24 @@ bug, until BIP-54 is active [@bip54], so the physical cost binds only actors bel
 while the energy cost of new hashrate does not fall with intelligence, the cost of borrowing
 existing hashrate, by renting it or bribing pools, may.
 
+Two further points, from the fresh reviewer. Proof of work as a clock is prior work [@trubetskoy2018;
+@gigi2021], as is the observation that a release timed by proof of work can be advanced only by
+overtaking the network's hashrate [@yang2022]. And the clock's cost is not what protects the
+design's waits: a pool with [27.8%](numbers.md#pool-largest-share) of blocks reorganises a veto six
+blocks deep with probability up to [8.9%](numbers.md#reorg-p-largest-6) without speeding the clock,
+and a briber can buy the window's edge (section 1). The arithmetic stands; it bounds an attack that a
+capable attacker would not choose.
+
 Blockspace bounds the total rate of releases: about
 [1,100,000 releases](numbers.md#tick-releases-per-day-max) a day at Tier 2 if they filled every block,
 or [44,000 identities](numbers.md#tick-identities-max) releasing every Tier 2 window. A release
 costs [137 sats](numbers.md#tick-release-cost-2026) at the 2026 median fee rate and
 [27,400 sats](numbers.md#tick-release-cost-halving) at the halving block's. As a safety limit this
-is weak: releases can batch many commitments, and the fee auction excludes the poor first.
+is weak: releases can batch many commitments, and the fee auction excludes the poor first. Read the
+other way, it is a ceiling on the design itself: no more than about
+[44,000 identities](numbers.md#tick-identities-max) can release every window even if they fill every
+block, fewer than the faking example of section 3 would need. The arithmetic is the method used for
+the capacity of payment channels, applied to releases.
 
 **Cut: the chip clock.** The first version offered Bitcoin headers with a difficulty floor as the
 licence clock of AI chips, with a forgery cost of thousands of blocks' worth of energy. The red team

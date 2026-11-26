@@ -2,7 +2,10 @@
 
 Bitcoin's rules are enforced by every node that validates blocks, which is what makes them hard for
 any single party, including an agent's operator, to lift. But they are few. This section sets out
-exactly what they cover, because the record and every mechanism under it inherit their limits.
+exactly what they cover, because the record and every mechanism under it inherit their limits. Four
+units recur: a **sat** is one hundred-millionth of a bitcoin; a **vB** (virtual byte) is the unit in
+which a transaction's size, and so its fee, is measured; a **WU** (weight unit) is a quarter of a vB;
+and **EH/s** is 10^18 hashes a second, the unit of mining power.
 
 ## Four things an agent cannot fake
 
@@ -11,22 +14,24 @@ bitcoin. It can earn, borrow, be given or steal it, and nothing in Bitcoin disti
 agent acquired honestly from coins it did not. Scarcity therefore bounds an agent only through the
 coins someone chooses to hand it.
 
-**Block time.** Blocks are found by a Poisson process tuned by difficulty adjustment to about
-[600 s](../research/numbers.md#block-interval-s) apart, retargeted every
-[2,016 blocks](../research/numbers.md#blocks-per-retarget) [@nakamoto2008]. Producing blocks faster
+**Block time.** Blocks are found by a Poisson process, on average about
+[600 s](../research/numbers.md#block-interval-s) apart [@nakamoto2008], and difficulty is retargeted
+every [2,016 blocks](../research/numbers.md#blocks-per-retarget) to hold that pace [@bip54]. Producing blocks faster
 requires more hashrate, and the network ran at about
-[1,052 EH/s](../research/numbers.md#hashrate-eh) when we measured it [@mempool-hashrate]. Thinking
+[1,052 EH/s](../research/numbers.md#hashrate-eh) when measured on 26 November 2026
+[@mempool-hashrate]. Thinking
 faster does not help. A delay counted in blocks is therefore a delay no amount of cognition can
 shorten, though capital can, at a cost section 8 computes.
 
-**Keys.** Bitcoin's signatures are Schnorr signatures over secp256k1 [@bip340]. A signature
+**Keys.** Bitcoin's Taproot signatures are Schnorr signatures over secp256k1 [@bip340]. A signature
 cannot be produced without its key. Keys can be stolen, and the humans who hold them can be
-persuaded or deceived, but they cannot be forged.
+persuaded or deceived, but a signature cannot be forged.
 
 **A public record.** Each block commits to its predecessor and to its transactions under proof of
 work. Rewriting a buried transaction means outmining the honest chain from that point
-[@nakamoto2008]. Commitments placed in the chain inherit this: a hash in a block cannot be quietly
-replaced. Linked timestamping, the idea underneath, predates Bitcoin by nearly two decades
+[@nakamoto2008], which grows less likely with depth for any miner below a majority and is always
+possible for a majority. Commitments placed in the chain inherit this: a hash in a block deep
+enough for one's tolerance of risk cannot be quietly replaced. Linked timestamping, the idea underneath, predates Bitcoin by nearly two decades
 [@haber1991].
 
 ## What script can and cannot say
@@ -54,8 +59,8 @@ Script cannot do four things this paper needs, and the design must work around e
    [@optech-2026-11-06].
 3. **It has no covenants.** Opcodes that would let an output restrict the transaction spending it,
    such as `OP_CHECKTEMPLATEVERIFY` [@bip119] or `OP_CHECKSIGFROMSTACK` [@bip348], are drafts;
-   `OP_VAULT`, which would have enforced "wait, then spend anywhere, except a recovery path", is
-   closed [@bip345]. None is active, and an open letter in 2025 asking Core contributors to
+   `OP_VAULT`, which would have made a spend wait out a delay during which a recovery path could
+   still claim the coins, is closed [@bip345]. None is active, and an open letter in 2025 asking Bitcoin Core contributors to
    prioritise two of them [@optech-2025-07-04] has not led to a scheduled activation. Destination
    restrictions today need pre-signed transactions or co-signers, as Revault's vault design does
    [@revault-tx].
@@ -65,9 +70,9 @@ Script cannot do four things this paper needs, and the design must work around e
 ## Bitcoin's practical limits
 
 **Throughput and fees.** A block holds at most
-[4,000,000 WU](../research/numbers.md#block-weight-limit) [@bip141], about
+[4,000,000 WU](../research/numbers.md#block-weight-limit) (weight units) [@bip141], so the chain holds about
 [144,000,000 vB](../research/numbers.md#vbytes-per-day) a day. Space is sold by auction: the median
-fee rate was [1 sat/vB](../research/numbers.md#feerate-2026) across 2026 and
+fee rate was [1 sat/vB](../research/numbers.md#feerate-2026) in 2026 up to late November and
 [15 sat/vB](../research/numbers.md#feerate-2023) across 2023, and the median in the halving block
 was [200 sat/vB](../research/numbers.md#feerate-halving) [@mempool-feerates; @mempool-block840000].
 Any mechanism that needs a transaction to confirm by a deadline is exposed to a fee spike.
@@ -94,9 +99,9 @@ custody of the keys it depends on.
 Put together, Bitcoin offers three hard guarantees and one soft one. Coins locked in script cannot
 move without the keys and the waits the script names, whatever the agent, its operator or the lab's
 control plane does. A wait counted in blocks cannot be shortened except by buying hashrate. A
-commitment in a buried block cannot be replaced, and an output can be spent only once, so a chain of
-outputs has one history. And, softly, anyone who chooses to check can verify all of this from block
-headers and inclusion proofs, without trusting a server. The record of section 3 is built from the
-last two: one history gives completeness, and height gives order. The enforcement layer of section 8
+commitment in a buried block cannot be replaced by anyone below a hashrate majority, and an output
+can be spent only once, so a chain of outputs has one history. And, softly, anyone who chooses to
+check can verify that a given transaction is in the chain from block headers and inclusion proofs,
+without trusting a server; showing that nothing newer exists needs full blocks (section 8). The record of section 3 is built from the last two hard guarantees: one history gives completeness, and height gives order. The enforcement layer of section 8
 is built from the first two. Both inherit the gaps: no expiry, no view of amounts or destinations,
 no reach off chain, and no protection against an agent that simply acquires coins of its own.

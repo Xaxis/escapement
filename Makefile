@@ -1,7 +1,7 @@
 # Escapement. Python 3.11 or later, standard library only.
 PY ?= python3
 
-.PHONY: all model docs check paper sources lab
+.PHONY: all model docs check paper sources lab lab-fresh-eyes
 
 all: sources model docs check
 
@@ -23,3 +23,7 @@ sources:  ## research/sources.toml from the notes' YAML, the manual sources and 
 lab:  ## the Bitcoin regtest lab: fetch the pinned Bitcoin Core, run every scenario, write lab/results.json
 	$(PY) lab/fetch.py
 	$(PY) lab/run.py
+
+lab-fresh-eyes:  ## the two tick-chain breaks the fresh reviewer found, rerun on regtest
+	$(PY) lab/fetch.py
+	$(PY) lab/fresh_eyes.py

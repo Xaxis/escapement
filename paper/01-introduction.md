@@ -3,58 +3,57 @@
 Most proposals to use Bitcoin for AI safety are proposals to cap an agent: a wallet with a limit, a
 delay before large payments, a bond forfeited on misbehaviour. Caps are useful and old, and they
 share a weakness. They act after the fact, on an agent whose goals they do not touch, and they bind
-only where someone imposes them. This paper starts from two harder questions. Can Bitcoin's
+only where someone imposes them. This paper started from two harder questions. Can Bitcoin's
 properties help shape what AI agents are trained and rewarded to do, rather than only fence them in?
-And would the parties who matter, labs, firms, relying parties, insurers and governments, choose to
+And would the parties who matter (labs, firms, relying parties, insurers and governments) choose to
 use it because it pays or protects them?
 
-Bitcoin offers four things nobody can fake: its coins, which no one can issue; the order and height
-of its blocks, which no one can backdate; its single spending of each output, which no one can fork;
-and the work behind its clock, which no one can run faster without matching the network's hashrate.
-Section 2 states exactly what those rules enforce and what they do not.
+It is a design study, and its result is mostly negative. Nothing in it has been deployed or tested
+against a real adversary. A design was proposed, every claim was put through six levels of
+checking, and whatever failed a level was cut or downgraded rather than argued back. Little
+survived, and what broke is the more useful half.
+
+Bitcoin offers four things that are hard to fake: coins no one can issue; a block order that grows
+costly to rewrite with depth and that only a hashrate majority could rewrite at will; the single
+spending of each output; and a clock that runs faster only with more hashrate. Section 2 states
+exactly what Bitcoin's rules enforce and what they do not.
 
 ## The proposal
 
-Escapement makes an agent's standing a function of its **record**: an ordered, gapless,
-non-backdatable sequence of the commitments it asked anyone to rely on (forecasts, promises with
-stakes, requests for consequential actions), committed on Bitcoin under one identity that costs
-locked bitcoin (section 3). Three consequences are argued, each only under its conditions.
+Escapement computes an agent's standing in part from its **record**: an ordered sequence, hard to
+backdate beyond a depth chosen for one's risk, of the commitments it put on chain (forecasts,
+promises with stakes, requests for consequential actions), which relying parties that follow its
+rules require for anything they rely on. It is committed on Bitcoin under an identity backed by
+locked bitcoin (section 3), it is complete only for a verifier that walks the whole chain, and its
+guardians together can write entries the agent never made (section 8). It hoped for three consequences: that faking a record would cost identities in
+proportion to its score (section 4), that a lab could train on rewards nobody could select after the
+fact (section 5), and that adoption would pay each party that joined (section 6). Section 7 asks why
+Bitcoin rather than a registry or a witnessed log, and section 8 describes the enforcement layer: a
+chain of outputs per identity that rate-limits the release of an agent's commitments and lets any
+guardian veto it, and a lease that lapses in block height.
 
-1. **Faking a record costs identities.** Scored in rounds against a baseline that meets a stated
-   condition, a record of forecasts with score λ costs an agent without edge at least πλ identities
-   for a chance π of success (section 4).
-2. **A reward nobody selects.** On events whose outcomes the agent cannot influence, a lab can train
-   on rewards computed from the complete record, which neither the agent nor the lab can select
-   after the fact (section 5).
-3. **Adoption with a tipping point.** Reading records and keeping them are strategic complements,
-   and the parties who gain from records regardless of others can push adoption past the tipping
-   point when the gain from reading is large enough relative to the cost of joining (section 6).
+## What survived
 
-Section 7 asks why Bitcoin rather than a registry, and section 8 describes the enforcement layer: a
-chain of outputs per identity that rate-limits and lets any guardian veto the release of an agent's
-commitments, and a lease that lapses in block height without anyone's clock.
+No mechanism or theorem in this paper is new. Section 9 gives each claim's result at every level,
+and section 11 credits the prior work.
 
-## Contributions, and how far each survived
+- **Extends prior work, narrowly:** the tick chain, a covenant-free version of Somsen's spacechains
+  with Revault's cancel, whose properties hold per pinned chain, not per identity.
+- **Prior work, applied:** the fake-record bound (Ville's inequality, a union bound and testing by
+  betting), now stated with the conditions it needs; two-sided adoption with seed readers (critical
+  mass), as a toy model; the height-difference lease (Substrate's mortal transactions); the cost of
+  running Bitcoin's clock fast; blockspace as a ceiling on the design; and the building blocks of
+  section 8.
+- **Cut:** one record serving as standing, training reward and release gate, since nothing binds a
+  chain to its bond and the two uses ask for different reports; a training reward the lab cannot
+  select; routing around the record becoming costly; a light proof of releases; Bitcoin headers as a
+  licence clock for AI chips.
 
-No single mechanism or theorem in this paper is new; every part has a precedent, and section 11
-credits them. What two independent searches did not find is the integration and a few narrow
-elements. Each was then proved, built or simulated, attacked by a red team, and reviewed, and
-section 9 gives the result at every level. In short:
-
-- **Extends prior work:** one complete record serving as standing, training reward and release
-  gate, complete against an operator's many identities; the fake-record bound priced with a Bitcoin
-  bond, kept only as a conditional theorem after the red team broke its first form; a training
-  reward neither party can select, kept only for events the agent cannot move; two-sided adoption
-  with seed readers; the tick chain, without the light proof the build broke; the height-difference
-  lease, which held as stated; the cost of running Bitcoin's clock fast, for actors below a hashrate
-  majority.
-- **New as far as the searches found, and weak:** blockspace as an aggregate limit on releases.
-- **Cut:** that routing around the record becomes costly for a harmful actor; a light proof of a
-  release; Bitcoin headers as the licence clock of AI chips.
-- **Prior work, used as building blocks:** bonded promises, the neutrality of a fixed-supply unit,
-  lease-gated agent authority, policy co-signing, anchored logs, equivocation slashing and renewal
-  chips.
-
+What broke is the paper's main contribution, and section 9 lists it: claims that move together, and
+hidden tail risk, defeat a product of likelihood ratios; the round rule that repairs it rewards bets
+rather than forecasts; a record of edge routes trust to capability, not alignment; a reward on
+outcomes the agent can move pays for manipulation; a simulation that barred harmful actors from
+joining hid that they cycle identities; transaction-id proofs pass a release no guardian signed; and
+neither a chain's pin nor an agent's fee bid at a veto's edge is bounded by anything on chain.
 Section 10 says who benefits and who could abuse the design, section 12 what it does not do and what
-would show it wrong, and section 13 concludes. Nothing in this paper has been deployed or tested
-against a real adversary.
+would show it wrong, and section 13 concludes.

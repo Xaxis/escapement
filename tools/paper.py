@@ -75,6 +75,7 @@ def bibtex(key: str, s: dict) -> str:
 
 
 TABLE_CAPTION = re.compile(r"^Table: (.*?)\s*\{#tab:([a-z0-9][a-z0-9_-]{0,47})\}\s*$")
+LIST_ITEM = re.compile(r"^(?:[-*]|\d+\.) ")
 
 
 def cells(line: str) -> list[str]:
@@ -117,6 +118,16 @@ def draft(flat: str) -> dict:
             body.append(f"![]({tid})")
             i = j
             continue
+        # Paperwright ends a list item at its first line break, so each wrapped item would start
+        # a new list numbered 1: join an item's indented continuation lines onto it.
+        if line.startswith("  ") and line.strip() and body and LIST_ITEM.match(body[-1]):
+            body[-1] += " " + line.strip()
+            i += 1
+            continue
+        # A section's text sits one level below its title, so Paperwright numbers "# " in it as
+        # 3.1 and "## " as 3.0.1: lift each subsection heading by one level.
+        if line.startswith("##"):
+            line = line[1:]
         body.append(line)
         i += 1
     close()
