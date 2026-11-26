@@ -1,68 +1,94 @@
 # What is new, and what is not
 
-Every part of the design in [02-design.md](02-design.md), set against the closest prior work we
-found, with a verdict. The verdicts are:
+Every claimed contribution in [04-claims.md](04-claims.md), set against the closest prior work, with
+a verdict. Three verdicts are used:
 
-- **Prior work**: the same idea exists, for this purpose or close to it. Escapement uses it and
-  credits it.
-- **Application**: the mechanism exists for another purpose, or on another chain; Escapement
-  applies it to bounding AI agents on Bitcoin. The contribution is the mapping and its threat
-  model, not the mechanism.
-- **New, as far as we found**: we found no prior statement of it. That is a claim about our search,
-  not about the world. The searches are listed so anyone can repeat and extend them.
+- **Prior work**: the same idea exists. Escapement uses it and credits it; it is not a contribution.
+- **Extends prior work**: the mechanism or result exists, and the claim adds a stated element (a
+  purpose, a combination, a bound) that the searches did not find. The contribution is that element
+  only.
+- **New, as far as two searches found**: neither independent search found it. That is a statement
+  about the searches, which are listed, not about the world.
 
-The searches were run on 2026-11-25 and 2026-11-26, on general web search and in the venues the
-results led to (arXiv, Delving Bitcoin, Ethereum Magicians, the BIP and ERC indexes, vendor
-documentation). The raw record, with the queries and what each found, is in
-`research/notes/07-prior-art-novelty.md` and the notes it cross-references.
+## How the searches were run
+
+After the core was recentred on 2026-11-26, two helpers that had not come up with the ideas searched
+for each claim independently. Each read only `04-claims.md`, not the design or the author's earlier
+novelty case, and was told that finding prior art was success. Searcher A covered K1 to K6 across
+papers, economics, forecasting, AI-agent standards, crypto designs and AI-governance writing;
+searcher B covered K7 to K9 across BIPs, the bitcoin-dev list, Delving Bitcoin, Optech, Lightning,
+vault designs, single-use seals, Ethereum delay modules, DID methods, patents and the
+hardware-governance literature. Their full reports, with every query and quote, are
+`research/notes/novelty-independent-a.md` and `research/notes/novelty-independent-b.md`. Both
+stated their gaps: A did not query Google Scholar or Google Patents directly and skipped dedicated
+searches of ethresear.ch, Delving Bitcoin, Optech, Kleros, UMA, Truthcoin and the publication lists
+of GovAI, CSET, RAND, IAPS and CAIS; B's patent search found only loose matches. A "not found" below
+inherits those gaps.
 
 ## The summary
 
-The building blocks are almost all published. Timelocks, multisig, pre-signed vaults, fidelity
-bonds, extractable one-time signatures, single-use seals, transparency logs, spending allowances
-and expiring delegations all exist, many of them for AI agents already, though more often on
-Ethereum than on Bitcoin. What we did not find is:
+No single mechanism or theorem in Escapement is new. Every part has a precedent, most of them close:
 
-1. the argument that Bitcoin's value to AI safety is a meter on the **rate of irreversible
-   commitment**, on a clock the metered agent cannot speed up, rather than a limit on capability;
-2. **block height as the unit of an agent's authority**, with a lease that names a block hash so it
-   cannot be signed early, checked by any relying party against headers;
-3. a **delay on off-chain agent actions made checkable by two chain anchors** (a seal at the start,
-   a future block hash in the release at the end), combined with a one-veto, quorum-release rule;
-4. **equivocation slashing applied to an agent gateway's receipts**, and seasoned bonds used as
-   swarm friction for agents.
+- **Standing from a tamper-proof record backed by a stake** is proposed for AI agents already
+  [@chaffer2025abt; @tomasev2026delegation], and an on-chain forecasting credential for AI agents
+  that "cannot be selectively reported or retroactively modified" exists [@nechepurenko2026].
+- **The logic of the fake-record bound** is Resnick and Sami's influence limiter: reputation as
+  score gained over the prior prediction, so uninformed sybils gain little, with identity creation
+  made costly [@resnick2007]. The likelihood-ratio test is game-theoretic probability
+  [@shafer2021], the bound is Ville's [@ville1939], and the many-identities attack is mutual fund
+  incubation [@evans2010].
+- **Training with proper-score rewards yields calibration**, proved and demonstrated in 2025
+  [@banioharouni2025; @damani2025]; rewards from real-world outcomes exist [@turtel2025;
+  @han2026futureworld]; selective participation distorting forecasters is known [@sempere2021;
+  @witkowski2021].
+- **Unraveling, critical mass and lemons** are textbook [@milgrom1981; @grossman1981;
+  @jovanovic1982; @farrell1985; @akerlof1970], and getting a few early adopters to move AI
+  identity standards is a GovAI recommendation [@chan2024ids].
+- **Stakes that bind agents of unknown goals** are the premise of the AI-dealmaking literature
+  [@salib2024], which already notes the resource-seeking tension.
+- **The tick chain's parts** are Revault's single-watchtower cancel [@revault-intro], vaults
+  [@swambo2020], Catena's and Pikachu's chains of spends [@catena-2017; @azouvi2022], single-use
+  seals [@todd-2017], and BitVM's later-spend-proves-no-challenge connectors [@bitvm2-bridge].
+- **The lease's predicate**, a block named by height and hash plus a window, is Yee's "short
+  leashes" [@yee2022], and a Bitcoin-height freshness window checked by verifiers exists
+  [@zeke2026].
 
-No academic paper we found proposes Bitcoin specifically as an AI safety or limitation mechanism.
-The closest framings are an essay that calls Bitcoin "the first form of AI time" with no safety
-argument [@gilliam2025], and the older "Bitcoin is time" essay [@gigi2021]. The strongest
-counter-thesis, that giving agents crypto creates new harms, is in the literature and is credited
-throughout [@marino2025; @allen2026survey].
+What neither search found is the **integration**, and three narrow elements:
+
+1. **One record that is at once an agent's standing, its training reward and its release
+   mechanism**, made complete against an operator running many identities by consensus (one chain
+   per costly identity, gapless, one root per index) and by the scoring rules (silence scores as
+   failure, one forecast per event). Foresight Arena's credential is closest, and its sybil
+   resistance is rate limiting, so the incubation attack stays open there [@nechepurenko2026].
+2. **The explicit cost bound for faking a record under costly identities**, πλ·c_id, priced with a
+   Bitcoin bond. Its logic is Resnick and Sami's; the closed form and its pricing are the addition.
+3. **Blockspace as an aggregate limit on the release rate of AI agents' commitments**. Searcher B
+   found only capacity worries. Its value as a safety limit is weak (section "The table").
+4. **Two narrow mechanism elements**: the tick chain's purpose, rate-limiting and vetoing releases of
+   off-chain commitments, and the lease's renewal signed by every guardian and checked against the
+   release's confirmation height rather than the verifier's tip.
 
 ## The table
 
-| Part of the design | Closest prior work | Verdict |
+| Claim | Closest prior work | Verdict |
 |---|---|---|
-| **The thesis**: meter the rate of irreversible commitment on a clock the agent cannot speed up; do not try to cap capability | Delay is the non-substitutable control on irreversible actions [@nagaraj2026]; "a budget, not a token", a ceiling that refills [@malhotra2026]; delays let asynchronous monitors catch attacks [@stickland2025]; govern a complex system with a simple, dumb one [@buterin2016]; Bitcoin as time [@gigi2021; @gilliam2025] | **New as a combined argument, as far as we found.** Each half is credited above |
-| **Charter**: a delegation signed from the principal's address, naming agent key, scopes, bond, guardians | OrangeCheck Agent: BIP-322 delegation with scopes, caps, bond reference, revocation [@agent-spec; @agent-security]; authenticated delegation for AI agents [@south2025]; wallet permission requests with expiry [@EIP-7715] | **Prior work.** Escapement's charter is that delegation extended with a lease, a ladder and a gateway seal |
-| **Ladder**: tiers by irreversibility; unknown actions go to the top; one guardian can veto, a quorum must release | Revault's managers and stakeholders, where any stakeholder's watchtower can cancel [@revault-intro; @revault-tx]; Safe's human approval for agent transactions [@Safe-HumanApproval]; Nunchuk's policy co-signer with signing delays [@nunchuk-blog]; irreversible actions need a second actor [@malhotra2026]; trusted monitoring in AI control [@greenblatt2023] | **Application.** The veto-versus-release asymmetry is Revault's; tiering by irreversibility is standard practice. The Tier 3 spawn rule is below |
-| **On-chain vault**: pre-signed Unvault and Cancel, CSV wait, co-signer binds destination | Revault [@revault-tx]; OP_VAULT's "delay, then any destination, except recovery" [@bip345]; a TEE agent wallet with a 144-block CSV fallback to a human multisig [@laz1m0v2026] | **Prior work** (the vault), **application** (the agent as the party that triggers and the guardians as the party that cancels) |
-| **Two-anchor off-chain delay**: the commitment sealed at `h0`, the release signing the hash of block `h1 >= h0 + N`, checked by the relying party | Linked timestamps for "no later than" [@haber1991; @todd-ots-2016]; a recent block hash in the bytes for "no earlier than", combined with an anchor to bracket a file's creation [@solomon-bracket]; a blockchain hash as a delay witness for chip licences [@petrie2025flexheg2]; freshness "as of the anchored block" for agent authority checks [@borthwick-insumer] | **Application.** The bracket is known for proving when a file was made. Using it to make a veto window over an off-chain agent action checkable by any relying party was **not found** |
-| **Lease in block height**, naming a block hash; relying parties check expiry against headers | Leases in distributed systems [@gray1989]; ERC-8370's `requireLease`, a guardian-renewed dead-man's switch for agent mandates on Ethereum [@erc8370]; weekly multi-party signatures for chips [@buterin2025dacc]; expiring, rotated delegation tokens [@south2025] | **Application.** Expiring, human-renewed agent authority exists on Ethereum and in hardware proposals. A block-height lease on Bitcoin, bound to a block hash, **not found** |
-| **Allowance per lease**: a refilling budget that is the only cap needing no detection; lapse is the default | Lightning Labs' per-request and total caps (vendor) [@lightninglabs2026]; NWC budgets with a renewal period [@nwc-08; @Alby-AppConnections]; Nunchuk's daily limit [@nunchuk-blog]; Safe's allowance module [@safeallowance]; ERC-8370's lease [@erc8370] | **Prior work.** Escapement keys the refill to the lease |
-| **Coverage bond** from the principal's own coins, released to claims by a named adjudicator | Verifiable agent insurance with provider escrow [@hua2026vai]; staked agent tokens slashed through oracles [@chaffer2025abt]; mandatory insurance for agents [@chaffer2024ethos]; commercial agent insurance [@fortune2025aiuc]; liability on users as the incentive-compatible choice [@buterin2025dacc]; OrangeCheck Pledge's own-address bond that refuses to slash [@pledge-spec; @pledge-why] | **Prior work.** The only difference is whose coins and which chain |
-| **Equivocation bond** on a gateway's signed receipts, slashed with no adjudicator | Accountable assertions: equivocation on a public log costs the equivocator bitcoins [@ruffing2015]; Babylon's extractable one-time signatures for Bitcoin staking [@babylon2023; @babylon-staking-script]; slashing on signed contradictions in supply chains [@cochinescu2026] | **Application.** The primitive is Ruffing, Kate and Schroeder's and Babylon's; its use on an AI agent gateway's receipts **not found** |
-| **Seasoning**: a bond backs Tier 2 and 3 authority only after a season locked | JoinMarket fidelity bonds, timelocked coins as costly identity [@belcher-2019; @bip46]; OrangeCheck Attest's coin-age measurement [@attest-spec; @attest-bond]; time-bound human challenges [@maleki2026hco] | **Application.** The mechanism is Belcher's; its use as swarm friction for AI agents **not found** |
-| **Tier 3 spawn rule**: a chartered agent spawns another only through its own charter, bond and lease, after a day's wait and a human | Sub-delegation that strictly narrows scope and time, without its own bond [@agent-spec]; delegation scope attenuation and "at most one root credential per human principal" for agents [@reid2026]; per-principal identity to make sybils visible [@adler2024phc] | **Application.** Binding agents to principals is proposed; making spawning a delayed, bonded, human-approved action **not found** in our search |
-| **Gateway log, single-use-seal chain, seal pools** | Certificate Transparency [@rfc6962; @rfc9162]; single-use seals [@todd-2017]; non-equivocation via Bitcoin [@catena-2017]; a per-identity Merkle map [@melara2015]; a Bitcoin-anchored profile for transparency services, with AI model weights as its example [@fassbender2026]; model signing into a transparency log [@sigstore2025]; Blocklore's editions and OC Stamp [@blocklore-architecture; @stamp-spec] | **Prior work** (anchoring and non-equivocation); **application** (an AI agent gateway's action log as the thing sealed) |
-| **Relying-party bundle**, and an L402 caveat requiring a lease | L402 [@l402-readme]; macaroon caveats, including third-party caveats [@birgisson2014]; signed verdicts on agent authority anchored by block height (vendor) [@borthwick-insumer]; oversight layers in agent infrastructure [@chan2025infra] | **Application** |
-| **Bitcoin as the clock for chip licences**: a renewal names a block hash, the chip checks headers, its counter enforces expiry | Weekly multi-party signatures, optionally proven published on a blockchain [@buterin2025dacc]; a blockchain hash as a delay witness [@petrie2025flexheg2]; periodically renewed licences and secure clocks [@aarne2024; @ogara2025hem] | **Application, close to existing.** Block height as the chip's trusted lower bound on time **not found** as such |
-| **Not used: blockspace as a global rate limit** | Per-agent on-chain spending and rate limits [@allen2026survey]; proof of work to make crawling costly [@anubis2025]; "proof of work proves not to work" against spam [@laurie-clayton-2004] | **Rejected** in the survey: a fee auction throttles the poor, not the rich, and one anchor can commit to unlimited actions |
-| **Not used: proof of work as a meter of AI compute** | Compute governance canon, with no role for proof of work [@sastry2024]; a speculative post on a simulation-work coin [@lw-simdeterrent]; miners converting to AI hosting [@ccaf2026] | **Rejected** in the survey: SHA-256 work measures nothing about AI compute. Its role here is only the cost of faking the clock |
+| **Core proposition**: standing from an unforgeable record under costly identity; honesty cheapest; adoption by choice | Agent standing from immutable records and stakes [@chaffer2025abt; @tomasev2026delegation]; on-chain forecasting credential [@nechepurenko2026]; agent reputation registries [@erc8004] | **Extends prior work.** The integration in item 1 above was not found |
+| **K1** the complete record: non-backdatable, non-forkable, non-omittable, costly to multiply | Anchoring and non-equivocation [@todd-ots-2016; @catena-2017]; Merkle-sum trees in Taproot Assets; costly identities [@belcher-2019; @friedman2001] | **Extends prior work.** Each property is prior; the assembly, and silence scored as failure for the charter's maximum leaves, were not found |
+| **K2** fake-record cost bound πλ·c_id | Influence limiter [@resnick2007]; testing by betting [@shafer2021]; Ville [@ville1939]; incubation [@evans2010]; record gaming by hidden tail risk [@foster2010] | **Extends prior work**, close to prior. The closed form with a costly identity is the addition |
+| **K3** bonded promises, honesty cheapest with complete records | Reputation enforcement [@klein1981; @shapiro1983]; cheap pseudonyms [@friedman2001]; exit scams by AI agents [@gatta2026] | **Prior work.** Cut as a contribution; kept as a building block |
+| **K4** training on complete records | Proper-score RL yields calibration [@banioharouni2025; @damani2025]; outcome rewards [@turtel2025; @han2026futureworld]; reward tampering [@everitt2019]; selective participation [@sempere2021] | **Claim 1 prior work. Claim 2 extends prior work**: a reward channel that neither agent nor lab can select was not found |
+| **K5** adoption: unraveling, tipping point, routing around | [@milgrom1981; @grossman1981; @jovanovic1982; @farrell1985; @akerlof1970; @chan2024ids] | **Prior work** (one-sided), **extends prior work** (two-sided and routing around applied to AI agents), and **downgraded** by the simulation: routing around becomes costly only where business can move |
+| **K6** a neutral unit and clock | Fixed supply [@nakamoto2008]; emission-paid AI networks [@rao2020bittensor]; AI dealmaking and property rights [@salib2024] | **Prior work** for (a) and (c); (b) is a general blockchain property, its rival-labs framing not found. An argument, not a contribution |
+| **K7** the tick chain | Single-watchtower cancel [@revault-intro]; vaults [@swambo2020]; chains of spends [@catena-2017; @azouvi2022]; single-use seals [@todd-2017]; connectors [@bitvm2-bridge]; consensus rate limits on money [@chia-rl-wallet]; per-identity message limits [@rln-docs] | **Extends prior work.** Its use to rate-limit and veto releases of off-chain commitments was not found |
+| **K8** the height-difference lease | Short leashes [@yee2022]; chaintip freshness [@zeke2026]; agent leases [@erc8370]; licences that expire [@petrie2024] | **Extends prior work**, close to prior. Guardian-unanimous renewal checked against the release's height is the addition |
+| **K9a** a clock an AI cannot speed up, its cost quantified | Proof of work as a clock [@trubetskoy2018; @gigi2021]; "AI time" [@gilliam2025]; attack cost [@budish2024]; timewarp [@bip54] | **Extends prior work.** The intelligence-independent cost argument with numbers was not found |
+| **K9b** blockspace as an aggregate limit on agents' releases | Capacity concerns only | **New, as far as two searches found**, and weak (see 06-verification) |
+| **K9c** headers with a difficulty floor as a chip's licence clock | Enclave verifying headers against a hardcoded difficulty [@bentov2019]; light client with a floor [@bitvm2-bridge]; renewal chips [@buterin2025dacc; @petrie2025flexheg2] | **Extends prior work.** Reading a tick-chain release on the chip is the addition |
 
-## Searches behind the "not found" verdicts
+## Earlier searches, for the bounding design
 
-These are the queries whose results did not contain the idea. Each verdict above rests on these
-and on the per-track searches in the notes.
+These were run on 2026-11-25 and 2026-11-26 for the bounding design, before the redirect. They are
+kept because the verdicts for K7 to K9 rest partly on them.
 
 - **Thesis:** "bitcoin "clock" AI cannot speed up time irreversible commitment AI agents essay";
   ""irreversible" commitments rate AI agents safety metering not capability limiting time delay
@@ -89,12 +115,14 @@ and on the per-track searches in the notes.
 
 ## What the paper may and may not claim
 
-It may say that Escapement assembles known Bitcoin primitives (timelocks, multisig, pre-signed
-vaults, fidelity bonds, extractable one-time signatures, single-use seals) into one argument that,
-to our knowledge, has not been made: that Bitcoin's value to AI safety is a meter on the rate of
-irreversible commitment that the metered agent cannot speed up, not a limit on what the agent can
-think or compute. It may name the parts marked "not found" as its contributions, each with its
-closest prior work beside it.
+It may say that Escapement integrates known parts into one design in which a single record, complete
+against many identities by Bitcoin's consensus and by four scoring rules, serves as an AI agent's
+standing, as a training reward neither the agent nor the lab can select, and as the gate on its
+consequential actions; that it derives the cost of faking such a record; and that it gives the
+conditions under which adopting it pays. It may name the items in "What neither search found" as its
+contributions, each with its closest prior work beside it and its result at every level of
+verification in [06-verification.md](06-verification.md).
 
-It may not claim any primitive, any of the parts marked prior work, or any evidence that the design
-makes an AI system safer. Nothing has been built or tested.
+It may not claim any mechanism or theorem as new, any part marked prior work, or any evidence that
+the design makes an AI system safer. The Bitcoin pieces run on regtest; nothing has been deployed
+or tested against a real adversary.

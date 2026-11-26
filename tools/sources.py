@@ -154,6 +154,8 @@ def identity(s: dict) -> str:
 
 
 def toml_value(v) -> str:
+    if isinstance(v, bool):  # before int: bool is a subclass of int, and TOML spells it lowercase
+        return "true" if v else "false"
     if isinstance(v, int):
         return str(v)
     if isinstance(v, list):

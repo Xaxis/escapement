@@ -288,6 +288,294 @@ venue = "ACM Conference on Recommender Systems (RecSys) 2007"
 doi = "10.1145/1297231.1297236"
 supports = "raters earn influence by the information value of their past ratings (log scoring), which bounds the damage sybils can do"
 
+[source.foster2010]
+type = "peer-reviewed"
+title = "Gaming Performance Fees By Portfolio Managers"
+authors = ["Dean P. Foster", "H. Peyton Young"]
+year = 2010
+venue = "The Quarterly Journal of Economics 125(4)"
+doi = "10.1162/qjec.2010.125.4.1435"
+supports = "managers without skill can produce return records that mimic skilled ones (by taking hidden tail risk), so return histories alone cannot separate skilled from unskilled managers"
+
+[source.evans2010]
+type = "peer-reviewed"
+title = "Mutual Fund Incubation"
+authors = ["Richard B. Evans"]
+year = 2010
+venue = "The Journal of Finance 65(4)"
+doi = "10.1111/j.1540-6261.2010.01579.x"
+supports = "fund families incubate many funds privately and open only the ones with good records: selection on luck across many identities"
+
+[source.farrell1985]
+type = "peer-reviewed"
+title = "Standardization, Compatibility, and Innovation"
+authors = ["Joseph Farrell", "Garth Saloner"]
+year = 1985
+venue = "RAND Journal of Economics 16(1)"
+doi = "10.2307/2555589"
+supports = "adoption of a standard with network benefits can have multiple equilibria and excess inertia"
+
+[source.shafer2021]
+type = "peer-reviewed"
+title = "Testing by Betting: A Strategy for Statistical and Scientific Communication"
+authors = ["Glenn Shafer"]
+year = 2021
+venue = "Journal of the Royal Statistical Society Series A 184(2)"
+doi = "10.1111/rssa.12647"
+supports = "a forecaster's likelihood ratio against a null as a bet whose growth measures evidence against the null"
+
+[source.everitt2019]
+type = "preprint"
+title = "Reward Tampering Problems and Solutions in Reinforcement Learning: A Causal Influence Diagram Perspective"
+authors = ["Tom Everitt", "Marcus Hutter", "Ramana Kumar", "Victoria Krakovna"]
+year = 2019
+venue = "arXiv"
+arxiv = "1908.04734"
+supports = "agents can tamper with the process that computes their reward; designs that remove the incentive"
+
+[source.rao2020bittensor]
+type = "preprint"
+title = "BitTensor: A Peer-to-Peer Intelligence Market"
+authors = ["Yuma Rao", "Jacob Steeves", "Ala Shaabana"]
+year = 2020
+venue = "arXiv"
+arxiv = "2003.03917"
+supports = "a network that pays machine-learning peers in newly issued tokens weighted by peer ranking"
+
+[source.sempere2021]
+type = "preprint"
+title = "Alignment Problems With Current Forecasting Platforms"
+authors = ["Nuño Sempere", "Alex Lawsen"]
+year = 2021
+venue = "arXiv"
+arxiv = "2106.11248"
+supports = "selective participation and other scoring choices give forecasters incentives other than accuracy"
+
+[source.chan2024ids]
+type = "preprint"
+title = "IDs for AI Systems"
+authors = ["Alan Chan", "Noam Kolt", "Peter Wills"]
+year = 2024
+venue = "arXiv"
+arxiv = "2406.12137"
+supports = "identifiers for AI systems; adoption by concentrating effort on a small set of early adopters"
+
+[source.banioharouni2025]
+type = "preprint"
+title = "Rewarding Doubt: A Reinforcement Learning Approach to Calibrated Confidence Expression of Large Language Models"
+authors = ["David Bani-Harouni", "Chantal Pellegrini", "Paul Stangel"]
+year = 2025
+venue = "arXiv (ICLR 2026)"
+arxiv = "2503.02623"
+supports = "reinforcement learning with a proper scoring rule reward trains a language model to express calibrated confidence"
+
+[source.damani2025]
+type = "preprint"
+title = "Beyond Binary Rewards: Training LMs to Reason About Their Uncertainty"
+authors = ["Mehul Damani", "Isha Puri", "Stewart Slocum", "Idan Shenfeld", "Leshem Choshen", "Yoon Kim", "Jacob Andreas"]
+year = 2025
+venue = "arXiv"
+arxiv = "2507.16806"
+supports = "a reward combining correctness with a Brier score yields calibrated language models, with a proof for proper-score rewards"
+
+[source.turtel2025]
+type = "preprint"
+title = "Outcome-based Reinforcement Learning to Predict the Future"
+authors = ["Benjamin Turtel", "Danny Franklin", "Kris Skotheim", "Luke Hewitt", "Philipp Schoenegger"]
+year = 2025
+venue = "arXiv"
+arxiv = "2505.17989"
+supports = "reinforcement learning of forecasting language models on rewards from real-world outcomes"
+
+[source.tomasev2026delegation]
+type = "preprint"
+title = "Intelligent AI Delegation"
+authors = ["Nenad Tomašev", "Matija Franklin", "Simon Osindero"]
+year = 2026
+venue = "arXiv"
+arxiv = "2602.11865"
+supports = "agent standing from behaviour records and stakes; notes an agent can inflate reputation by accepting only easy tasks"
+
+[source.nechepurenko2026]
+type = "preprint"
+title = "Foresight Arena: An On-Chain Benchmark for Evaluating AI Forecasting Agents"
+authors = ["Maksym Nechepurenko", "Pavel Shuvalov"]
+year = 2026
+venue = "arXiv"
+arxiv = "2605.00420"
+supports = "an on-chain forecasting credential for AI agents scored against market consensus that cannot be selectively reported or retroactively modified; sybil resistance by rate limits, not costly identity"
+
+[source.gatta2026]
+type = "preprint"
+title = "Tempting the Agent: The Economics of Reputation without Persistent Identity in AI Agent Markets"
+authors = ["Federico Gatta", "Manuel Naviglio", "Francesco Tarantelli"]
+year = 2026
+venue = "arXiv"
+arxiv = "2609.02992"
+supports = "reputation, end-game defection and exit scams when AI agents can abandon identities"
+
+[source.han2026futureworld]
+type = "preprint"
+title = "FutureWorld: A Live Reinforcement Learning Environment for Predictive Agents with Real-World Outcome Rewards"
+authors = ["Zhixin Han", "Yanzhi Zhang", "Chuyang Wei"]
+year = 2026
+venue = "arXiv"
+arxiv = "2604.26733"
+supports = "reinforcement learning of predictive agents with rewards backfilled from real-world outcomes"
+
+[source.witkowski2021]
+type = "preprint"
+title = "Incentive-Compatible Forecasting Competitions"
+authors = ["Jens Witkowski", "Rupert Freeman", "Jennifer Wortman Vaughan", "David M. Pennock", "Andreas Krause"]
+year = 2021
+venue = "arXiv (Management Science 2023)"
+arxiv = "2101.01816"
+supports = "winner-take-all forecasting competitions reward misreporting; mechanisms that restore truthful reporting"
+
+[source.henzi2021]
+type = "preprint"
+title = "Valid sequential inference on probability forecast performance"
+authors = ["Alexander Henzi", "Johanna F. Ziegel"]
+year = 2021
+venue = "arXiv"
+arxiv = "2103.08402"
+supports = "e-values for comparing probability forecasters sequentially, valid at any stopping time"
+
+[source.salib2024]
+type = "legal-scholarship"
+title = "AI Rights for Human Safety"
+authors = ["Peter N. Salib", "Simon Goldstein"]
+year = 2025
+venue = "Virginia Law Review"
+url = "https://virginialawreview.org/articles/ai-rights-for-human-safety/"
+supports = "granting AI systems property and contract rights can make trade more attractive than conflict for misaligned AI"
+
+[source.yee2022]
+type = "preprint"
+title = "Keep Your Transactions On Short Leashes"
+authors = ["Bennet Yee"]
+year = 2022
+venue = "arXiv"
+arxiv = "2206.11974"
+supports = "a transaction names an anchor block by number and hash plus a leash length and is void unless the current block is in the anchor's future within the length"
+
+[source.zeke2026]
+type = "essay"
+title = "Chaintip freshness cert: signed identity scores that age with the chain"
+authors = ["Zeke (zekebuilds)"]
+year = 2026
+venue = "dev.to, 2026-04-28"
+url = "https://dev.to/zekebuilds/chaintip-freshness-cert-signed-identity-scores-that-age-with-the-chain-59o8"
+supports = "a verifier rejects a signed score whose named Bitcoin tip height is more than a set number of blocks behind the current tip; argues against wall clocks"
+
+[source.bentov2019]
+type = "peer-reviewed"
+title = "Tesseract: Real-Time Cryptocurrency Exchange Using Trusted Hardware"
+authors = ["Iddo Bentov", "Yan Ji", "Fan Zhang", "Lorenz Breidenbach", "Philip Daian", "Ari Juels"]
+year = 2019
+venue = "ACM CCS 2019"
+doi = "10.1145/3319535.3363221"
+supports = "an enclave verifies Bitcoin headers and inclusion proofs against a hardcoded difficulty, and needs a trusted timer against eclipse"
+
+[source.swambo2020]
+type = "preprint"
+title = "Custody Protocols Using Bitcoin Vaults"
+authors = ["Jacob Swambo", "Spencer Hommel", "Bob McElrath", "Bryan Bishop"]
+year = 2020
+venue = "arXiv"
+arxiv = "2005.11776"
+supports = "vaults built from pre-signed transactions with a delayed path and an immediate recovery path"
+
+[source.azouvi2022]
+type = "preprint"
+title = "Pikachu: Securing PoS Blockchains from Long-Range Attacks by Checkpointing into Bitcoin PoW using Taproot"
+authors = ["Sarah Azouvi", "Marko Vukolić"]
+year = 2022
+venue = "arXiv"
+arxiv = "2208.05408"
+supports = "a chain of Bitcoin transactions, each spending the last, carrying checkpoints in a Taproot key tweak"
+
+[source.riard2020]
+type = "preprint"
+title = "Time-Dilation Attacks on the Lightning Network"
+authors = ["Antoine Riard", "Gleb Naumenko"]
+year = 2020
+venue = "arXiv"
+arxiv = "2006.01418"
+supports = "eclipsing a node delays its view of new blocks without hashrate, so it misses timelocked windows"
+
+[source.avarikioti2024]
+type = "preprint"
+title = "Bribe & Fork: Cheap Bribing Attacks via Forking Threat"
+authors = ["Zeta Avarikioti", "Paweł Kędzior", "Tomasz Lizurej", "Tomasz Michalak"]
+year = 2024
+venue = "arXiv"
+arxiv = "2402.01363"
+supports = "miners can be bribed cheaply to ignore a specific transaction, threatening timelocked protocols"
+
+[source.harris2020]
+type = "preprint"
+title = "Flood & Loot: A Systemic Attack On The Lightning Network"
+authors = ["Jona Harris", "Aviv Zohar"]
+year = 2020
+venue = "arXiv"
+arxiv = "2006.08513"
+supports = "congesting the chain pushes many time-critical transactions past their deadlines at once"
+
+[source.petrie2024]
+type = "preprint"
+title = "Near-Term Enforcement of AI Chip Export Controls Using A Firmware-Based Design for Offline Licensing"
+authors = ["James Petrie"]
+year = 2024
+venue = "arXiv"
+arxiv = "2404.18308"
+supports = "chips that run only under licences; notes licences can be stockpiled unless they expire"
+
+[source.trubetskoy2018]
+type = "essay"
+title = "Blockchain Proof-of-Work is a Decentralized Clock"
+authors = ["Gregory Trubetskoy"]
+year = 2018
+venue = "grisha.org, 2018-01-23"
+url = "https://grisha.org/blog/2018/01/23/explaining-proof-of-work/"
+supports = "proof of work as a decentralised clock"
+
+[source.chia-rl-wallet]
+type = "code"
+title = "Chia rate-limited wallet puzzles (rl_wallet_puzzles.py)"
+authors = ["Chia Network"]
+year = 2021
+venue = "chia-blockchain 1.0beta27"
+url = "https://raw.githubusercontent.com/Chia-Network/chia-blockchain/1.0beta27/src/wallet/rl_wallet/rl_wallet_puzzles.py"
+supports = "a coin that may spend at most a set amount per interval of blocks, enforced by the coin's puzzle"
+
+[source.rln-docs]
+type = "official-docs"
+title = "What is RLN (Rate-Limiting Nullifier)"
+authors = ["Privacy and Scaling Explorations"]
+year = 2024
+venue = "RLN documentation"
+url = "https://rate-limiting-nullifier.github.io/rln-docs/what_is_rln.html"
+supports = "a stake-backed per-identity message rate limit whose violation reveals the identity's secret and lets anyone slash it"
+
+[source.did-btcr2]
+type = "spec"
+title = "did:btcr2 DID Method Specification"
+authors = ["Digital Contract Design"]
+year = 2025
+venue = "dcdpr.github.io"
+url = "https://dcdpr.github.io/did-btcr2/"
+supports = "a decentralised identifier whose updates are announced by spending Bitcoin beacon outputs, with single-use-seal semantics"
+
+[source.bitvm2-bridge]
+type = "report"
+title = "BitVM Bridge"
+authors = ["BitVM Alliance"]
+year = 2025
+venue = "bitvm.org"
+url = "https://bitvm.org/bitvm_bridge.pdf"
+supports = "connector outputs and challenge windows where a later spend proves no challenge succeeded; a light client with a difficulty floor"
+
 [source.a2a-ap2-crate]
 type = "code"
 title = "a2a-ap2 0.3.1 mandate.rs"
@@ -1317,16 +1605,6 @@ url = "https://docs.learnbittensor.org/learn/introduction"
 supports = "open subnet network paid in TAO; no safety claims on page"
 note = "research/notes/07-prior-art-novelty.md"
 
-[source.bitvm2-bridge]
-type = "preprint"
-title = "BitVM2: Bridging Bitcoin to Second Layers"
-authors = ["Robin Linus, Lukas Aumayr, Alexei Zamyatin, Andrea Pelosi, Zeta Avarikioti, Matteo Maffei"]
-year = 2024
-venue = "bitvm.org"
-url = "https://bitvm.org/bitvm_bridge.pdf"
-supports = "1-of-n setup honesty; rational operator; permissionless challenge; committee unnecessary with covenants."
-note = "research/notes/03-bitcoin-primitives.md"
-
 [source.bitvm2-eprint]
 type = "preprint"
 title = "Bridging Bitcoin to Second Layers via BitVM2"
@@ -1864,17 +2142,6 @@ venue = "dev.to"
 url = "https://dev.to/zekebuilds/chaintip-freshness-cert-signed-identity-scores-that-age-with-the-chain-1m2h"
 supports = "Signed scores rejected after N blocks past the signed tip (default 6); year not shown on page."
 note = "research/notes/03-bitcoin-primitives.md"
-
-[source.chan2024ids]
-type = "preprint"
-title = "IDs for AI Systems"
-authors = ["Chan, A.", "Kolt, N.", "Wills, P.", "Anwar, U.", "Schroeder de Witt, C.", "Rajkumar, N.", "Hammond, L.", "Krueger, D.", "Heim, L.", "Anderljung, M."]
-year = 2024
-venue = "RegML workshop at NeurIPS 2024"
-arxiv = "2406.12137"
-url = "https://arxiv.org/abs/2406.12137"
-supports = "Instance IDs; financial transactions as priority setting; blockchain-linked manifests footnote"
-note = "research/notes/02-ai-safety-governance.md"
 
 [source.chan2024visibility]
 type = "peer-reviewed"
@@ -3965,18 +4232,6 @@ url = "https://arxiv.org/html/2509.07637"
 supports = "Nonce-based licences and usage-allowance counters; no trusted clock; no ledger | licence-validated hardware off-switch with nonces; no blockchain (N9)"
 note = "research/notes/04-bitcoin-limits-energy.md"
 also = ["petrie2025"]
-
-[source.petrie2024]
-type = "preprint"
-title = "Near-Term Enforcement of AI Chip Export Controls Using A Firmware-Based Design for Offline Licensing"
-authors = ["James Petrie"]
-year = 2024
-venue = "arXiv"
-arxiv = "2404.18308"
-url = "https://arxiv.org/abs/2404.18308"
-supports = "Offline licensing prior work for N9; full text has no blockchain or Bitcoin mention. | Chips disabled unless they hold an unused regulator license; firmware features needed; no blockchain"
-note = "research/notes/03-bitcoin-primitives.md"
-also = ["petrie-2024"]
 
 [source.petrie2025flexheg1]
 type = "preprint"

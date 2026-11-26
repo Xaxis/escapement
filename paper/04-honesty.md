@@ -51,6 +51,18 @@ information, identities that merely read public information well look skilled; t
 edge over the baseline and nothing else. And if outcomes are resolved by a captured party, nothing
 here holds.
 
+## The objection to track records
+
+Foster and Young show that return histories
+cannot separate skilled from unskilled portfolio managers, because a manager without skill can buy a
+good-looking record by taking hidden tail risk [@foster2010]. Theorem 1 is immune to that for
+forecasts scored by likelihood ratio against a correct baseline: the bound holds for every strategy,
+tail-risk strategies included, because the score is a martingale under the null whatever the
+forecaster does. It is not immune for promises and requests, whose records behave like returns: an
+agent can keep many small promises and break one large one. Records of promises therefore have to
+be weighted by the stakes at risk, and the caps and delays of the enforcement layer, not the record,
+are what bound the one large breach.
+
 ## Why the record sorts and a bond does not
 
 Signalling sorts types only when the signal costs bad types more than good ones [@spence1973]. A
