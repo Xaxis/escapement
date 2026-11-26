@@ -57,7 +57,7 @@ def bibtex(key: str, s: dict) -> str:
     fields = {
         "title": "{" + s["title"] + "}",
         "author": " and ".join(s.get("authors", [])) or None,
-        "year": str(s["year"]),
+        "year": str(s["year"]) if s.get("year") else "n.d.",
         "journal": s.get("venue") if kind == "article" else None,
         "howpublished": s.get("venue") if kind == "misc" else None,
         "doi": s.get("doi"),

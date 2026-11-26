@@ -1,0 +1,73 @@
+# Sources the design and the paper cite that no survey track opened. tools/sources.py merges
+# these into research/sources.toml. Same fields as there; each has an identifier.
+
+
+[source.nakamoto2008]
+type = "preprint"
+title = "Bitcoin: A Peer-to-Peer Electronic Cash System"
+authors = ["Satoshi Nakamoto"]
+year = 2008
+url = "https://bitcoin.org/bitcoin.pdf"
+supports = "the 10-minute target block interval and proof-of-work chain"
+
+[source.bip141]
+type = "spec"
+title = "BIP 141: Segregated Witness (Consensus layer)"
+authors = ["Eric Lombrozo", "Johnson Lau", "Pieter Wuille"]
+year = 2015
+url = "https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki"
+supports = "the 4,000,000 weight-unit block limit"
+
+[source.gray1989]
+type = "peer-reviewed"
+title = "Leases: An Efficient Fault-Tolerant Mechanism for Distributed File Cache Consistency"
+authors = ["Cary G. Gray", "David R. Cheriton"]
+year = 1989
+venue = "Proceedings of the 12th ACM Symposium on Operating Systems Principles (SOSP)"
+doi = "10.1145/74850.74870"
+supports = "leases: authority that lapses unless renewed bounds the damage of a lost holder; checked on Crossref 2026-11-26"
+
+[source.komlo2021]
+type = "peer-reviewed"
+title = "FROST: Flexible Round-Optimized Schnorr Threshold Signatures"
+authors = ["Chelsea Komlo", "Ian Goldberg"]
+year = 2021
+venue = "Selected Areas in Cryptography (SAC 2020), LNCS 12804"
+doi = "10.1007/978-3-030-81652-0_2"
+supports = "threshold Schnorr signatures for a guardian quorum; checked on Crossref 2026-11-26"
+
+[source.birgisson2014]
+type = "peer-reviewed"
+title = "Macaroons: Cookies with Contextual Caveats for Decentralized Authorization in the Cloud"
+authors = ["Arnar Birgisson", "Joe Gibbs Politz", "Ulfar Erlingsson", "Ankur Taly", "Michael Vrable", "Mark Lentczner"]
+year = 2014
+venue = "Network and Distributed System Security Symposium (NDSS)"
+doi = "10.14722/ndss.2014.23212"
+supports = "attenuable bearer credentials with caveats, the basis of L402 and LND macaroons; checked on Crossref 2026-11-26"
+
+[source.kelsey2006]
+type = "peer-reviewed"
+title = "Herding Hash Functions and the Nostradamus Attack"
+authors = ["John Kelsey", "Tadayoshi Kohno"]
+year = 2006
+venue = "EUROCRYPT 2006, LNCS 4004"
+doi = "10.1007/11761679_12"
+supports = "committing to a hash in advance and choosing the message later: why an anchored hash alone is not notice; checked on Crossref 2026-11-26"
+
+[source.budish2024]
+type = "peer-reviewed"
+title = "Trust at Scale: The Economic Limits of Cryptocurrencies and Blockchains"
+authors = ["Eric Budish"]
+year = 2024
+venue = "The Quarterly Journal of Economics"
+doi = "10.1093/qje/qjae033"
+supports = "the published version of Budish's economic-limits argument: security spend must exceed one-shot attack value; checked on Crossref 2026-11-26"
+
+[source.melara2015]
+type = "peer-reviewed"
+title = "CONIKS: Bringing Key Transparency to End Users"
+authors = ["Marcela S. Melara", "Aaron Blankstein", "Joseph Bonneau", "Edward W. Felten", "Michael J. Freedman"]
+year = 2015
+venue = "24th USENIX Security Symposium"
+url = "https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/melara"
+supports = "a per-identity Merkle map whose periodic signed root makes a server's equivocation detectable"

@@ -6,6 +6,7 @@ Inputs live in data/inputs.toml. Each one says what kind of number it is:
   spec        fixed by a protocol specification (a BIP, a consensus rule)
   design      a choice this design makes, stated as a choice
   assumption  a number we picked where no source fixes it, stated as an assumption
+  modelled    the output of someone else's published model, with its source
 
 Derived quantities are defined in model/escapement.py as functions of other quantities. The ledger
 evaluates them in order, records the inputs each one read, and renders the results.
@@ -21,7 +22,7 @@ from pathlib import Path
 from typing import Callable
 
 ROOT = Path(__file__).resolve().parent.parent
-BASES = {"measured", "vendor", "spec", "design", "assumption", "derived"}
+BASES = {"measured", "vendor", "spec", "design", "assumption", "modelled", "derived"}
 
 
 @dataclass
@@ -84,7 +85,7 @@ class Ledger:
             basis = spec["basis"]
             if basis not in BASES - {"derived"}:
                 raise ValueError(f"input {key}: basis {basis!r} is not one of {sorted(BASES)}")
-            if basis in ("measured", "vendor", "spec") and not spec.get("source"):
+            if basis in ("measured", "vendor", "spec", "modelled") and not spec.get("source"):
                 raise ValueError(f"input {key}: a {basis} number needs a source")
             line = next((i + 1 for i, l in enumerate(lines) if l.strip() == f"[{key}]"), 0)
             value = float(spec["value"])
@@ -181,7 +182,8 @@ class Ledger:
             "",
             "Basis: **measured** (independent measurement), **vendor** (a claim by an interested party),",
             "**spec** (fixed by a protocol rule), **design** (a choice this design makes), **assumption**",
-            "(a number we picked where no source fixes it), **derived** (computed from the others).",
+            "(a number we picked where no source fixes it), **modelled** (the output of a published model),",
+            "**derived** (computed from the others).",
             "",
         ]
         body = []

@@ -10,7 +10,111 @@
     "source": "nakamoto2008",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L7"
+    "defined_in": "data/inputs.toml#L9"
+  },
+  "blocks-per-retarget": {
+    "value": 2016.0,
+    "display": "2,016 blocks",
+    "unit": "blocks",
+    "basis": "spec",
+    "label": "blocks between difficulty adjustments",
+    "formula": "",
+    "inputs": [],
+    "source": "nakamoto2008",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L16"
+  },
+  "hashrate-eh": {
+    "value": 1052.0,
+    "display": "1,052 EH/s",
+    "unit": "EH/s",
+    "basis": "measured",
+    "label": "network hashrate, mempool.space estimate",
+    "formula": "",
+    "inputs": [],
+    "source": "mempool-hashrate",
+    "date": "2026-11-26",
+    "note": "",
+    "defined_in": "data/inputs.toml#L23"
+  },
+  "asic-efficiency-j-th": {
+    "value": 17.5,
+    "display": "17.5 J/TH",
+    "unit": "J/TH",
+    "basis": "vendor",
+    "label": "energy per terahash of a current-generation miner (Antminer S21 specification)",
+    "formula": "",
+    "inputs": [],
+    "source": "hri-s21",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L31"
+  },
+  "asic-price-usd-th": {
+    "value": 7.0,
+    "display": "7 USD per TH/s",
+    "unit": "USD per TH/s",
+    "basis": "measured",
+    "label": "street price of current-generation mining hardware (news report of discounted prices)",
+    "formula": "",
+    "inputs": [],
+    "source": "ct-bitmain",
+    "date": "2025-12-26",
+    "note": "",
+    "defined_in": "data/inputs.toml#L39"
+  },
+  "pool-largest-share": {
+    "value": 0.278,
+    "display": "27.8%",
+    "unit": "",
+    "basis": "measured",
+    "label": "share of blocks mined by the largest pool (Foundry) over the trailing year",
+    "formula": "",
+    "inputs": [],
+    "source": "mempool-pools",
+    "date": "2025-11-26 to 2026-11-26",
+    "note": "",
+    "defined_in": "data/inputs.toml#L47"
+  },
+  "pool-top2-share": {
+    "value": 0.461,
+    "display": "46.1%",
+    "unit": "",
+    "basis": "measured",
+    "label": "share of blocks mined by the two largest pools together over the trailing year",
+    "formula": "",
+    "inputs": [],
+    "source": "mempool-pools",
+    "date": "2025-11-26 to 2026-11-26",
+    "note": "",
+    "defined_in": "data/inputs.toml#L55"
+  },
+  "confirmations-standard": {
+    "value": 6.0,
+    "display": "6 blocks",
+    "unit": "blocks",
+    "basis": "design",
+    "label": "confirmations the common convention treats as final",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L63"
+  },
+  "reorg-risk-target": {
+    "value": 0.001,
+    "display": "0.1%",
+    "unit": "",
+    "basis": "design",
+    "label": "chance of an anchor being rewritten that the design accepts",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L69"
   },
   "tier2-delay-blocks": {
     "value": 6.0,
@@ -23,7 +127,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L14"
+    "defined_in": "data/inputs.toml#L78"
   },
   "tier3-delay-blocks": {
     "value": 144.0,
@@ -36,7 +140,20 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L20"
+    "defined_in": "data/inputs.toml#L84"
+  },
+  "tier3-compress-target-h": {
+    "value": 1.0,
+    "display": "1 hours",
+    "unit": "hours",
+    "basis": "assumption",
+    "label": "how short an adversary would want a Tier 3 delay to be, for the clock-compression example",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L90"
   },
   "lease-blocks": {
     "value": 144.0,
@@ -49,7 +166,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L26"
+    "defined_in": "data/inputs.toml#L96"
   },
   "season-blocks": {
     "value": 4032.0,
@@ -62,85 +179,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L32"
-  },
-  "block-weight-limit": {
-    "value": 4000000.0,
-    "display": "4,000,000 WU",
-    "unit": "WU",
-    "basis": "spec",
-    "label": "consensus limit on a block's weight",
-    "formula": "",
-    "inputs": [],
-    "source": "bip141",
-    "date": "",
-    "note": "",
-    "defined_in": "data/inputs.toml#L40"
-  },
-  "seal-tx-vbytes": {
-    "value": 111.0,
-    "display": "111 vB",
-    "unit": "vB",
-    "basis": "assumption",
-    "label": "size of a one-input, one-output Taproot seal transaction (to be replaced by a measured value)",
-    "formula": "",
-    "inputs": [],
-    "source": "",
-    "date": "",
-    "note": "",
-    "defined_in": "data/inputs.toml#L47"
-  },
-  "tier3-blockspace-share": {
-    "value": 0.01,
-    "display": "1%",
-    "unit": "",
-    "basis": "assumption",
-    "label": "share of blockspace Tier 3 anchors could take without crowding out other use",
-    "formula": "",
-    "inputs": [],
-    "source": "",
-    "date": "",
-    "note": "",
-    "defined_in": "data/inputs.toml#L53"
-  },
-  "feerate-low": {
-    "value": 1.0,
-    "display": "1 sat/vB",
-    "unit": "sat/vB",
-    "basis": "assumption",
-    "label": "a low fee rate (to be replaced by a measured value)",
-    "formula": "",
-    "inputs": [],
-    "source": "",
-    "date": "",
-    "note": "",
-    "defined_in": "data/inputs.toml#L61"
-  },
-  "feerate-median": {
-    "value": 5.0,
-    "display": "5 sat/vB",
-    "unit": "sat/vB",
-    "basis": "assumption",
-    "label": "a median fee rate (to be replaced by a measured value)",
-    "formula": "",
-    "inputs": [],
-    "source": "",
-    "date": "",
-    "note": "",
-    "defined_in": "data/inputs.toml#L67"
-  },
-  "feerate-high": {
-    "value": 100.0,
-    "display": "100 sat/vB",
-    "unit": "sat/vB",
-    "basis": "assumption",
-    "label": "a high fee rate (to be replaced by a measured value)",
-    "formula": "",
-    "inputs": [],
-    "source": "",
-    "date": "",
-    "note": "",
-    "defined_in": "data/inputs.toml#L73"
+    "defined_in": "data/inputs.toml#L102"
   },
   "seal-epoch-blocks": {
     "value": 6.0,
@@ -153,7 +192,150 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L81"
+    "defined_in": "data/inputs.toml#L108"
+  },
+  "block-weight-limit": {
+    "value": 4000000.0,
+    "display": "4,000,000 WU",
+    "unit": "WU",
+    "basis": "spec",
+    "label": "consensus limit on a block's weight",
+    "formula": "",
+    "inputs": [],
+    "source": "bip141",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L117"
+  },
+  "tx-overhead-vb": {
+    "value": 10.5,
+    "display": "10.5 vB",
+    "unit": "vB",
+    "basis": "spec",
+    "label": "fixed part of a SegWit transaction (version, counts, locktime, marker)",
+    "formula": "",
+    "inputs": [],
+    "source": "optech-calc",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L124"
+  },
+  "p2tr-input-vb": {
+    "value": 57.5,
+    "display": "57.5 vB",
+    "unit": "vB",
+    "basis": "spec",
+    "label": "one Taproot key-path input",
+    "formula": "",
+    "inputs": [],
+    "source": "optech-calc",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L132"
+  },
+  "p2tr-output-vb": {
+    "value": 43.0,
+    "display": "43 vB",
+    "unit": "vB",
+    "basis": "spec",
+    "label": "one Taproot output",
+    "formula": "",
+    "inputs": [],
+    "source": "optech-calc",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L140"
+  },
+  "opreturn32-output-vb": {
+    "value": 43.0,
+    "display": "43 vB",
+    "unit": "vB",
+    "basis": "spec",
+    "label": "one OP_RETURN output carrying a 32-byte commitment",
+    "formula": "",
+    "inputs": [],
+    "source": "optech-calc",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L147"
+  },
+  "tx-per-day-2026": {
+    "value": 592356.0,
+    "display": "592,356 transactions",
+    "unit": "transactions",
+    "basis": "measured",
+    "label": "mean confirmed transactions a day in 2026",
+    "formula": "",
+    "inputs": [],
+    "source": "btccom-ntx",
+    "date": "2026-01-01 to 2026-11-25",
+    "note": "",
+    "defined_in": "data/inputs.toml#L154"
+  },
+  "tier3-blockspace-share": {
+    "value": 0.01,
+    "display": "1%",
+    "unit": "",
+    "basis": "assumption",
+    "label": "share of blockspace individually anchored Tier 3 actions could take without crowding out other use",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L162"
+  },
+  "feerate-2026": {
+    "value": 1.0,
+    "display": "1 sat/vB",
+    "unit": "sat/vB",
+    "basis": "measured",
+    "label": "median fee rate, 2026 (annual median of daily medians)",
+    "formula": "",
+    "inputs": [],
+    "source": "mempool-feerates",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L171"
+  },
+  "feerate-2023": {
+    "value": 15.0,
+    "display": "15 sat/vB",
+    "unit": "sat/vB",
+    "basis": "measured",
+    "label": "median fee rate, 2023 (annual median of daily medians)",
+    "formula": "",
+    "inputs": [],
+    "source": "mempool-feerates",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L178"
+  },
+  "feerate-halving": {
+    "value": 200.0,
+    "display": "200 sat/vB",
+    "unit": "sat/vB",
+    "basis": "measured",
+    "label": "median fee rate in the halving block, 840,000",
+    "formula": "",
+    "inputs": [],
+    "source": "mempool-block840000",
+    "date": "2024-04-20",
+    "note": "",
+    "defined_in": "data/inputs.toml#L185"
+  },
+  "feerate-peak-day": {
+    "value": 861.0,
+    "display": "861 sat/vB",
+    "unit": "sat/vB",
+    "basis": "measured",
+    "label": "highest daily-average median fee rate on record (the halving day)",
+    "formula": "",
+    "inputs": [],
+    "source": "mempool-feerates",
+    "date": "2024-04-20",
+    "note": "",
+    "defined_in": "data/inputs.toml#L193"
   },
   "agents-per-pool": {
     "value": 1000.0,
@@ -166,7 +348,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L87"
+    "defined_in": "data/inputs.toml#L204"
   },
   "seal-pools": {
     "value": 1000.0,
@@ -179,7 +361,20 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L93"
+    "defined_in": "data/inputs.toml#L210"
+  },
+  "header-bytes": {
+    "value": 80.0,
+    "display": "80 bytes",
+    "unit": "bytes",
+    "basis": "spec",
+    "label": "size of one block header",
+    "formula": "",
+    "inputs": [],
+    "source": "nakamoto2008",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L216"
   },
   "gain-from-violation": {
     "value": 1000000.0,
@@ -192,7 +387,33 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L101"
+    "defined_in": "data/inputs.toml#L226"
+  },
+  "harm-catastrophic-btc": {
+    "value": 100.0,
+    "display": "100 BTC",
+    "unit": "BTC",
+    "basis": "assumption",
+    "label": "a large harm, for the judgment-proof example",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L232"
+  },
+  "p-detect-rare": {
+    "value": 0.01,
+    "display": "1%",
+    "unit": "",
+    "basis": "assumption",
+    "label": "chance a rare, hard-to-see harm is caught and adjudicated, for the judgment-proof example",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L238"
   },
   "allowance-per-lease": {
     "value": 100000.0,
@@ -205,20 +426,20 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L107"
+    "defined_in": "data/inputs.toml#L244"
   },
   "leases-at-risk": {
     "value": 2.0,
     "display": "2 leases",
     "unit": "leases",
     "basis": "design",
-    "label": "leases an agent can spend before a lapse or veto stops it",
+    "label": "leases an agent can spend before a lapse or veto stops it (the current one and one renewed early)",
     "formula": "",
     "inputs": [],
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L113"
+    "defined_in": "data/inputs.toml#L250"
   },
   "coverage-ratio": {
     "value": 1.0,
@@ -231,7 +452,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L119"
+    "defined_in": "data/inputs.toml#L256"
   },
   "swarm-size": {
     "value": 10000.0,
@@ -244,33 +465,98 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L127"
+    "defined_in": "data/inputs.toml#L265"
   },
-  "hashrate-eh": {
-    "value": 1000.0,
-    "display": "1,000 EH/s",
-    "unit": "EH/s",
-    "basis": "assumption",
-    "label": "network hashrate (to be replaced by a measured value)",
+  "incident-agents-board": {
+    "value": 1200.0,
+    "display": "1,200 agents",
+    "unit": "agents",
+    "basis": "measured",
+    "label": "agents that used the message board in the 2026 OpenAI / Hugging Face incident",
     "formula": "",
     "inputs": [],
-    "source": "",
-    "date": "",
+    "source": "metr2026hf",
+    "date": "2026-08-26",
     "note": "",
-    "defined_in": "data/inputs.toml#L135"
+    "defined_in": "data/inputs.toml#L271"
   },
-  "fleet-efficiency-j-th": {
-    "value": 20.0,
-    "display": "20 J/TH",
-    "unit": "J/TH",
-    "basis": "assumption",
-    "label": "energy per terahash of the mining fleet (to be replaced by a measured value)",
+  "incident-agents-attack": {
+    "value": 700.0,
+    "display": "700 agents",
+    "unit": "agents",
+    "basis": "measured",
+    "label": "agents that took part in the attack on Hugging Face",
     "formula": "",
     "inputs": [],
-    "source": "",
+    "source": "metr2026hf",
+    "date": "2026-08-26",
+    "note": "",
+    "defined_in": "data/inputs.toml#L279"
+  },
+  "incident-first-day": {
+    "value": 132.0,
+    "display": "132 day of 2026",
+    "unit": "day of 2026",
+    "basis": "vendor",
+    "label": "first message-board entry, 2026-05-12, as OpenAI's timeline gives it",
+    "formula": "",
+    "inputs": [],
+    "source": "openai2026hf",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L141"
+    "defined_in": "data/inputs.toml#L287"
+  },
+  "incident-stop-day": {
+    "value": 200.0,
+    "display": "200 day of 2026",
+    "unit": "day of 2026",
+    "basis": "vendor",
+    "label": "OpenAI begins stopping the evaluation runs, 2026-07-19",
+    "formula": "",
+    "inputs": [],
+    "source": "openai2026hf",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L294"
+  },
+  "async-safety-no-delay": {
+    "value": 0.0,
+    "display": "0%",
+    "unit": "",
+    "basis": "modelled",
+    "label": "modelled safety against a single attack when harm is immediate (UK AISI, Async Control)",
+    "formula": "",
+    "inputs": [],
+    "source": "stickland2025",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L304"
+  },
+  "async-safety-1h-delay": {
+    "value": 0.96,
+    "display": "96%",
+    "unit": "",
+    "basis": "modelled",
+    "label": "modelled safety against a single attack with a one-hour delay before harm",
+    "formula": "",
+    "inputs": [],
+    "source": "stickland2025",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L311"
+  },
+  "metr-doubling-months": {
+    "value": 3.61,
+    "display": "3.6 months",
+    "unit": "months",
+    "basis": "measured",
+    "label": "doubling time of AI task time horizons (METR, pooled estimate)",
+    "formula": "",
+    "inputs": [],
+    "source": "metr2026q4",
+    "date": "2026-11-20",
+    "note": "",
+    "defined_in": "data/inputs.toml#L318"
   },
   "blocks-per-day": {
     "value": 144.0,
@@ -285,7 +571,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L45"
+    "defined_in": "model/escapement.py#L66"
   },
   "tier2-delay-mean-min": {
     "value": 60.0,
@@ -301,7 +587,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L48"
+    "defined_in": "model/escapement.py#L69"
   },
   "tier2-delay-p-under-half": {
     "value": 0.08391794203130343,
@@ -317,7 +603,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L53"
+    "defined_in": "model/escapement.py#L74"
   },
   "tier3-delay-mean-h": {
     "value": 24.0,
@@ -333,7 +619,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L56"
+    "defined_in": "model/escapement.py#L77"
   },
   "tier3-delay-p-under-80pct": {
     "value": 0.005332990142931204,
@@ -349,7 +635,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L61"
+    "defined_in": "model/escapement.py#L82"
   },
   "lease-mean-h": {
     "value": 24.0,
@@ -365,7 +651,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L64"
+    "defined_in": "model/escapement.py#L85"
   },
   "season-days": {
     "value": 28.0,
@@ -381,7 +667,152 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L66"
+    "defined_in": "model/escapement.py#L87"
+  },
+  "clock-2x-power-gw": {
+    "value": 18.41,
+    "display": "18.4 GW",
+    "unit": "GW",
+    "basis": "derived",
+    "label": "power drawn by enough new hardware to double the network's hashrate",
+    "formula": "hashrate-eh * 1e6 TH/EH * asic-efficiency-j-th / 1e9",
+    "inputs": [
+      "hashrate-eh",
+      "asic-efficiency-j-th"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L93"
+  },
+  "clock-2x-hardware-busd": {
+    "value": 7.364,
+    "display": "7.4 billion USD",
+    "unit": "billion USD",
+    "basis": "derived",
+    "label": "cost of that hardware at current street prices",
+    "formula": "hashrate-eh * 1e6 TH/EH * asic-price-usd-th / 1e9",
+    "inputs": [
+      "hashrate-eh",
+      "asic-price-usd-th"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L96"
+  },
+  "clock-2x-days-gained": {
+    "value": 7.0,
+    "display": "7 days",
+    "unit": "days",
+    "basis": "derived",
+    "label": "days a doubled block rate gains before the next adjustment cancels it",
+    "formula": "blocks-per-retarget * block-interval-s / 2 / 86400",
+    "inputs": [
+      "blocks-per-retarget",
+      "block-interval-s"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L99"
+  },
+  "tier3-compress-factor": {
+    "value": 24.0,
+    "display": "24 x",
+    "unit": "x",
+    "basis": "derived",
+    "label": "how many times the network's hashrate an adversary needs to shrink a Tier 3 delay to the target",
+    "formula": "tier3-delay-mean-h / tier3-compress-target-h",
+    "inputs": [
+      "tier3-delay-mean-h",
+      "tier3-compress-target-h"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L103"
+  },
+  "tier3-compress-power-gw": {
+    "value": 423.43,
+    "display": "423 GW",
+    "unit": "GW",
+    "basis": "derived",
+    "label": "power the added hardware would draw",
+    "formula": "(tier3-compress-factor - 1) * hashrate-eh * 1e6 * asic-efficiency-j-th / 1e9",
+    "inputs": [
+      "tier3-compress-factor",
+      "hashrate-eh",
+      "asic-efficiency-j-th"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L107"
+  },
+  "reorg-p-largest-6": {
+    "value": 0.08867441744659035,
+    "display": "8.9%",
+    "unit": "",
+    "basis": "derived",
+    "label": "chance the largest pool alone rewrites a block six deep",
+    "formula": "Nakamoto(q = pool-largest-share, z = confirmations-standard)",
+    "inputs": [
+      "pool-largest-share",
+      "confirmations-standard"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L112"
+  },
+  "reorg-p-top2-6": {
+    "value": 0.822842150952584,
+    "display": "82%",
+    "unit": "",
+    "basis": "derived",
+    "label": "chance the two largest pools, colluding, rewrite a block six deep",
+    "formula": "Nakamoto(q = pool-top2-share, z = confirmations-standard)",
+    "inputs": [
+      "pool-top2-share",
+      "confirmations-standard"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L115"
+  },
+  "depth-for-target-largest": {
+    "value": 19.0,
+    "display": "19 blocks",
+    "unit": "blocks",
+    "basis": "derived",
+    "label": "confirmations before the largest pool alone has under the target chance of a rewrite",
+    "formula": "least z with Nakamoto(pool-largest-share, z) < reorg-risk-target",
+    "inputs": [
+      "pool-largest-share",
+      "reorg-risk-target"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L119"
+  },
+  "reorg-p-top2-144": {
+    "value": 0.12785910352588656,
+    "display": "12.79%",
+    "unit": "",
+    "basis": "derived",
+    "label": "chance the two largest pools rewrite an anchor a Tier 3 delay deep",
+    "formula": "Nakamoto(q = pool-top2-share, z = tier3-delay-blocks)",
+    "inputs": [
+      "pool-top2-share",
+      "tier3-delay-blocks"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L122"
   },
   "vbytes-per-block": {
     "value": 1000000.0,
@@ -396,7 +827,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L70"
+    "defined_in": "model/escapement.py#L126"
   },
   "vbytes-per-day": {
     "value": 144000000.0,
@@ -412,7 +843,42 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L73"
+    "defined_in": "model/escapement.py#L129"
+  },
+  "seal-tx-vbytes": {
+    "value": 111.0,
+    "display": "111 vB",
+    "unit": "vB",
+    "basis": "derived",
+    "label": "a seal: one Taproot input spending the last seal, one Taproot output committing the new head",
+    "formula": "tx-overhead-vb + p2tr-input-vb + p2tr-output-vb",
+    "inputs": [
+      "tx-overhead-vb",
+      "p2tr-input-vb",
+      "p2tr-output-vb"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L133"
+  },
+  "anchor-tx-vbytes": {
+    "value": 154.0,
+    "display": "154 vB",
+    "unit": "vB",
+    "basis": "derived",
+    "label": "an anchor that also carries its commitment in a 32-byte OP_RETURN",
+    "formula": "tx-overhead-vb + p2tr-input-vb + p2tr-output-vb + opreturn32-output-vb",
+    "inputs": [
+      "tx-overhead-vb",
+      "p2tr-input-vb",
+      "p2tr-output-vb",
+      "opreturn32-output-vb"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L137"
   },
   "seal-tx-per-day-max": {
     "value": 1297297.2972972973,
@@ -428,14 +894,30 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L76"
+    "defined_in": "model/escapement.py#L140"
+  },
+  "seal-capacity-vs-2026": {
+    "value": 2.190063572070338,
+    "display": "2.2 x",
+    "unit": "x",
+    "basis": "derived",
+    "label": "that capacity as a multiple of all of 2026's daily transactions",
+    "formula": "seal-tx-per-day-max / tx-per-day-2026",
+    "inputs": [
+      "seal-tx-per-day-max",
+      "tx-per-day-2026"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L143"
   },
   "tier3-capacity-per-day": {
     "value": 12972.972972972973,
     "display": "13,000 actions",
     "unit": "actions",
     "basis": "derived",
-    "label": "Tier 3 actions a day the world could anchor one by one at the assumed share of blockspace",
+    "label": "Tier 3 actions a day the world could anchor one by one in the assumed share of blockspace",
     "formula": "seal-tx-per-day-max * tier3-blockspace-share",
     "inputs": [
       "seal-tx-per-day-max",
@@ -444,55 +926,71 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L80"
+    "defined_in": "model/escapement.py#L147"
   },
-  "seal-cost-low": {
+  "seal-cost-2026": {
     "value": 111.0,
     "display": "111 sats",
     "unit": "sats",
     "basis": "derived",
-    "label": "one seal transaction at the low fee rate",
-    "formula": "seal-tx-vbytes * feerate-low",
+    "label": "one seal at the 2026 fee rate",
+    "formula": "seal-tx-vbytes * feerate-2026",
     "inputs": [
       "seal-tx-vbytes",
-      "feerate-low"
+      "feerate-2026"
     ],
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L86"
+    "defined_in": "model/escapement.py#L153"
   },
-  "seal-cost-median": {
-    "value": 555.0,
-    "display": "555 sats",
+  "seal-cost-2023": {
+    "value": 1665.0,
+    "display": "1,660 sats",
     "unit": "sats",
     "basis": "derived",
-    "label": "one seal transaction at the median fee rate",
-    "formula": "seal-tx-vbytes * feerate-median",
+    "label": "one seal at the 2023 fee rate",
+    "formula": "seal-tx-vbytes * feerate-2023",
     "inputs": [
       "seal-tx-vbytes",
-      "feerate-median"
+      "feerate-2023"
     ],
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L86"
+    "defined_in": "model/escapement.py#L153"
   },
-  "seal-cost-high": {
-    "value": 11100.0,
-    "display": "11,100 sats",
+  "seal-cost-halving": {
+    "value": 22200.0,
+    "display": "22,200 sats",
     "unit": "sats",
     "basis": "derived",
-    "label": "one seal transaction at the high fee rate",
-    "formula": "seal-tx-vbytes * feerate-high",
+    "label": "one seal at the halving fee rate",
+    "formula": "seal-tx-vbytes * feerate-halving",
     "inputs": [
       "seal-tx-vbytes",
-      "feerate-high"
+      "feerate-halving"
     ],
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L86"
+    "defined_in": "model/escapement.py#L153"
+  },
+  "seal-cost-peak-day": {
+    "value": 95571.0,
+    "display": "95,600 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "one seal at the peak day fee rate",
+    "formula": "seal-tx-vbytes * feerate-peak-day",
+    "inputs": [
+      "seal-tx-vbytes",
+      "feerate-peak-day"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L153"
   },
   "seals-per-day": {
     "value": 24.0,
@@ -508,55 +1006,55 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L89"
+    "defined_in": "model/escapement.py#L156"
   },
-  "gateway-seal-cost-day-median": {
-    "value": 13320.0,
-    "display": "13,320 sats",
+  "gateway-seal-cost-day-2026": {
+    "value": 2664.0,
+    "display": "2,660 sats",
     "unit": "sats",
     "basis": "derived",
-    "label": "a gateway's daily sealing cost at the median fee rate",
-    "formula": "seals-per-day * seal-cost-median",
+    "label": "a gateway's daily sealing cost at 2026's median fee rate",
+    "formula": "seals-per-day * seal-cost-2026",
     "inputs": [
       "seals-per-day",
-      "seal-cost-median"
+      "seal-cost-2026"
     ],
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L92"
+    "defined_in": "model/escapement.py#L159"
   },
-  "gateway-seal-cost-day-high": {
-    "value": 266400.0,
-    "display": "266,400 sats",
+  "gateway-seal-cost-day-halving": {
+    "value": 532800.0,
+    "display": "533,000 sats",
     "unit": "sats",
     "basis": "derived",
-    "label": "a gateway's daily sealing cost at the high fee rate",
-    "formula": "seals-per-day * seal-cost-high",
+    "label": "a gateway's daily sealing cost at the halving block's fee rate",
+    "formula": "seals-per-day * seal-cost-halving",
     "inputs": [
       "seals-per-day",
-      "seal-cost-high"
+      "seal-cost-halving"
     ],
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L95"
+    "defined_in": "model/escapement.py#L162"
   },
-  "agent-seal-cost-day-pooled": {
-    "value": 266.4,
-    "display": "266.4 sats",
+  "agent-seal-cost-day-halving": {
+    "value": 532.8,
+    "display": "533 sats",
     "unit": "sats",
     "basis": "derived",
-    "label": "one agent's daily sealing cost in a shared pool, at the high fee rate",
-    "formula": "gateway-seal-cost-day-high / agents-per-pool",
+    "label": "one agent's daily sealing cost in a shared pool, at the halving block's fee rate",
+    "formula": "gateway-seal-cost-day-halving / agents-per-pool",
     "inputs": [
-      "gateway-seal-cost-day-high",
+      "gateway-seal-cost-day-halving",
       "agents-per-pool"
     ],
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L98"
+    "defined_in": "model/escapement.py#L165"
   },
   "seal-blockspace-share-pools": {
     "value": 0.0185,
@@ -574,7 +1072,23 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L102"
+    "defined_in": "model/escapement.py#L169"
+  },
+  "headers-mb-per-year": {
+    "value": 4.2048,
+    "display": "4.2 MB",
+    "unit": "MB",
+    "basis": "derived",
+    "label": "block headers a device must read in a year to keep its own clock",
+    "formula": "header-bytes * blocks-per-day * 365 / 1e6",
+    "inputs": [
+      "header-bytes",
+      "blocks-per-day"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L172"
   },
   "bond-deter-p10": {
     "value": 10000000.0,
@@ -589,7 +1103,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L109"
+    "defined_in": "model/escapement.py#L180"
   },
   "bond-deter-p50": {
     "value": 2000000.0,
@@ -604,7 +1118,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L109"
+    "defined_in": "model/escapement.py#L180"
   },
   "bond-deter-p90": {
     "value": 1111111.111111111,
@@ -619,7 +1133,23 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L109"
+    "defined_in": "model/escapement.py#L180"
+  },
+  "bond-judgment-proof-btc": {
+    "value": 10000.0,
+    "display": "10,000 BTC",
+    "unit": "BTC",
+    "basis": "derived",
+    "label": "bond that would fully deter a large, rarely detected harm",
+    "formula": "harm-catastrophic-btc / p-detect-rare",
+    "inputs": [
+      "harm-catastrophic-btc",
+      "p-detect-rare"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L183"
   },
   "bond-coverage": {
     "value": 200000.0,
@@ -636,15 +1166,15 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L112"
+    "defined_in": "model/escapement.py#L186"
   },
-  "swarm-capital": {
-    "value": 2000000000.0,
-    "display": "2,000,000,000 sats",
-    "unit": "sats",
+  "swarm-capital-btc": {
+    "value": 20.0,
+    "display": "20 BTC",
+    "unit": "BTC",
     "basis": "derived",
     "label": "capital a swarm of chartered agents must lock",
-    "formula": "swarm-size * bond-coverage",
+    "formula": "swarm-size * bond-coverage / 1e8",
     "inputs": [
       "swarm-size",
       "bond-coverage"
@@ -652,22 +1182,39 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L117"
+    "defined_in": "model/escapement.py#L191"
   },
-  "swarm-capital-btc": {
-    "value": 20.0,
-    "display": "20 BTC",
+  "incident-swarm-capital-btc": {
+    "value": 1.4,
+    "display": "1.4 BTC",
     "unit": "BTC",
     "basis": "derived",
-    "label": "the same, in bitcoin",
-    "formula": "swarm-capital / 1e8",
+    "label": "the same for the 2026 incident's attacking agents, had each needed a charter",
+    "formula": "incident-agents-attack * bond-coverage / 1e8",
     "inputs": [
-      "swarm-capital"
+      "incident-agents-attack",
+      "bond-coverage"
     ],
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L119"
+    "defined_in": "model/escapement.py#L194"
+  },
+  "incident-days": {
+    "value": 68.0,
+    "display": "68 days",
+    "unit": "days",
+    "basis": "derived",
+    "label": "days from the first message-board entry to the start of the stop",
+    "formula": "incident-stop-day - incident-first-day",
+    "inputs": [
+      "incident-stop-day",
+      "incident-first-day"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L197"
   },
   "split-authority-ratio-squared": {
     "value": 0.0001,
@@ -682,52 +1229,6 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L123"
-  },
-  "clock-2x-extra-hashrate-eh": {
-    "value": 1000.0,
-    "display": "1,000 EH/s",
-    "unit": "EH/s",
-    "basis": "derived",
-    "label": "extra hashrate needed to make blocks come twice as fast until the next retarget",
-    "formula": "hashrate-eh (to double the block rate, add as much hashrate as the network has)",
-    "inputs": [
-      "hashrate-eh"
-    ],
-    "source": "",
-    "date": "",
-    "note": "",
-    "defined_in": "model/escapement.py#L128"
-  },
-  "clock-2x-power-gw": {
-    "value": 20.0,
-    "display": "20 GW",
-    "unit": "GW",
-    "basis": "derived",
-    "label": "electric power that extra hashrate draws",
-    "formula": "hashrate-eh * 1e6 TH/EH * fleet-efficiency-j-th / 1e9",
-    "inputs": [
-      "hashrate-eh",
-      "fleet-efficiency-j-th"
-    ],
-    "source": "",
-    "date": "",
-    "note": "",
-    "defined_in": "model/escapement.py#L131"
-  },
-  "clock-2x-hours-saved-per-epoch": {
-    "value": 168.0,
-    "display": "168 hours",
-    "unit": "hours",
-    "basis": "derived",
-    "label": "hours a doubled block rate gains over one difficulty period",
-    "formula": "2016 blocks * block-interval-s / 3600 / 2",
-    "inputs": [
-      "block-interval-s"
-    ],
-    "source": "",
-    "date": "",
-    "note": "",
-    "defined_in": "model/escapement.py#L134"
+    "defined_in": "model/escapement.py#L201"
   }
 }

@@ -1,7 +1,9 @@
 # Escapement's inputs. Every number the model reads starts here.
-# basis: measured | vendor | spec | design | assumption (see model/ledger.py).
+# basis: measured | vendor | spec | design | assumption | modelled (see model/ledger.py).
 # A measured, vendor or spec input names its source, a key in research/sources.toml.
+# Measured chain data was read on 2026-11-26 (chain tip 977,695) unless a date says otherwise.
 
+# ---------------------------------------------------------------------------------------------
 # The clock
 
 [block-interval-s]
@@ -10,6 +12,68 @@ unit = "s"
 basis = "spec"
 source = "nakamoto2008"
 label = "target time between blocks"
+
+[blocks-per-retarget]
+value = 2016
+unit = "blocks"
+basis = "spec"
+source = "nakamoto2008"
+label = "blocks between difficulty adjustments"
+
+[hashrate-eh]
+value = 1052
+unit = "EH/s"
+basis = "measured"
+source = "mempool-hashrate"
+date = "2026-11-26"
+label = "network hashrate, mempool.space estimate"
+
+[asic-efficiency-j-th]
+value = 17.5
+unit = "J/TH"
+basis = "vendor"
+fmt = ",.1f"
+source = "hri-s21"
+label = "energy per terahash of a current-generation miner (Antminer S21 specification)"
+
+[asic-price-usd-th]
+value = 7
+unit = "USD per TH/s"
+basis = "measured"
+source = "ct-bitmain"
+date = "2025-12-26"
+label = "street price of current-generation mining hardware (news report of discounted prices)"
+
+[pool-largest-share]
+value = 0.278
+basis = "measured"
+fmt = ".1%"
+source = "mempool-pools"
+date = "2025-11-26 to 2026-11-26"
+label = "share of blocks mined by the largest pool (Foundry) over the trailing year"
+
+[pool-top2-share]
+value = 0.461
+basis = "measured"
+fmt = ".1%"
+source = "mempool-pools"
+date = "2025-11-26 to 2026-11-26"
+label = "share of blocks mined by the two largest pools together over the trailing year"
+
+[confirmations-standard]
+value = 6
+unit = "blocks"
+basis = "design"
+label = "confirmations the common convention treats as final"
+
+[reorg-risk-target]
+value = 0.001
+basis = "design"
+fmt = ".1%"
+label = "chance of an anchor being rewritten that the design accepts"
+
+# ---------------------------------------------------------------------------------------------
+# The design's delays and terms
 
 [tier2-delay-blocks]
 value = 6
@@ -23,6 +87,12 @@ unit = "blocks"
 basis = "design"
 label = "delay between a Tier 3 commitment and its effect"
 
+[tier3-compress-target-h]
+value = 1
+unit = "hours"
+basis = "assumption"
+label = "how short an adversary would want a Tier 3 delay to be, for the clock-compression example"
+
 [lease-blocks]
 value = 144
 unit = "blocks"
@@ -35,7 +105,14 @@ unit = "blocks"
 basis = "design"
 label = "time a bond must be locked before it backs full authority"
 
-# Blockspace
+[seal-epoch-blocks]
+value = 6
+unit = "blocks"
+basis = "design"
+label = "blocks between a gateway's seals"
+
+# ---------------------------------------------------------------------------------------------
+# Blockspace and transaction sizes
 
 [block-weight-limit]
 value = 4000000
@@ -44,45 +121,85 @@ basis = "spec"
 source = "bip141"
 label = "consensus limit on a block's weight"
 
-[seal-tx-vbytes]
-value = 111
+[tx-overhead-vb]
+value = 10.5
 unit = "vB"
-basis = "assumption"
-label = "size of a one-input, one-output Taproot seal transaction (to be replaced by a measured value)"
+basis = "spec"
+fmt = ",.1f"
+source = "optech-calc"
+label = "fixed part of a SegWit transaction (version, counts, locktime, marker)"
+
+[p2tr-input-vb]
+value = 57.5
+unit = "vB"
+basis = "spec"
+fmt = ",.1f"
+source = "optech-calc"
+label = "one Taproot key-path input"
+
+[p2tr-output-vb]
+value = 43
+unit = "vB"
+basis = "spec"
+source = "optech-calc"
+label = "one Taproot output"
+
+[opreturn32-output-vb]
+value = 43
+unit = "vB"
+basis = "spec"
+source = "optech-calc"
+label = "one OP_RETURN output carrying a 32-byte commitment"
+
+[tx-per-day-2026]
+value = 592356
+unit = "transactions"
+basis = "measured"
+source = "btccom-ntx"
+date = "2026-01-01 to 2026-11-25"
+label = "mean confirmed transactions a day in 2026"
 
 [tier3-blockspace-share]
 value = 0.01
 basis = "assumption"
 fmt = ".0%"
-label = "share of blockspace Tier 3 anchors could take without crowding out other use"
+label = "share of blockspace individually anchored Tier 3 actions could take without crowding out other use"
 
+# ---------------------------------------------------------------------------------------------
 # Fees
 
-[feerate-low]
+[feerate-2026]
 value = 1
 unit = "sat/vB"
-basis = "assumption"
-label = "a low fee rate (to be replaced by a measured value)"
+basis = "measured"
+source = "mempool-feerates"
+label = "median fee rate, 2026 (annual median of daily medians)"
 
-[feerate-median]
-value = 5
+[feerate-2023]
+value = 15
 unit = "sat/vB"
-basis = "assumption"
-label = "a median fee rate (to be replaced by a measured value)"
+basis = "measured"
+source = "mempool-feerates"
+label = "median fee rate, 2023 (annual median of daily medians)"
 
-[feerate-high]
-value = 100
+[feerate-halving]
+value = 200
 unit = "sat/vB"
-basis = "assumption"
-label = "a high fee rate (to be replaced by a measured value)"
+basis = "measured"
+source = "mempool-block840000"
+date = "2024-04-20"
+label = "median fee rate in the halving block, 840,000"
 
+[feerate-peak-day]
+value = 861
+unit = "sat/vB"
+basis = "measured"
+source = "mempool-feerates"
+date = "2024-04-20"
+label = "highest daily-average median fee rate on record (the halving day)"
+
+# ---------------------------------------------------------------------------------------------
 # The seal
-
-[seal-epoch-blocks]
-value = 6
-unit = "blocks"
-basis = "design"
-label = "blocks between a gateway's seals"
 
 [agents-per-pool]
 value = 1000
@@ -96,6 +213,14 @@ unit = "pools"
 basis = "assumption"
 label = "seal pools worldwide, for the blockspace estimate"
 
+[header-bytes]
+value = 80
+unit = "bytes"
+basis = "spec"
+source = "nakamoto2008"
+label = "size of one block header"
+
+# ---------------------------------------------------------------------------------------------
 # The bond
 
 [gain-from-violation]
@@ -103,6 +228,18 @@ value = 1000000
 unit = "sats"
 basis = "assumption"
 label = "what a violation is worth to whoever commits it, for the deterrence example"
+
+[harm-catastrophic-btc]
+value = 100
+unit = "BTC"
+basis = "assumption"
+label = "a large harm, for the judgment-proof example"
+
+[p-detect-rare]
+value = 0.01
+basis = "assumption"
+fmt = ".0%"
+label = "chance a rare, hard-to-see harm is caught and adjudicated, for the judgment-proof example"
 
 [allowance-per-lease]
 value = 100000
@@ -114,7 +251,7 @@ label = "an example agent's allowance for one lease"
 value = 2
 unit = "leases"
 basis = "design"
-label = "leases an agent can spend before a lapse or veto stops it"
+label = "leases an agent can spend before a lapse or veto stops it (the current one and one renewed early)"
 
 [coverage-ratio]
 value = 1
@@ -122,7 +259,8 @@ basis = "design"
 fmt = ",.1f"
 label = "bond per sat the agent can spend before it can be stopped"
 
-# Seasoning
+# ---------------------------------------------------------------------------------------------
+# Swarms
 
 [swarm-size]
 value = 10000
@@ -130,16 +268,58 @@ unit = "agents"
 basis = "assumption"
 label = "size of a swarm, for the sybil example"
 
-# Cheating the clock
+[incident-agents-board]
+value = 1200
+unit = "agents"
+basis = "measured"
+source = "metr2026hf"
+date = "2026-08-26"
+label = "agents that used the message board in the 2026 OpenAI / Hugging Face incident"
 
-[hashrate-eh]
-value = 1000
-unit = "EH/s"
-basis = "assumption"
-label = "network hashrate (to be replaced by a measured value)"
+[incident-agents-attack]
+value = 700
+unit = "agents"
+basis = "measured"
+source = "metr2026hf"
+date = "2026-08-26"
+label = "agents that took part in the attack on Hugging Face"
 
-[fleet-efficiency-j-th]
-value = 20
-unit = "J/TH"
-basis = "assumption"
-label = "energy per terahash of the mining fleet (to be replaced by a measured value)"
+[incident-first-day]
+value = 132
+unit = "day of 2026"
+basis = "vendor"
+source = "openai2026hf"
+label = "first message-board entry, 2026-05-12, as OpenAI's timeline gives it"
+
+[incident-stop-day]
+value = 200
+unit = "day of 2026"
+basis = "vendor"
+source = "openai2026hf"
+label = "OpenAI begins stopping the evaluation runs, 2026-07-19"
+
+# ---------------------------------------------------------------------------------------------
+# Oversight
+
+[async-safety-no-delay]
+value = 0.0
+basis = "modelled"
+fmt = "%"
+source = "stickland2025"
+label = "modelled safety against a single attack when harm is immediate (UK AISI, Async Control)"
+
+[async-safety-1h-delay]
+value = 0.96
+basis = "modelled"
+fmt = "%"
+source = "stickland2025"
+label = "modelled safety against a single attack with a one-hour delay before harm"
+
+[metr-doubling-months]
+value = 3.61
+unit = "months"
+basis = "measured"
+fmt = ",.1f"
+source = "metr2026q4"
+date = "2026-11-20"
+label = "doubling time of AI task time horizons (METR, pooled estimate)"

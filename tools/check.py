@@ -5,7 +5,8 @@
 2. The model reproduces: data/numbers.json and research/numbers.md equal a fresh run.
 3. Every ledger link in research/ and paper/ shows the model's value (tools/sync.py --check).
 4. Every citation [@key] in research/ and paper/ names a source in research/sources.toml, and every
-   source there has a type, a title, a year and an identifier (DOI, arXiv ID, ISBN or URL).
+   source there has a type, a title, a year (or says it is undated) and an identifier (DOI, arXiv
+   ID, ISBN or URL). research/sources.toml is what tools/sources.py writes from the notes.
 5. Every measured, vendor or spec input in data/inputs.toml names a source that exists.
 """
 
@@ -113,10 +114,13 @@ def check_sources() -> None:
     sources = load_sources()
     bad = 0
     for key, s in sources.items():
-        for need in ("type", "title", "year"):
+        for need in ("type", "title"):
             if not s.get(need):
                 fail(f"source {key}: no {need}")
                 bad += 1
+        if not s.get("year") and not s.get("undated"):
+            fail(f"source {key}: no year (an undated page says so in `undated`)")
+            bad += 1
         if s.get("type") and s["type"] not in TYPES:
             fail(f"source {key}: type {s['type']!r} is not one of {sorted(TYPES)}")
             bad += 1
@@ -146,6 +150,18 @@ def check_sources() -> None:
         print(f"ok   {len(cited)} cited keys, {len(sources)} sources, all identified")
 
 
+def check_sources_fresh() -> None:
+    try:
+        import sources
+    except ImportError:
+        print("skip sources freshness (PyYAML is not installed)")
+        return
+    if sources.main(["--check"]):
+        fail("sources: research/sources.toml is stale; run make sources")
+    else:
+        print("ok   research/sources.toml is what the notes and manual sources give")
+
+
 def check_inputs() -> None:
     sources = load_sources()
     raw = tomllib.loads((ROOT / "data" / "inputs.toml").read_text())
@@ -160,6 +176,7 @@ def main() -> int:
     check_dashes()
     check_model()
     check_sync()
+    check_sources_fresh()
     check_sources()
     check_inputs()
     if failures:

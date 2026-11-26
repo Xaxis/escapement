@@ -1,0 +1,35 @@
+# DOIs for sources the notes gave only by URL, each checked on Crossref (api.crossref.org/works/DOI)
+# on 2026-11-26 against the title and authors. tools/sources.py applies them.
+
+[bayern2014]
+doi = "10.2139/ssrn.2366197"
+
+[Taylor-PAS-2026]
+doi = "10.1007/978-3-032-36697-9_2"
+
+[douceur2002]
+doi = "10.1007/3-540-45748-8_24"
+
+[dwork1992]
+doi = "10.1007/3-540-48071-4_10"
+
+[ruffing2015]
+doi = "10.1145/2810103.2813686"
+
+[becker1968]
+doi = "10.1086/259394"
+
+[haber1991]
+doi = "10.1007/BF00196791"
+
+[moser2016]
+doi = "10.1007/978-3-662-53357-4_9"
+
+[bonneau2016]
+doi = "10.1007/978-3-662-53357-4_2"
+
+[bryan2010]
+doi = "10.1146/annurev.economics.102308.124324"
+
+[catena-2017]
+doi = "10.1109/sp.2017.19"
