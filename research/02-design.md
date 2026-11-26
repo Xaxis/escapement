@@ -487,46 +487,68 @@ and it means a captured quorum can also take the coins.
 Partial withdrawals are awkward without covenants (a pre-signed Unvault moves the whole output),
 so vault outputs come in fixed denominations. This is the same trade the Revault design accepts.
 
-### How a delay is enforced: off chain
+### How a delay is enforced: off chain, the tick chain
 
 Most of what an AI agent does never touches Bitcoin: it calls APIs, deploys code, sends messages,
-buys compute with a card. Bitcoin cannot enforce a delay on any of that. What it can do is make the
-delay **checkable** by the relying party who carries out the action, using two anchors in the
-chain, one at each end of the wait.
+buys compute with a card. Bitcoin cannot enforce a delay on any of that directly. The tick chain
+makes the delay a consensus fact anyway, by putting each batch of off-chain commitments in an
+output that the agent can spend only after the wait and any guardian can spend at once.
 
-1. **The commitment is sealed.** The agent's request becomes a commitment to a canonical action:
-   `c = H(charter id, tier, relying party, action, amount, expiry height, nonce)`, appended to the
-   gateway's log. The gateway's next seal puts the log head, and so `c`, into a block at height
-   `h0`. The seal proves that `c` existed by `h0`: an upper bound on when the wait began.
-2. **The release names a later block.** After the wait, every guardian signs a release over
-   `(c, h0, h1, hash of block h1)`, where `h1 >= h0 + N`. Nobody can know the hash of block `h1`
-   before it is mined, so nobody, including every guardian together, can sign a release before
-   `h1`. The block hash is a lower bound on when the wait ended.
+Each identity has a chain of Taproot outputs T_0, T_1, ... (05-formal, section 1). Output T_n's
+internal key is a NUMS point tweaked by a hash of (charter id, n, root_n), so it commits to one
+root and provably has no key path. Its script tree has four kinds of leaf:
 
-The relying party checks the seal (that `c` is in a log head committed at or before `h0`), checks
-the release (every guardian's signature, and that block `h1` is in its best chain with
-`h1 - h0 >= N`), checks that `c` names it, the action it is asked to do, and an expiry height not
-yet passed, and checks that it has not seen `c` before. Only then does it act, and it records `c`
-as used. The gap between the two anchors is the wait, and both ends are fixed by blocks rather than
-by anyone's clock. Because `c` names its relying party, amount and expiry, a release cannot be
-replayed to a second service, reused at the same one, or banked for months; an agent that commits
-early only starts a clock that runs out.
+```
+advance2:  <N2> OP_CHECKSEQUENCEVERIFY OP_DROP <AGENT> OP_CHECKSIG
+advance3:  <N3> OP_CHECKSEQUENCEVERIFY OP_DROP <AGENT> OP_CHECKSIGVERIFY
+           <G1> OP_CHECKSIGVERIFY ... <Gn> OP_CHECKSIG
+veto_i:    <Gi> OP_CHECKSIG                      (one per guardian)
+renew:     every guardian's signature            (restarts a halted chain)
+```
 
-The guardians release only what they saw in full at least N blocks before, and only if none of them
-objects. The seal lets anyone audit that afterwards: a guardian that released a commitment the
-gateway sealed too late has a signed record of doing so.
+The agent puts the commitments it wants released (requests, claims, promises) in a Merkle-sum tree
+and spends T_{n-1} into T_n, committing that tree's root. Guardians now have the whole window to
+look at the batch. If any one of them objects, or has not received the batch's contents in full, it
+spends T_n through its `veto_i` leaf, and the batch can never be released: the output is gone. If
+none objects, the agent spends T_n through `advance2` once [6 blocks](numbers.md#tier2-delay-blocks)
+have passed, creating T_{n+1}; for a batch with any Tier 3 commitment it must use `advance3`, which
+waits [144 blocks](numbers.md#tier3-delay-blocks) and needs every guardian's signature as well.
+Entry n is released when that advance spend has the confirmations the relying party requires.
 
-A reorganisation cannot shorten the wait. It cannot make block `h1` exist earlier, and if it
-removes `h1` from the best chain, the release names a block the relying party no longer sees and is
-refused until the guardians sign again. What a deep reorganisation threatens is the record's single
-history (below), not the delay.
+What consensus guarantees, and what relying parties must check (05-formal, Propositions 1 to 5):
 
-Each anchor on its own is old. Haber and Stornetta's linked timestamps give the upper bound
-[@haber1991]; putting a recent block hash in a message to prove it was not written earlier is a
-common freshness device, used to bracket when a file was made [@solomon-bracket] and proposed for
-chip licences in the hardware-governance literature [@petrie2025flexheg2; @buterin2025dacc]. Using
-the pair to make an off-chain veto window checkable by any relying party is the application
-Escapement proposes.
+- **The wait is enforced by every node.** BIP68 and BIP112 make the advance invalid before the wait
+  ends [@bip68; @bip112]. No signer, gateway or co-signer has to refuse anything.
+- **One guardian stops a batch for good.** An outpoint can be spent once, so a confirmed veto ends
+  the batch. During the window the veto is the only valid spend.
+- **One root per index, no gaps.** Each tick commits to one root, and the chain is linear, so an
+  identity cannot show two parties two different batches, and the record (Part I) is complete.
+- **A release is proved by inclusion alone.** A relying party checks headers, the link
+  transactions and their Merkle proofs, the revealed leaf and the committed root. It never asks
+  whether something is unspent, which is what lets a light client or a chip check a release.
+- **Relying parties check the rest.** That each advance's output 0 is built to the template (else
+  the chain, and the identity's record, ends there); that the commitment names them, the action
+  they are asked to do and an execution deadline; that the root's sum does not exceed the charter's
+  cap per entry; that a Tier 3 commitment was released through `advance3`; and that they have not
+  seen the commitment before.
+
+Two things are weaker than they look. The veto must be mined inside its window: if half of all
+hashrate refused to mine it, a six-block window would miss it
+[1.6%](numbers.md#veto-miss-tier2-half) of the time, and miners can be bribed to censor timelocked
+contracts cheaply [@winzer2019; @tsabary2021; @nadahalli2021]. So vetoes carry fees in proportion to
+what the batch is worth, are built as TRUC transactions with a pay-to-anchor output so that any
+watchtower can bump them [@bip431; @core-28], and large stakes go through the 144-block window. And
+the tick chain is veto-based at Tier 2: if every guardian vanishes, Tier 2 batches keep being
+released until the lease lapses (Allowances and leases). That is the price of not needing a
+guardian online for every release, and the lease bounds it.
+
+An earlier version of this design bracketed the wait with two anchors instead: a seal of the
+commitment at the start, and a release signed by every guardian naming the hash of a block at
+least N later. That also bounds the wait, since nobody can sign over a block hash before the block
+exists, but it needs every guardian online to sign every release, takes the start of the wait from
+a gateway's seal, and needs a separate bond to keep that gateway to one history. The tick chain
+makes the start, the wait and the single history consensus facts, at the cost of one transaction
+per batch. The two-anchor form remains useful where an identity has too many batches to tick each.
 
 ### What the ladder costs the agent's usefulness
 
