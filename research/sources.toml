@@ -153,6 +153,141 @@ venue = "Delving Bitcoin, 2026-04-11"
 url = "https://delvingbitcoin.org/t/letting-untrusted-llms-sign-bitcoin-batches-mcp-bridge-tee-enforced-25-tx-daisy-chains/2410"
 supports = "an enclave signs an LLM agent's chain of up to 25 unconfirmed transactions under policy, with out-of-band human authorization; no timelock on the links and no veto"
 
+[source.ville1939]
+type = "book"
+title = "Étude critique de la notion de collectif"
+authors = ["Jean Ville"]
+year = 1939
+venue = "Thèses de l'entre-deux-guerres, no. 218 (Gauthier-Villars), Numdam"
+url = "http://www.numdam.org/item/THESE_1939__218__1_0/"
+supports = "Ville's inequality: a nonnegative martingale with initial value 1 exceeds lambda at any time with probability at most 1/lambda"
+
+[source.shafer2019]
+type = "book"
+title = "Game-Theoretic Foundations for Probability and Finance"
+authors = ["Glenn Shafer", "Vladimir Vovk"]
+year = 2019
+venue = "Wiley Series in Probability and Statistics"
+doi = "10.1002/9781118548035"
+supports = "testing by betting: a forecaster is discredited when a nonnegative capital process (likelihood ratio) grows large; Ville's inequality bounds the chance"
+
+[source.klein1981]
+type = "peer-reviewed"
+title = "The Role of Market Forces in Assuring Contractual Performance"
+authors = ["Benjamin Klein", "Keith B. Leffler"]
+year = 1981
+venue = "Journal of Political Economy 89(4)"
+doi = "10.1086/260996"
+supports = "reputation enforces contracts when the future premium stream exceeds the one-shot gain from cheating"
+
+[source.shapiro1983]
+type = "peer-reviewed"
+title = "Premiums for High Quality Products as Returns to Reputations"
+authors = ["Carl Shapiro"]
+year = 1983
+venue = "The Quarterly Journal of Economics 98(4)"
+doi = "10.2307/1881782"
+supports = "reputation premiums as returns on an investment in reputation"
+
+[source.friedman2001]
+type = "peer-reviewed"
+title = "The Social Cost of Cheap Pseudonyms"
+authors = ["Eric J. Friedman", "Paul Resnick"]
+year = 2001
+venue = "Journal of Economics & Management Strategy 10(2)"
+doi = "10.1111/j.1430-9134.2001.00173.x"
+supports = "when identities are free, newcomers must be distrusted; costly or unreplaceable identities remove the need"
+
+[source.gneiting2007]
+type = "peer-reviewed"
+title = "Strictly Proper Scoring Rules, Prediction, and Estimation"
+authors = ["Tilmann Gneiting", "Adrian E. Raftery"]
+year = 2007
+venue = "Journal of the American Statistical Association 102(477)"
+doi = "10.1198/016214506000001437"
+supports = "strictly proper scoring rules, including the logarithmic and Brier scores, are uniquely maximised in expectation by the true distribution"
+
+[source.bagnoli2005]
+type = "peer-reviewed"
+title = "Log-concave probability and its applications"
+authors = ["Mark Bagnoli", "Ted Bergstrom"]
+year = 2005
+venue = "Economic Theory 26(2)"
+doi = "10.1007/s00199-004-0514-4"
+supports = "for log-concave densities the truncated mean E[X | X < t] has slope at most one"
+
+[source.milgrom1981]
+type = "peer-reviewed"
+title = "Good News and Bad News: Representation Theorems and Applications"
+authors = ["Paul R. Milgrom"]
+year = 1981
+venue = "The Bell Journal of Economics 12(2)"
+doi = "10.2307/3003562"
+supports = "with verifiable disclosure, sellers reveal quality because silence is read as the worst case (unraveling)"
+
+[source.grossman1981]
+type = "peer-reviewed"
+title = "The Informational Role of Warranties and Private Disclosure about Product Quality"
+authors = ["Sanford J. Grossman"]
+year = 1981
+venue = "The Journal of Law and Economics 24(3)"
+doi = "10.1086/466995"
+supports = "costless verifiable disclosure leads to full disclosure in equilibrium"
+
+[source.jovanovic1982]
+type = "peer-reviewed"
+title = "Truthful Disclosure of Information"
+authors = ["Boyan Jovanovic"]
+year = 1982
+venue = "The Bell Journal of Economics 13(1)"
+doi = "10.2307/3003428"
+supports = "with a cost of disclosure, only types above a threshold disclose"
+
+[source.akerlof1970]
+type = "peer-reviewed"
+title = "The Market for \"Lemons\": Quality Uncertainty and the Market Mechanism"
+authors = ["George A. Akerlof"]
+year = 1970
+venue = "The Quarterly Journal of Economics 84(3)"
+doi = "10.2307/1879431"
+supports = "when quality cannot be observed, the market's average quality falls as better sellers leave"
+
+[source.winzer2019]
+type = "peer-reviewed"
+title = "Temporary Censorship Attacks in the Presence of Rational Miners"
+authors = ["Fredrik Winzer", "Benjamin Herd", "Sebastian Faust"]
+year = 2019
+venue = "IEEE European Symposium on Security and Privacy Workshops (EuroS&PW) 2019"
+doi = "10.1109/EuroSPW.2019.00046"
+supports = "bribing rational miners to keep a transaction out of blocks for a limited time, which threatens protocols that rely on timely inclusion"
+
+[source.tsabary2021]
+type = "peer-reviewed"
+title = "MAD-HTLC: Because HTLC is Crazy-Cheap to Attack"
+authors = ["Itay Tsabary", "Matan Yechieli", "Alex Manuskin", "Ittay Eyal"]
+year = 2021
+venue = "IEEE Symposium on Security and Privacy 2021"
+doi = "10.1109/SP40001.2021.00080"
+supports = "rational miners can be bribed cheaply to censor the timely spend of a timelocked contract"
+
+[source.nadahalli2021]
+type = "peer-reviewed"
+title = "Timelocked Bribing"
+authors = ["Tejaswi Nadahalli", "Majid Khabbazian", "Roger Wattenhofer"]
+year = 2021
+venue = "Financial Cryptography and Data Security 2021, LNCS"
+doi = "10.1007/978-3-662-64322-8_3"
+supports = "bribes paid through timelocked transactions can make miners withhold a competing transaction"
+
+[source.resnick2007]
+type = "peer-reviewed"
+title = "The influence limiter: provably manipulation-resistant recommender systems"
+authors = ["Paul Resnick", "Rahul Sami"]
+year = 2007
+venue = "ACM Conference on Recommender Systems (RecSys) 2007"
+doi = "10.1145/1297231.1297236"
+supports = "raters earn influence by the information value of their past ratings (log scoring), which bounds the damage sybils can do"
+
 [source.a2a-ap2-crate]
 type = "code"
 title = "a2a-ap2 0.3.1 mandate.rs"

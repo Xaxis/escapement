@@ -21,6 +21,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import sim
 from ledger import Ledger, write_outputs  # noqa: E402
 
 
@@ -219,6 +220,139 @@ def build(overrides: dict | None = None) -> Ledger:
     d("split-authority-ratio-jm", lambda q: q["swarm-size"] ** (1 - q["jm-bond-exponent"]),
       "N * (C/N)^x / C^x = N^(1 - x) with N = swarm-size, x = jm-bond-exponent", fmt="sig2",
       label="the same ratio under JoinMarket's shipped exponent", defined_in=here())
+
+    # The record (research/05-formal.md, section 3). An identity costs the return forgone on its
+    # bond over its term plus the fees of its bond and genesis transactions.
+    d("identity-cost-sats",
+      lambda q: q["bond-coverage"] * q["capital-cost-rate"] * q["bond-term-years"]
+      + 2 * q["seal-tx-vbytes"] * q["feerate-2023"],
+      "bond-coverage * capital-cost-rate * bond-term-years + 2 * seal-tx-vbytes * feerate-2023",
+      "sats", fmt="sig2", label="cost of one identity whose record counts", defined_in=here())
+    d("fake-record-lambda", lambda q: 2 ** q["fake-record-claims"],
+      "2 ^ fake-record-claims", fmt="sig2",
+      label="score of an all-correct record of that length against a baseline of one half", defined_in=here())
+    d("fake-record-identities", lambda q: q["fake-record-success"] * q["fake-record-lambda"],
+      "fake-record-success * fake-record-lambda (Theorem 1)", "identities", fmt="sig2",
+      label="identities a record faker without edge needs", defined_in=here())
+    d("fake-record-cost-btc", lambda q: q["fake-record-identities"] * q["identity-cost-sats"] / 1e8,
+      "fake-record-identities * identity-cost-sats / 1e8", "BTC", fmt="sig2",
+      label="what faking that record costs at least", defined_in=here())
+
+    def faking(q):
+        return sim.record_faking(int(q["sim-identities"]), int(q["sim-log2-lambda"]),
+                                 int(q["sim-log2-lambda"]), 4000, 1)
+    d("sim-fake-p", lambda q: faking(q)["p-any-reaches"],
+      "simulated share of 4,000 trials in which any identity reaches the score", fmt=".1%",
+      label="how often a faker running sim-identities identities reached 2^sim-log2-lambda",
+      defined_in=here())
+    d("sim-fake-bound", lambda q: min(1, q["sim-identities"] / 2 ** q["sim-log2-lambda"]),
+      "sim-identities / 2^sim-log2-lambda (Theorem 1)", fmt=".1%",
+      label="the bound for the same case", defined_in=here())
+    d("sim-selective-claims",
+      lambda q: sim.record_selective(int(q["sim-log2-lambda"]), 4000, 2)["claims-mean"],
+      "simulated mean claims until the shown record reaches the score", "claims", fmt=",.0f",
+      label="claims one identity needs to fake the same record if it may hide its misses",
+      defined_in=here())
+
+    def skilled(q):
+        return sim.record_skilled(int(q["sim-skilled-log2-lambda"]), q["sim-skilled-p-low"],
+                                  q["sim-skilled-p-high"], 400, 3)
+    d("sim-skilled-edge", lambda q: skilled(q)["edge-nats"],
+      "mean KL(p || 1/2) for p uniform on [sim-skilled-p-low, sim-skilled-p-high]", "nats",
+      fmt=".2f", label="per-claim edge of the skilled honest identity", defined_in=here())
+    d("sim-skilled-claims", lambda q: skilled(q)["claims-median"],
+      "simulated median claims until the likelihood ratio first reaches 2^sim-skilled-log2-lambda",
+      "claims", fmt=",.0f", label="claims the skilled honest identity needs, with one identity",
+      defined_in=here())
+    d("sim-skilled-identities-faker",
+      lambda q: q["fake-record-success"] * 2 ** q["sim-skilled-log2-lambda"],
+      "fake-record-success * 2^sim-skilled-log2-lambda", "identities", fmt="sig2",
+      label="identities a faker without edge needs for the same score", defined_in=here())
+
+    # Training (section 5): the learned confidence parameter, 1 when calibrated.
+    d("sim-train-a-complete", lambda q: sim.training("complete", 3000, 64, 0.5, 0.5, 4)["a"],
+      "stochastic gradient ascent from a = 0.5, complete records", fmt=".2f",
+      label="confidence the learner settles on under complete records (1 is calibrated)",
+      defined_in=here())
+    d("sim-train-err-complete",
+      lambda q: sim.training("complete", 3000, 64, 0.5, 0.5, 4)["calibration-error"],
+      "mean |q - p| of the learned policy", fmt=".1%",
+      label="its calibration error", defined_in=here())
+    d("sim-train-a-selective", lambda q: sim.training("selective", 3000, 64, 0.5, 1.0, 5)["a"],
+      "stochastic gradient ascent from a = 1 (calibrated), after-the-fact selection", fmt=".1f",
+      label="confidence the learner reaches under selective records after 3,000 steps, still rising",
+      defined_in=here())
+    d("sim-train-err-selective",
+      lambda q: sim.training("selective", 3000, 64, 0.5, 1.0, 5)["calibration-error"],
+      "mean |q - p| of the learned policy", fmt=".0%", label="its calibration error",
+      defined_in=here())
+
+    # Adoption (section 6).
+    def adopt(q, seed_readers, start, substitution):
+        return sim.adoption(q["sim-join-cost"], q["sim-gain-over-k"], seed_readers,
+                            q["sim-harmful-share"], start, 60, 2000, q["sim-tenure-tau"],
+                            substitution, 6)
+    d("adopt-theta-star-uniform", lambda q: 2 * q["sim-join-cost"],
+      "2 * sim-join-cost (Proposition 11, uniform types)", fmt=".2f",
+      label="lowest type that joins under one-sided unraveling", defined_in=here())
+    d("adopt-x-low", lambda q: sim.adoption_analytic(q["sim-join-cost"], q["sim-gain-over-k"])["x-low"],
+      "(1 - sqrt(1 - 8 c / a)) / 2 (Proposition 12)", fmt=".1%",
+      label="tipping point: share of agents with records below which adoption collapses", defined_in=here())
+    d("adopt-x-high", lambda q: sim.adoption_analytic(q["sim-join-cost"], q["sim-gain-over-k"])["x-high"],
+      "(1 + sqrt(1 - 8 c / a)) / 2 (Proposition 12)", fmt=".0%",
+      label="share of agents with records in the high equilibrium, uniform types", defined_in=here())
+    d("adopt-seed-threshold", lambda q: 2 * q["sim-join-cost"],
+      "2 * sim-join-cost (Proposition 12)", fmt=".0%",
+      label="share of seed readers above which the no-adoption equilibrium disappears", defined_in=here())
+    d("sim-adopt-low-noseed", lambda q: adopt(q, 0.0, q["sim-start-low"], 0.0)["final-share"],
+      "agent-based, no seed readers, low start, no substitution", fmt=".0%",
+      label="share with records after 60 periods", defined_in=here())
+    d("sim-adopt-high-noseed", lambda q: adopt(q, 0.0, q["sim-start-high"], 0.0)["final-share"],
+      "agent-based, no seed readers, high start, no substitution", fmt=".0%",
+      label="share with records after 60 periods", defined_in=here())
+    d("sim-adopt-low-seed", lambda q: adopt(q, q["sim-seed-readers"], q["sim-start-low"], 0.0)["final-share"],
+      "agent-based, seed readers, low start, no substitution", fmt=".0%",
+      label="share with records after 60 periods", defined_in=here())
+    d("sim-population-mean", lambda q: adopt(q, 0.0, q["sim-start-low"], 0.0)["population-mean"],
+      "mean type of all agents, harmful included", fmt=".2f",
+      label="terms every agent would get if nobody could be told apart", defined_in=here())
+    d("sim-harm-terms-nosub", lambda q: adopt(q, q["sim-seed-readers"], q["sim-start-low"], 0.0)["harmful-terms"],
+      "best terms open to a harmful actor at the end, no substitution", fmt=".2f",
+      label="terms a harmful actor gets by routing around, when agents cannot move their business",
+      defined_in=here())
+    d("sim-harm-terms-partial",
+      lambda q: adopt(q, q["sim-seed-readers"], q["sim-start-low"], q["sim-substitution-partial"])["harmful-terms"],
+      "the same with partial substitution", fmt=".2f",
+      label="terms a harmful actor gets by routing around, with partial substitution", defined_in=here())
+    d("sim-harm-terms-full", lambda q: adopt(q, q["sim-seed-readers"], q["sim-start-low"], 1.0)["harmful-terms"],
+      "the same with full substitution", fmt=".2f",
+      label="terms a harmful actor gets by routing around, with full substitution", defined_in=here())
+    d("sim-readers-final", lambda q: adopt(q, q["sim-seed-readers"], q["sim-start-low"], 0.0)["final-readers"],
+      "share of relying parties reading records at the end, seed case", fmt=".0%",
+      label="relying parties that read records", defined_in=here())
+
+    # The veto under censorship (section 1) and the chip clock (section 8).
+    d("veto-miss-tier2-half", lambda q: q["veto-censor-share"] ** q["tier2-delay-blocks"],
+      "veto-censor-share ^ tier2-delay-blocks", fmt=".1%",
+      label="chance a Tier 2 window passes with no block that would mine the veto", defined_in=here())
+    d("veto-miss-tier3-half", lambda q: q["veto-censor-share"] ** q["tier3-delay-blocks"],
+      "veto-censor-share ^ tier3-delay-blocks", fmt=".0e",
+      label="the same for a Tier 3 window", defined_in=here())
+    d("sim-veto-miss-tier2",
+      lambda q: sim.veto_censorship(int(q["tier2-delay-blocks"]), q["veto-censor-share"], 200_000, 7)["p-miss"],
+      "simulated share of 200,000 windows", fmt=".1%",
+      label="the Tier 2 figure, by simulation", defined_in=here())
+    d("block-energy-mwh",
+      lambda q: q["hashrate-eh"] * 1e6 * q["asic-efficiency-j-th"] * q["block-interval-s"] / 3.6e9,
+      "hashrate-eh * 1e6 * asic-efficiency-j-th * block-interval-s / 3.6e9", "MWh", fmt=",.0f",
+      label="energy the network spends on one block", defined_in=here())
+    d("chip-forge-blocks-tier3",
+      lambda q: (q["tier3-delay-blocks"] + q["confirmations-standard"]) * q["chip-difficulty-floor"],
+      "(tier3-delay-blocks + confirmations-standard) * chip-difficulty-floor", "blocks of work",
+      fmt=",.0f", label="work, in current blocks, to forge a Tier 3 release for a chip", defined_in=here())
+    d("chip-forge-mwh-tier3", lambda q: q["chip-forge-blocks-tier3"] * q["block-energy-mwh"],
+      "chip-forge-blocks-tier3 * block-energy-mwh", "MWh", fmt="sig2",
+      label="energy that forgery costs", defined_in=here())
     return L
 
 

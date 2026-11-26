@@ -597,6 +597,253 @@
     "note": "",
     "defined_in": "data/inputs.toml#L344"
   },
+  "capital-cost-rate": {
+    "value": 0.05,
+    "display": "5%/yr",
+    "unit": "/yr",
+    "basis": "assumption",
+    "label": "yearly return the principal forgoes on capital locked in a bond",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L356"
+  },
+  "bond-term-years": {
+    "value": 1.0,
+    "display": "1 years",
+    "unit": "years",
+    "basis": "design",
+    "label": "how long an identity's bond is locked",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L363"
+  },
+  "fake-record-claims": {
+    "value": 20.0,
+    "display": "20 claims",
+    "unit": "claims",
+    "basis": "assumption",
+    "label": "length of the all-correct yes-or-no record in the record-faking example",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L369"
+  },
+  "fake-record-success": {
+    "value": 0.5,
+    "display": "50%",
+    "unit": "",
+    "basis": "assumption",
+    "label": "chance of success the record faker wants",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L375"
+  },
+  "sim-identities": {
+    "value": 256.0,
+    "display": "256 identities",
+    "unit": "identities",
+    "basis": "assumption",
+    "label": "identities the faker runs in the record-faking simulation",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L381"
+  },
+  "sim-log2-lambda": {
+    "value": 10.0,
+    "display": "10",
+    "unit": "",
+    "basis": "assumption",
+    "label": "log base 2 of the score the faker wants in the simulation",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L387"
+  },
+  "sim-skilled-log2-lambda": {
+    "value": 20.0,
+    "display": "20",
+    "unit": "",
+    "basis": "assumption",
+    "label": "log base 2 of the score the skilled identity reaches in the simulation",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L392"
+  },
+  "sim-skilled-p-low": {
+    "value": 0.1,
+    "display": "0.1",
+    "unit": "",
+    "basis": "assumption",
+    "label": "lowest true event probability the skilled identity sees",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L397"
+  },
+  "sim-skilled-p-high": {
+    "value": 0.9,
+    "display": "0.9",
+    "unit": "",
+    "basis": "assumption",
+    "label": "highest true event probability the skilled identity sees",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L403"
+  },
+  "sim-join-cost": {
+    "value": 0.02,
+    "display": "0.02",
+    "unit": "",
+    "basis": "assumption",
+    "label": "cost of joining per period, as a share of the range of value agents deliver",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L409"
+  },
+  "sim-gain-over-k": {
+    "value": 0.5,
+    "display": "0.5",
+    "unit": "",
+    "basis": "assumption",
+    "label": "a relying party's gain from reading records per unit share of agents with records, over the highest integration cost",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L415"
+  },
+  "sim-seed-readers": {
+    "value": 0.1,
+    "display": "10%",
+    "unit": "",
+    "basis": "assumption",
+    "label": "share of relying parties that read records whatever others do (insurers, heavy-fraud services)",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L421"
+  },
+  "sim-harmful-share": {
+    "value": 0.05,
+    "display": "5%",
+    "unit": "",
+    "basis": "assumption",
+    "label": "share of agents that are harmful and never join",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L427"
+  },
+  "sim-start-low": {
+    "value": 0.02,
+    "display": "2%",
+    "unit": "",
+    "basis": "assumption",
+    "label": "starting share of agents with records, low case",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L433"
+  },
+  "sim-start-high": {
+    "value": 0.2,
+    "display": "20%",
+    "unit": "",
+    "basis": "assumption",
+    "label": "starting share of agents with records, high case",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L439"
+  },
+  "sim-substitution-partial": {
+    "value": 0.5,
+    "display": "50%",
+    "unit": "",
+    "basis": "assumption",
+    "label": "share of its business an agent can move to relying parties that offer it better terms, partial case",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L445"
+  },
+  "sim-tenure-tau": {
+    "value": 3.0,
+    "display": "3 periods",
+    "unit": "periods",
+    "basis": "assumption",
+    "label": "tenure at which a relying party weighs an agent's record as much as the pool's mean",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L451"
+  },
+  "veto-censor-share": {
+    "value": 0.5,
+    "display": "50%",
+    "unit": "",
+    "basis": "assumption",
+    "label": "share of hashrate that refuses to mine a veto, in the censorship example",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L457"
+  },
+  "chip-difficulty-floor": {
+    "value": 0.25,
+    "display": "0.25",
+    "unit": "",
+    "basis": "design",
+    "label": "lowest difficulty a chip accepts, as a share of the last difficulty it accepted (one retarget step)",
+    "formula": "",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L463"
+  },
   "blocks-per-day": {
     "value": 144.0,
     "display": "144 blocks",
@@ -610,7 +857,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L66"
+    "defined_in": "model/escapement.py#L67"
   },
   "tier2-delay-mean-min": {
     "value": 60.0,
@@ -626,7 +873,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L69"
+    "defined_in": "model/escapement.py#L70"
   },
   "tier2-delay-p-under-half": {
     "value": 0.08391794203130343,
@@ -642,7 +889,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L74"
+    "defined_in": "model/escapement.py#L75"
   },
   "tier3-delay-mean-h": {
     "value": 24.0,
@@ -658,7 +905,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L77"
+    "defined_in": "model/escapement.py#L78"
   },
   "tier3-delay-p-under-80pct": {
     "value": 0.005332990142931204,
@@ -674,7 +921,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L82"
+    "defined_in": "model/escapement.py#L83"
   },
   "lease-mean-h": {
     "value": 24.0,
@@ -690,7 +937,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L85"
+    "defined_in": "model/escapement.py#L86"
   },
   "season-days": {
     "value": 28.0,
@@ -706,7 +953,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L87"
+    "defined_in": "model/escapement.py#L88"
   },
   "clock-2x-power-gw": {
     "value": 18.41,
@@ -722,7 +969,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L93"
+    "defined_in": "model/escapement.py#L94"
   },
   "clock-2x-hardware-busd": {
     "value": 7.364,
@@ -738,7 +985,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L96"
+    "defined_in": "model/escapement.py#L97"
   },
   "clock-2x-days-gained": {
     "value": 7.0,
@@ -754,7 +1001,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L99"
+    "defined_in": "model/escapement.py#L100"
   },
   "tier3-compress-factor": {
     "value": 24.0,
@@ -770,7 +1017,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L103"
+    "defined_in": "model/escapement.py#L104"
   },
   "tier3-compress-power-gw": {
     "value": 423.43,
@@ -787,7 +1034,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L107"
+    "defined_in": "model/escapement.py#L108"
   },
   "datacentre-gw-2025": {
     "value": 55.36529680365297,
@@ -802,7 +1049,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L111"
+    "defined_in": "model/escapement.py#L112"
   },
   "bitcoin-gw-survey": {
     "value": 15.753424657534246,
@@ -817,7 +1064,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L114"
+    "defined_in": "model/escapement.py#L115"
   },
   "tier3-compress-vs-datacentres": {
     "value": 7.647931546391753,
@@ -833,7 +1080,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L117"
+    "defined_in": "model/escapement.py#L118"
   },
   "reorg-p-largest-6": {
     "value": 0.08867441744659027,
@@ -849,7 +1096,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L122"
+    "defined_in": "model/escapement.py#L123"
   },
   "reorg-p-top2-6": {
     "value": 0.8228421509525841,
@@ -865,7 +1112,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L125"
+    "defined_in": "model/escapement.py#L126"
   },
   "depth-for-target-largest": {
     "value": 19.0,
@@ -881,7 +1128,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L129"
+    "defined_in": "model/escapement.py#L130"
   },
   "depth-for-target-top2": {
     "value": 552.0,
@@ -897,7 +1144,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L133"
+    "defined_in": "model/escapement.py#L134"
   },
   "depth-for-target-top2-days": {
     "value": 3.8333333333333335,
@@ -913,7 +1160,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L136"
+    "defined_in": "model/escapement.py#L137"
   },
   "reorg-p-top2-144": {
     "value": 0.12785910352584418,
@@ -929,7 +1176,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L139"
+    "defined_in": "model/escapement.py#L140"
   },
   "vbytes-per-block": {
     "value": 1000000.0,
@@ -944,7 +1191,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L143"
+    "defined_in": "model/escapement.py#L144"
   },
   "vbytes-per-day": {
     "value": 144000000.0,
@@ -960,7 +1207,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L146"
+    "defined_in": "model/escapement.py#L147"
   },
   "seal-tx-vbytes": {
     "value": 111.0,
@@ -977,7 +1224,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L150"
+    "defined_in": "model/escapement.py#L151"
   },
   "anchor-tx-vbytes": {
     "value": 154.0,
@@ -995,7 +1242,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L154"
+    "defined_in": "model/escapement.py#L155"
   },
   "seal-tx-per-day-max": {
     "value": 1297297.2972972973,
@@ -1011,7 +1258,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L157"
+    "defined_in": "model/escapement.py#L158"
   },
   "seal-capacity-vs-2026": {
     "value": 2.190063572070338,
@@ -1027,7 +1274,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L160"
+    "defined_in": "model/escapement.py#L161"
   },
   "tier3-capacity-per-day": {
     "value": 12972.972972972973,
@@ -1043,7 +1290,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L164"
+    "defined_in": "model/escapement.py#L165"
   },
   "seal-cost-2026": {
     "value": 111.0,
@@ -1059,7 +1306,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L170"
+    "defined_in": "model/escapement.py#L171"
   },
   "seal-cost-2023": {
     "value": 1665.0,
@@ -1075,7 +1322,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L170"
+    "defined_in": "model/escapement.py#L171"
   },
   "seal-cost-halving": {
     "value": 22200.0,
@@ -1091,7 +1338,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L170"
+    "defined_in": "model/escapement.py#L171"
   },
   "seal-cost-peak-day": {
     "value": 95571.0,
@@ -1107,7 +1354,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L170"
+    "defined_in": "model/escapement.py#L171"
   },
   "seals-per-day": {
     "value": 24.0,
@@ -1123,7 +1370,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L173"
+    "defined_in": "model/escapement.py#L174"
   },
   "gateway-seal-cost-day-2026": {
     "value": 2664.0,
@@ -1139,7 +1386,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L176"
+    "defined_in": "model/escapement.py#L177"
   },
   "gateway-seal-cost-day-halving": {
     "value": 532800.0,
@@ -1155,7 +1402,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L179"
+    "defined_in": "model/escapement.py#L180"
   },
   "agent-seal-cost-day-halving": {
     "value": 532.8,
@@ -1171,7 +1418,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L182"
+    "defined_in": "model/escapement.py#L183"
   },
   "seal-blockspace-share-pools": {
     "value": 0.0185,
@@ -1189,7 +1436,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L186"
+    "defined_in": "model/escapement.py#L187"
   },
   "headers-mb-per-year": {
     "value": 4.2048,
@@ -1205,7 +1452,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L189"
+    "defined_in": "model/escapement.py#L190"
   },
   "bond-deter-p10": {
     "value": 10000000.0,
@@ -1220,7 +1467,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L197"
+    "defined_in": "model/escapement.py#L198"
   },
   "bond-deter-p50": {
     "value": 2000000.0,
@@ -1235,7 +1482,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L197"
+    "defined_in": "model/escapement.py#L198"
   },
   "bond-deter-p90": {
     "value": 1111111.111111111,
@@ -1250,7 +1497,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L197"
+    "defined_in": "model/escapement.py#L198"
   },
   "bond-judgment-proof-btc": {
     "value": 10000.0,
@@ -1266,7 +1513,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L200"
+    "defined_in": "model/escapement.py#L201"
   },
   "bond-coverage": {
     "value": 200000.0,
@@ -1283,7 +1530,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L203"
+    "defined_in": "model/escapement.py#L204"
   },
   "swarm-capital-btc": {
     "value": 20.0,
@@ -1299,7 +1546,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L208"
+    "defined_in": "model/escapement.py#L209"
   },
   "incident-swarm-capital-btc": {
     "value": 1.4,
@@ -1315,7 +1562,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L211"
+    "defined_in": "model/escapement.py#L212"
   },
   "incident-days": {
     "value": 68.0,
@@ -1331,7 +1578,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L214"
+    "defined_in": "model/escapement.py#L215"
   },
   "split-authority-ratio-squared": {
     "value": 0.0001,
@@ -1346,7 +1593,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L218"
+    "defined_in": "model/escapement.py#L219"
   },
   "split-authority-ratio-jm": {
     "value": 0.0630957344480193,
@@ -1362,6 +1609,539 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L221"
+    "defined_in": "model/escapement.py#L222"
+  },
+  "identity-cost-sats": {
+    "value": 13330.0,
+    "display": "13,000 sats",
+    "unit": "sats",
+    "basis": "derived",
+    "label": "cost of one identity whose record counts",
+    "formula": "bond-coverage * capital-cost-rate * bond-term-years + 2 * seal-tx-vbytes * feerate-2023",
+    "inputs": [
+      "bond-coverage",
+      "capital-cost-rate",
+      "bond-term-years",
+      "seal-tx-vbytes",
+      "feerate-2023"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L230"
+  },
+  "fake-record-lambda": {
+    "value": 1048576.0,
+    "display": "1,000,000",
+    "unit": "",
+    "basis": "derived",
+    "label": "score of an all-correct record of that length against a baseline of one half",
+    "formula": "2 ^ fake-record-claims",
+    "inputs": [
+      "fake-record-claims"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L233"
+  },
+  "fake-record-identities": {
+    "value": 524288.0,
+    "display": "520,000 identities",
+    "unit": "identities",
+    "basis": "derived",
+    "label": "identities a record faker without edge needs",
+    "formula": "fake-record-success * fake-record-lambda (Theorem 1)",
+    "inputs": [
+      "fake-record-success",
+      "fake-record-lambda"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L236"
+  },
+  "fake-record-cost-btc": {
+    "value": 69.8875904,
+    "display": "70 BTC",
+    "unit": "BTC",
+    "basis": "derived",
+    "label": "what faking that record costs at least",
+    "formula": "fake-record-identities * identity-cost-sats / 1e8",
+    "inputs": [
+      "fake-record-identities",
+      "identity-cost-sats"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L239"
+  },
+  "sim-fake-p": {
+    "value": 0.229,
+    "display": "22.9%",
+    "unit": "",
+    "basis": "derived",
+    "label": "how often a faker running sim-identities identities reached 2^sim-log2-lambda",
+    "formula": "simulated share of 4,000 trials in which any identity reaches the score",
+    "inputs": [
+      "sim-identities",
+      "sim-log2-lambda"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L247"
+  },
+  "sim-fake-bound": {
+    "value": 0.25,
+    "display": "25.0%",
+    "unit": "",
+    "basis": "derived",
+    "label": "the bound for the same case",
+    "formula": "sim-identities / 2^sim-log2-lambda (Theorem 1)",
+    "inputs": [
+      "sim-identities",
+      "sim-log2-lambda"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L250"
+  },
+  "sim-selective-claims": {
+    "value": 20.00475,
+    "display": "20 claims",
+    "unit": "claims",
+    "basis": "derived",
+    "label": "claims one identity needs to fake the same record if it may hide its misses",
+    "formula": "simulated mean claims until the shown record reaches the score",
+    "inputs": [
+      "sim-log2-lambda"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L255"
+  },
+  "sim-skilled-edge": {
+    "value": 0.11525193549842,
+    "display": "0.12 nats",
+    "unit": "nats",
+    "basis": "derived",
+    "label": "per-claim edge of the skilled honest identity",
+    "formula": "mean KL(p || 1/2) for p uniform on [sim-skilled-p-low, sim-skilled-p-high]",
+    "inputs": [
+      "sim-skilled-log2-lambda",
+      "sim-skilled-p-low",
+      "sim-skilled-p-high"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L262"
+  },
+  "sim-skilled-claims": {
+    "value": 116.0,
+    "display": "116 claims",
+    "unit": "claims",
+    "basis": "derived",
+    "label": "claims the skilled honest identity needs, with one identity",
+    "formula": "simulated median claims until the likelihood ratio first reaches 2^sim-skilled-log2-lambda",
+    "inputs": [
+      "sim-skilled-log2-lambda",
+      "sim-skilled-p-low",
+      "sim-skilled-p-high"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L266"
+  },
+  "sim-skilled-identities-faker": {
+    "value": 524288.0,
+    "display": "520,000 identities",
+    "unit": "identities",
+    "basis": "derived",
+    "label": "identities a faker without edge needs for the same score",
+    "formula": "fake-record-success * 2^sim-skilled-log2-lambda",
+    "inputs": [
+      "fake-record-success",
+      "sim-skilled-log2-lambda"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L270"
+  },
+  "sim-train-a-complete": {
+    "value": 1.0640980117415904,
+    "display": "1.06",
+    "unit": "",
+    "basis": "derived",
+    "label": "confidence the learner settles on under complete records (1 is calibrated)",
+    "formula": "stochastic gradient ascent from a = 0.5, complete records",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L276"
+  },
+  "sim-train-err-complete": {
+    "value": 0.009655863732526415,
+    "display": "1.0%",
+    "unit": "",
+    "basis": "derived",
+    "label": "its calibration error",
+    "formula": "mean |q - p| of the learned policy",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L280"
+  },
+  "sim-train-a-selective": {
+    "value": 10.407660372442608,
+    "display": "10.4",
+    "unit": "",
+    "basis": "derived",
+    "label": "confidence the learner reaches under selective records after 3,000 steps, still rising",
+    "formula": "stochastic gradient ascent from a = 1 (calibrated), after-the-fact selection",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L284"
+  },
+  "sim-train-err-selective": {
+    "value": 0.23829625954772063,
+    "display": "24%",
+    "unit": "",
+    "basis": "derived",
+    "label": "its calibration error",
+    "formula": "mean |q - p| of the learned policy",
+    "inputs": [],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L288"
+  },
+  "adopt-theta-star-uniform": {
+    "value": 0.04,
+    "display": "0.04",
+    "unit": "",
+    "basis": "derived",
+    "label": "lowest type that joins under one-sided unraveling",
+    "formula": "2 * sim-join-cost (Proposition 11, uniform types)",
+    "inputs": [
+      "sim-join-cost"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L297"
+  },
+  "adopt-x-low": {
+    "value": 0.08768943743823399,
+    "display": "8.8%",
+    "unit": "",
+    "basis": "derived",
+    "label": "tipping point: share of agents with records below which adoption collapses",
+    "formula": "(1 - sqrt(1 - 8 c / a)) / 2 (Proposition 12)",
+    "inputs": [
+      "sim-join-cost",
+      "sim-gain-over-k"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L300"
+  },
+  "adopt-x-high": {
+    "value": 0.912310562561766,
+    "display": "91%",
+    "unit": "",
+    "basis": "derived",
+    "label": "share of agents with records in the high equilibrium, uniform types",
+    "formula": "(1 + sqrt(1 - 8 c / a)) / 2 (Proposition 12)",
+    "inputs": [
+      "sim-join-cost",
+      "sim-gain-over-k"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L303"
+  },
+  "adopt-seed-threshold": {
+    "value": 0.04,
+    "display": "4%",
+    "unit": "",
+    "basis": "derived",
+    "label": "share of seed readers above which the no-adoption equilibrium disappears",
+    "formula": "2 * sim-join-cost (Proposition 12)",
+    "inputs": [
+      "sim-join-cost"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L306"
+  },
+  "sim-adopt-low-noseed": {
+    "value": 0.0,
+    "display": "0%",
+    "unit": "",
+    "basis": "derived",
+    "label": "share with records after 60 periods",
+    "formula": "agent-based, no seed readers, low start, no substitution",
+    "inputs": [
+      "sim-start-low",
+      "sim-join-cost",
+      "sim-gain-over-k",
+      "sim-harmful-share",
+      "sim-tenure-tau"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L309"
+  },
+  "sim-adopt-high-noseed": {
+    "value": 0.95,
+    "display": "95%",
+    "unit": "",
+    "basis": "derived",
+    "label": "share with records after 60 periods",
+    "formula": "agent-based, no seed readers, high start, no substitution",
+    "inputs": [
+      "sim-start-high",
+      "sim-join-cost",
+      "sim-gain-over-k",
+      "sim-harmful-share",
+      "sim-tenure-tau"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L312"
+  },
+  "sim-adopt-low-seed": {
+    "value": 0.95,
+    "display": "95%",
+    "unit": "",
+    "basis": "derived",
+    "label": "share with records after 60 periods",
+    "formula": "agent-based, seed readers, low start, no substitution",
+    "inputs": [
+      "sim-seed-readers",
+      "sim-start-low",
+      "sim-join-cost",
+      "sim-gain-over-k",
+      "sim-harmful-share",
+      "sim-tenure-tau"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L315"
+  },
+  "sim-population-mean": {
+    "value": 0.45165779949455787,
+    "display": "0.45",
+    "unit": "",
+    "basis": "derived",
+    "label": "terms every agent would get if nobody could be told apart",
+    "formula": "mean type of all agents, harmful included",
+    "inputs": [
+      "sim-start-low",
+      "sim-join-cost",
+      "sim-gain-over-k",
+      "sim-harmful-share",
+      "sim-tenure-tau"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L318"
+  },
+  "sim-harm-terms-nosub": {
+    "value": 0.45165779949456786,
+    "display": "0.45",
+    "unit": "",
+    "basis": "derived",
+    "label": "terms a harmful actor gets by routing around, when agents cannot move their business",
+    "formula": "best terms open to a harmful actor at the end, no substitution",
+    "inputs": [
+      "sim-seed-readers",
+      "sim-start-low",
+      "sim-join-cost",
+      "sim-gain-over-k",
+      "sim-harmful-share",
+      "sim-tenure-tau"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L322"
+  },
+  "sim-harm-terms-partial": {
+    "value": 0.31102067142144646,
+    "display": "0.31",
+    "unit": "",
+    "basis": "derived",
+    "label": "terms a harmful actor gets by routing around, with partial substitution",
+    "formula": "the same with partial substitution",
+    "inputs": [
+      "sim-seed-readers",
+      "sim-start-low",
+      "sim-substitution-partial",
+      "sim-join-cost",
+      "sim-gain-over-k",
+      "sim-harmful-share",
+      "sim-tenure-tau"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L326"
+  },
+  "sim-harm-terms-full": {
+    "value": -0.5,
+    "display": "-0.50",
+    "unit": "",
+    "basis": "derived",
+    "label": "terms a harmful actor gets by routing around, with full substitution",
+    "formula": "the same with full substitution",
+    "inputs": [
+      "sim-seed-readers",
+      "sim-start-low",
+      "sim-join-cost",
+      "sim-gain-over-k",
+      "sim-harmful-share",
+      "sim-tenure-tau"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L329"
+  },
+  "sim-readers-final": {
+    "value": 0.5275,
+    "display": "53%",
+    "unit": "",
+    "basis": "derived",
+    "label": "relying parties that read records",
+    "formula": "share of relying parties reading records at the end, seed case",
+    "inputs": [
+      "sim-seed-readers",
+      "sim-start-low",
+      "sim-join-cost",
+      "sim-gain-over-k",
+      "sim-harmful-share",
+      "sim-tenure-tau"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L332"
+  },
+  "veto-miss-tier2-half": {
+    "value": 0.015625,
+    "display": "1.6%",
+    "unit": "",
+    "basis": "derived",
+    "label": "chance a Tier 2 window passes with no block that would mine the veto",
+    "formula": "veto-censor-share ^ tier2-delay-blocks",
+    "inputs": [
+      "veto-censor-share",
+      "tier2-delay-blocks"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L337"
+  },
+  "veto-miss-tier3-half": {
+    "value": 4.484155085839415e-44,
+    "display": "4e-44",
+    "unit": "",
+    "basis": "derived",
+    "label": "the same for a Tier 3 window",
+    "formula": "veto-censor-share ^ tier3-delay-blocks",
+    "inputs": [
+      "veto-censor-share",
+      "tier3-delay-blocks"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L340"
+  },
+  "sim-veto-miss-tier2": {
+    "value": 0.01571,
+    "display": "1.6%",
+    "unit": "",
+    "basis": "derived",
+    "label": "the Tier 2 figure, by simulation",
+    "formula": "simulated share of 200,000 windows",
+    "inputs": [
+      "tier2-delay-blocks",
+      "veto-censor-share"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L344"
+  },
+  "block-energy-mwh": {
+    "value": 3068.3333333333335,
+    "display": "3,068 MWh",
+    "unit": "MWh",
+    "basis": "derived",
+    "label": "energy the network spends on one block",
+    "formula": "hashrate-eh * 1e6 * asic-efficiency-j-th * block-interval-s / 3.6e9",
+    "inputs": [
+      "hashrate-eh",
+      "asic-efficiency-j-th",
+      "block-interval-s"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L348"
+  },
+  "chip-forge-blocks-tier3": {
+    "value": 37.5,
+    "display": "38 blocks of work",
+    "unit": "blocks of work",
+    "basis": "derived",
+    "label": "work, in current blocks, to forge a Tier 3 release for a chip",
+    "formula": "(tier3-delay-blocks + confirmations-standard) * chip-difficulty-floor",
+    "inputs": [
+      "tier3-delay-blocks",
+      "confirmations-standard",
+      "chip-difficulty-floor"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L352"
+  },
+  "chip-forge-mwh-tier3": {
+    "value": 115062.5,
+    "display": "120,000 MWh",
+    "unit": "MWh",
+    "basis": "derived",
+    "label": "energy that forgery costs",
+    "formula": "chip-forge-blocks-tier3 * block-energy-mwh",
+    "inputs": [
+      "chip-forge-blocks-tier3",
+      "block-energy-mwh"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L355"
   }
 }

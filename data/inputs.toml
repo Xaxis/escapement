@@ -348,3 +348,120 @@ basis = "measured"
 source = "cambridge-2025"
 date = "2025-04-28"
 label = "Bitcoin mining's electricity use, Cambridge survey of 48% of hashrate, annualised"
+
+# ---------------------------------------------------------------------------------------------
+# The record, training and adoption (research/05-formal.md). The simulation parameters are
+# illustrative assumptions: they show the shape of each result, not a forecast.
+
+[capital-cost-rate]
+value = 0.05
+unit = "/yr"
+basis = "assumption"
+fmt = ".0%"
+label = "yearly return the principal forgoes on capital locked in a bond"
+
+[bond-term-years]
+value = 1
+unit = "years"
+basis = "design"
+label = "how long an identity's bond is locked"
+
+[fake-record-claims]
+value = 20
+unit = "claims"
+basis = "assumption"
+label = "length of the all-correct yes-or-no record in the record-faking example"
+
+[fake-record-success]
+value = 0.5
+basis = "assumption"
+fmt = ".0%"
+label = "chance of success the record faker wants"
+
+[sim-identities]
+value = 256
+unit = "identities"
+basis = "assumption"
+label = "identities the faker runs in the record-faking simulation"
+
+[sim-log2-lambda]
+value = 10
+basis = "assumption"
+label = "log base 2 of the score the faker wants in the simulation"
+
+[sim-skilled-log2-lambda]
+value = 20
+basis = "assumption"
+label = "log base 2 of the score the skilled identity reaches in the simulation"
+
+[sim-skilled-p-low]
+value = 0.1
+basis = "assumption"
+fmt = ".1f"
+label = "lowest true event probability the skilled identity sees"
+
+[sim-skilled-p-high]
+value = 0.9
+basis = "assumption"
+fmt = ".1f"
+label = "highest true event probability the skilled identity sees"
+
+[sim-join-cost]
+value = 0.02
+basis = "assumption"
+fmt = ".2f"
+label = "cost of joining per period, as a share of the range of value agents deliver"
+
+[sim-gain-over-k]
+value = 0.5
+basis = "assumption"
+fmt = ".1f"
+label = "a relying party's gain from reading records per unit share of agents with records, over the highest integration cost"
+
+[sim-seed-readers]
+value = 0.1
+basis = "assumption"
+fmt = ".0%"
+label = "share of relying parties that read records whatever others do (insurers, heavy-fraud services)"
+
+[sim-harmful-share]
+value = 0.05
+basis = "assumption"
+fmt = ".0%"
+label = "share of agents that are harmful and never join"
+
+[sim-start-low]
+value = 0.02
+basis = "assumption"
+fmt = ".0%"
+label = "starting share of agents with records, low case"
+
+[sim-start-high]
+value = 0.2
+basis = "assumption"
+fmt = ".0%"
+label = "starting share of agents with records, high case"
+
+[sim-substitution-partial]
+value = 0.5
+basis = "assumption"
+fmt = ".0%"
+label = "share of its business an agent can move to relying parties that offer it better terms, partial case"
+
+[sim-tenure-tau]
+value = 3
+unit = "periods"
+basis = "assumption"
+label = "tenure at which a relying party weighs an agent's record as much as the pool's mean"
+
+[veto-censor-share]
+value = 0.5
+basis = "assumption"
+fmt = ".0%"
+label = "share of hashrate that refuses to mine a veto, in the censorship example"
+
+[chip-difficulty-floor]
+value = 0.25
+basis = "design"
+fmt = ".2f"
+label = "lowest difficulty a chip accepts, as a share of the last difficulty it accepted (one retarget step)"
