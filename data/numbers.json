@@ -441,6 +441,19 @@
     "note": "",
     "defined_in": "data/inputs.toml#L250"
   },
+  "jm-bond-exponent": {
+    "value": 1.3,
+    "display": "1.3",
+    "unit": "",
+    "basis": "spec",
+    "label": "exponent JoinMarket applies to a fidelity bond's value by default",
+    "formula": "",
+    "inputs": [],
+    "source": "jm-fidelity",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L256"
+  },
   "coverage-ratio": {
     "value": 1.0,
     "display": "1.0",
@@ -452,7 +465,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L256"
+    "defined_in": "data/inputs.toml#L263"
   },
   "swarm-size": {
     "value": 10000.0,
@@ -465,7 +478,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L265"
+    "defined_in": "data/inputs.toml#L272"
   },
   "incident-agents-board": {
     "value": 1200.0,
@@ -478,7 +491,7 @@
     "source": "metr2026hf",
     "date": "2026-08-26",
     "note": "",
-    "defined_in": "data/inputs.toml#L271"
+    "defined_in": "data/inputs.toml#L278"
   },
   "incident-agents-attack": {
     "value": 700.0,
@@ -491,7 +504,7 @@
     "source": "metr2026hf",
     "date": "2026-08-26",
     "note": "",
-    "defined_in": "data/inputs.toml#L279"
+    "defined_in": "data/inputs.toml#L286"
   },
   "incident-first-day": {
     "value": 132.0,
@@ -504,7 +517,7 @@
     "source": "openai2026hf",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L287"
+    "defined_in": "data/inputs.toml#L294"
   },
   "incident-stop-day": {
     "value": 200.0,
@@ -517,7 +530,7 @@
     "source": "openai2026hf",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L294"
+    "defined_in": "data/inputs.toml#L301"
   },
   "async-safety-no-delay": {
     "value": 0.0,
@@ -530,7 +543,7 @@
     "source": "stickland2025",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L304"
+    "defined_in": "data/inputs.toml#L311"
   },
   "async-safety-1h-delay": {
     "value": 0.96,
@@ -543,7 +556,7 @@
     "source": "stickland2025",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L311"
+    "defined_in": "data/inputs.toml#L318"
   },
   "metr-doubling-months": {
     "value": 3.61,
@@ -556,7 +569,7 @@
     "source": "metr2026q4",
     "date": "2026-11-20",
     "note": "",
-    "defined_in": "data/inputs.toml#L318"
+    "defined_in": "data/inputs.toml#L325"
   },
   "datacentre-twh-2025": {
     "value": 485.0,
@@ -569,7 +582,7 @@
     "source": "iea-2026",
     "date": "",
     "note": "",
-    "defined_in": "data/inputs.toml#L330"
+    "defined_in": "data/inputs.toml#L337"
   },
   "bitcoin-twh-survey": {
     "value": 138.0,
@@ -582,7 +595,7 @@
     "source": "cambridge-2025",
     "date": "2025-04-28",
     "note": "",
-    "defined_in": "data/inputs.toml#L337"
+    "defined_in": "data/inputs.toml#L344"
   },
   "blocks-per-day": {
     "value": 144.0,
@@ -1325,7 +1338,7 @@
     "display": "0.00010",
     "unit": "",
     "basis": "derived",
-    "label": "total authority of N agents relative to one agent holding the same capital, under squared bond value",
+    "label": "total authority of N agents relative to one agent holding the same capital, if bond value were squared (Belcher's 2019 proposal)",
     "formula": "(N * (C/N)^2) / C^2 = 1/N with N = swarm-size",
     "inputs": [
       "swarm-size"
@@ -1334,5 +1347,21 @@
     "date": "",
     "note": "",
     "defined_in": "model/escapement.py#L218"
+  },
+  "split-authority-ratio-jm": {
+    "value": 0.0630957344480193,
+    "display": "0.063",
+    "unit": "",
+    "basis": "derived",
+    "label": "the same ratio under JoinMarket's shipped exponent",
+    "formula": "N * (C/N)^x / C^x = N^(1 - x) with N = swarm-size, x = jm-bond-exponent",
+    "inputs": [
+      "swarm-size",
+      "jm-bond-exponent"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L221"
   }
 }

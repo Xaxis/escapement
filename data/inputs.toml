@@ -253,6 +253,13 @@ unit = "leases"
 basis = "design"
 label = "leases an agent can spend before a lapse or veto stops it (the current one and one renewed early)"
 
+[jm-bond-exponent]
+value = 1.3
+basis = "spec"
+fmt = ",.1f"
+source = "jm-fidelity"
+label = "exponent JoinMarket applies to a fidelity bond's value by default"
+
 [coverage-ratio]
 value = 1
 basis = "design"

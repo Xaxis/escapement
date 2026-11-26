@@ -299,13 +299,22 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: design
 - defined in: `data/inputs.toml#L250`
 
+<a id="jm-bond-exponent"></a>
+### jm-bond-exponent
+
+**1.3**: exponent JoinMarket applies to a fidelity bond's value by default
+
+- basis: spec
+- source: [@jm-fidelity]
+- defined in: `data/inputs.toml#L256`
+
 <a id="coverage-ratio"></a>
 ### coverage-ratio
 
 **1.0**: bond per sat the agent can spend before it can be stopped
 
 - basis: design
-- defined in: `data/inputs.toml#L256`
+- defined in: `data/inputs.toml#L263`
 
 <a id="swarm-size"></a>
 ### swarm-size
@@ -313,7 +322,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 **10,000 agents**: size of a swarm, for the sybil example
 
 - basis: assumption
-- defined in: `data/inputs.toml#L265`
+- defined in: `data/inputs.toml#L272`
 
 <a id="incident-agents-board"></a>
 ### incident-agents-board
@@ -322,7 +331,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 
 - basis: measured
 - source: [@metr2026hf], 2026-08-26
-- defined in: `data/inputs.toml#L271`
+- defined in: `data/inputs.toml#L278`
 
 <a id="incident-agents-attack"></a>
 ### incident-agents-attack
@@ -331,7 +340,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 
 - basis: measured
 - source: [@metr2026hf], 2026-08-26
-- defined in: `data/inputs.toml#L279`
+- defined in: `data/inputs.toml#L286`
 
 <a id="incident-first-day"></a>
 ### incident-first-day
@@ -340,7 +349,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 
 - basis: vendor
 - source: [@openai2026hf]
-- defined in: `data/inputs.toml#L287`
+- defined in: `data/inputs.toml#L294`
 
 <a id="incident-stop-day"></a>
 ### incident-stop-day
@@ -349,7 +358,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 
 - basis: vendor
 - source: [@openai2026hf]
-- defined in: `data/inputs.toml#L294`
+- defined in: `data/inputs.toml#L301`
 
 <a id="async-safety-no-delay"></a>
 ### async-safety-no-delay
@@ -358,7 +367,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 
 - basis: modelled
 - source: [@stickland2025]
-- defined in: `data/inputs.toml#L304`
+- defined in: `data/inputs.toml#L311`
 
 <a id="async-safety-1h-delay"></a>
 ### async-safety-1h-delay
@@ -367,7 +376,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 
 - basis: modelled
 - source: [@stickland2025]
-- defined in: `data/inputs.toml#L311`
+- defined in: `data/inputs.toml#L318`
 
 <a id="metr-doubling-months"></a>
 ### metr-doubling-months
@@ -376,7 +385,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 
 - basis: measured
 - source: [@metr2026q4], 2026-11-20
-- defined in: `data/inputs.toml#L318`
+- defined in: `data/inputs.toml#L325`
 
 <a id="datacentre-twh-2025"></a>
 ### datacentre-twh-2025
@@ -385,7 +394,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 
 - basis: measured
 - source: [@iea-2026]
-- defined in: `data/inputs.toml#L330`
+- defined in: `data/inputs.toml#L337`
 
 <a id="bitcoin-twh-survey"></a>
 ### bitcoin-twh-survey
@@ -394,7 +403,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 
 - basis: measured
 - source: [@cambridge-2025], 2025-04-28
-- defined in: `data/inputs.toml#L337`
+- defined in: `data/inputs.toml#L344`
 
 <a id="blocks-per-day"></a>
 ### blocks-per-day
@@ -859,9 +868,19 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 <a id="split-authority-ratio-squared"></a>
 ### split-authority-ratio-squared
 
-**0.00010**: total authority of N agents relative to one agent holding the same capital, under squared bond value
+**0.00010**: total authority of N agents relative to one agent holding the same capital, if bond value were squared (Belcher's 2019 proposal)
 
 - basis: derived
 - formula: `(N * (C/N)^2) / C^2 = 1/N with N = swarm-size`
 - inputs: [swarm-size](#swarm-size)
 - defined in: `model/escapement.py#L218`
+
+<a id="split-authority-ratio-jm"></a>
+### split-authority-ratio-jm
+
+**0.063**: the same ratio under JoinMarket's shipped exponent
+
+- basis: derived
+- formula: `N * (C/N)^x / C^x = N^(1 - x) with N = swarm-size, x = jm-bond-exponent`
+- inputs: [swarm-size](#swarm-size), [jm-bond-exponent](#jm-bond-exponent)
+- defined in: `model/escapement.py#L221`

@@ -89,3 +89,66 @@ year = 2026
 venue = "Australian AI Safety Institute (arXiv cs.MA)"
 arxiv = "2608.26626"
 supports = "sybil controls: 'at most one root credential per human principal', each agent bound to a human principal; delegation scope attenuation; per-step re-authorisation; orphaned sub-agents"
+
+[source.bip431]
+type = "spec"
+title = "BIP 431: Topology Restrictions for Pinning"
+authors = ["Gloria Zhao"]
+year = 2024
+venue = "Bitcoin Improvement Proposals (Informational, Draft; assigned 2024-01-10)"
+url = "https://github.com/bitcoin/bips/blob/master/bip-0431.mediawiki"
+supports = "TRUC (nVersion=3) transactions: at most one unconfirmed ancestor and one descendant, size limits; 'fee-bumping is more reliable for users'"
+
+[source.core-28]
+type = "official-docs"
+title = "Bitcoin Core 28.0 release notes"
+authors = ["Bitcoin Core contributors"]
+year = 2024
+venue = "bitcoincore.org, 2024-10-02"
+url = "https://bitcoincore.org/en/releases/28.0/"
+supports = "TRUC (v3) transactions standard on all networks; Pay To Anchor (P2A) output type; opportunistic one-parent-one-child package relay, 'not yet reliable under adversarial conditions'"
+
+[source.poon2016]
+type = "preprint"
+title = "The Bitcoin Lightning Network: Scalable Off-Chain Instant Payments"
+authors = ["Joseph Poon", "Thaddeus Dryja"]
+year = 2016
+venue = "lightning.network (draft version 0.5.9.2)"
+url = "https://lightning.network/lightning-network-paper.pdf"
+supports = "revocable outputs with a relative-timelock delay: a counterparty's revocation path spends at once, the owner's path only after the delay; the parent output stands as 'a bonded deposit, attesting that there is no revocation'"
+
+[source.greenwood2021]
+type = "essay"
+title = "Exploring: limiting transaction output amount as a function of total input value"
+authors = ["Zac Greenwood", "Billy Tetrud"]
+year = 2021
+venue = "bitcoin-dev mailing list, thread opened 2021-07-31 by Zac Greenwood (replies of 2021-08-04 and 2021-08-09 read)"
+url = "https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-August/019319.html"
+supports = "rate-limited outputs as a proposed consensus change: 'A maximum amount is allowed to be spent within EVERY epoch'; an opcode sketch 'rateLimit(windowSize = 144 blocks, limit = 100k sats)'; amounts, not a delay before authority passes"
+
+[source.josh2026expiry]
+type = "essay"
+title = "Input-triggered transaction expiry"
+authors = ["josh"]
+year = 2026
+venue = "Delving Bitcoin, 2026-06-29 (with replies by Gregory Sanders and Anthony Towns, 2026-07)"
+url = "https://mirror.b10c.me/delvingbitcoin-org/2026-06-29-input-triggered-transaction-expiry-id2667.html"
+supports = "a proposed soft fork to 'expire a transaction if an input was mined too late': 'an absolute cap on an input's confirmation height'; the consensus form of an upper bound that script lacks today"
+
+[source.instagibbs2025clrt]
+type = "essay"
+title = "Contract-level Relative Timelocks (or, let's talk about ancestry proofs and singletons)"
+authors = ["instagibbs"]
+year = 2025
+venue = "Delving Bitcoin, 2025-01-02"
+url = "https://delvingbitcoin.org/t/contract-level-relative-timelocks-or-lets-talk-about-ancestry-proofs-and-singletons/1353"
+supports = "a dust CSV output spent with a contract's state so a shared delay cannot be reset; ancestry proofs and singletons; the general form needs a consensus change; the CSV bounds settlement delay, not a rate of actions"
+
+[source.laz1m0v2026b]
+type = "essay"
+title = "Letting Untrusted LLMs Sign Bitcoin Batches: MCP Bridge + TEE-Enforced 25-Tx Daisy Chains"
+authors = ["Laz1m0v"]
+year = 2026
+venue = "Delving Bitcoin, 2026-04-11"
+url = "https://delvingbitcoin.org/t/letting-untrusted-llms-sign-bitcoin-batches-mcp-bridge-tee-enforced-25-tx-daisy-chains/2410"
+supports = "an enclave signs an LLM agent's chain of up to 25 unconfirmed transactions under policy, with out-of-band human authorization; no timelock on the links and no veto"

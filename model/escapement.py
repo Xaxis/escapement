@@ -214,8 +214,11 @@ def build(overrides: dict | None = None) -> Ledger:
       label="days from the first message-board entry to the start of the stop", defined_in=here())
     d("split-authority-ratio-squared", lambda q: 1 / q["swarm-size"],
       "(N * (C/N)^2) / C^2 = 1/N with N = swarm-size", fmt="sig2",
-      label="total authority of N agents relative to one agent holding the same capital, under squared bond value",
+      label="total authority of N agents relative to one agent holding the same capital, if bond value were squared (Belcher's 2019 proposal)",
       defined_in=here())
+    d("split-authority-ratio-jm", lambda q: q["swarm-size"] ** (1 - q["jm-bond-exponent"]),
+      "N * (C/N)^x / C^x = N^(1 - x) with N = swarm-size, x = jm-bond-exponent", fmt="sig2",
+      label="the same ratio under JoinMarket's shipped exponent", defined_in=here())
     return L
 
 

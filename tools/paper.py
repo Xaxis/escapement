@@ -8,6 +8,10 @@ to its text and writes a BibTeX file of the cited sources, with each one's DOI, 
   python3 tools/paper.py                     build both files
   python3 tools/paper.py --keys MAP.json     rename citation keys to the ones Paperwright gave
   python3 tools/paper.py --ids               print the identifiers to add, one per line
+  python3 tools/paper.py --draft             also write build/escapement-draft.json: the sections and
+                                             tables as Paperwright's create_paper and bring_draft
+                                             take them (each "# " heading a section; each pipe table
+                                             after a "Table: caption {#tab:label}" line a table)
 """
 
 from __future__ import annotations
@@ -70,6 +74,55 @@ def bibtex(key: str, s: dict) -> str:
     return f"@{kind}{{{key},\n{body}\n}}\n"
 
 
+TABLE_CAPTION = re.compile(r"^Table: (.*?)\s*\{#tab:([a-z0-9][a-z0-9_-]{0,47})\}\s*$")
+
+
+def cells(line: str) -> list[str]:
+    return [c.strip() for c in line.strip().strip("|").split("|")]
+
+
+def draft(flat: str) -> dict:
+    """The flattened paper as {sections: [{title, text}], tables: [...]}, tables lifted out of the
+    text and replaced by a line naming them."""
+    sections: list[dict] = []
+    tables: list[dict] = []
+    title, body = None, []
+
+    def close() -> None:
+        if title is not None:
+            sections.append({"title": title, "text": "\n".join(body).strip() + "\n"})
+
+    lines = flat.splitlines()
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if line.startswith("# "):
+            close()
+            title, body = line[2:].strip(), []
+            i += 1
+            continue
+        m = TABLE_CAPTION.match(line)
+        if m:
+            caption, label = m.group(1), m.group(2)
+            j = i + 1
+            while j < len(lines) and not lines[j].strip():
+                j += 1
+            rows = []
+            while j < len(lines) and lines[j].lstrip().startswith("|"):
+                if not re.fullmatch(r"\|?(\s*:?-+:?\s*\|)+\s*:?-*:?\s*\|?", lines[j].strip()):
+                    rows.append([{"text": c} for c in cells(lines[j])])
+                j += 1
+            tid = f"tb_{label.replace('-', '_')}"
+            tables.append({"id": tid, "label": label, "caption": caption, "head": 1, "rows": rows})
+            body.append(f"![]({tid})")
+            i = j
+            continue
+        body.append(line)
+        i += 1
+    close()
+    return {"sections": sections, "tables": tables}
+
+
 def main(argv: list[str]) -> int:
     srcs = sources()
     text = paper_text()
@@ -92,6 +145,8 @@ def main(argv: list[str]) -> int:
     out.mkdir(exist_ok=True)
     (out / "escapement-paper.md").write_text(flat)
     (out / "escapement.bib").write_text("\n".join(bibtex(rename.get(k, k), srcs[k]) for k in keys))
+    if "--draft" in argv:
+        (out / "escapement-draft.json").write_text(json.dumps(draft(flat), indent=1) + "\n")
     words = len(re.findall(r"\b\w+\b", flat))
     print(f"wrote build/escapement-paper.md ({words} words) and build/escapement.bib ({len(keys)} sources)")
     return 0

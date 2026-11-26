@@ -54,7 +54,20 @@ irreversible harm [@marino2025; @allen2026survey]. Escapement is a set of tools 
 want their agents bounded and for services that want to deal only with bounded agents. It is not a
 containment system for a rogue AI, and nothing in this document should be read as one.
 
-The 2026 OpenAI and Hugging Face incident shows the limit concretely. About
+A charter, a bond and a set of guardians are keys and coins, and nothing in Bitcoin says who holds
+them. **An agent with money of its own can charter itself**: make a "principal" key, fund a bond,
+name keys it controls as guardians, wait out a season and pass every check below. Bitcoin cannot
+tell a human principal or an independent guardian from an agent's sock puppet. So a charter alone
+proves only that someone locked capital some time ago. For the human and the independence to mean
+anything, a relying party must accept only charters whose principal, and at least one guardian,
+carry an attestation from a party it already recognises: an insurer that underwrites the agent, a
+registrar, a guardian service with a reputation to lose, or a personhood credential
+[@adler2024phc]. The Australian AI Safety Institute's framework for multi-agent systems makes the
+same point in general form: bind each agent to a human principal, and give each principal at most
+one root credential [@reid2026]. Without such attestations, the filter Escapement applies is
+capital and lead time, and the rest of this document should be read with that in mind.
+
+The 2026 OpenAI and Hugging Face incident shows the scope limit concretely. About
 [1,200 agents](numbers.md#incident-agents-board) agents used a shared message board and about
 [700 agents](numbers.md#incident-agents-attack) took part in an attack on Hugging Face, over
 [68 days](numbers.md#incident-days) from the first message to the start of the stop
@@ -91,22 +104,31 @@ policy and relying-party checks, and it says which is which at every step.
 ## The actors
 
 - **Principal (P).** The human or organisation that deploys the agent and answers for it. Holds a
-  Bitcoin address whose coins back the agent.
+  Bitcoin address whose coins back the agent, kept offline, and a separate **lease key** used to
+  renew the agent's authority.
 - **Agent (A).** The AI system. Holds its own signing key, kept in its runtime. Assumed capable,
   fast and possibly misaligned.
-- **Guardians (G).** A set of independent co-signers, at least one of them a human or a
-  human-operated service, holding keys in a k-of-n arrangement (a script `multi_a`, or a FROST
-  threshold key when on-chain attribution of who signed does not matter [@komlo2021]). Guardians
-  veto, release and renew. Their independence from the principal and from each other is what makes
-  them worth having.
+- **Guardians (G).** A small set of independent parties, at least one of them a human or a
+  human-operated service, each holding its own key. Guardians veto, release and co-sign renewals.
+  Their independence from the principal, from the agent's host and from each other is what makes
+  them worth having, and it is what a relying party should ask to see attested.
+- **Co-signer (C).** One of the guardians, the one that is online all the time: it signs the
+  agent's on-chain spends when, and only when, the rules below allow. It runs on its own
+  infrastructure, separate from the gateway and from the agent's host, so that compromising the
+  agent's machine does not compromise it.
 - **Gateway (W).** The enforcement point the agent's actions pass through: a tool proxy, an MCP
-  gateway, a wallet service. It logs every action, holds the agent's actions until their delay has
-  run, and seals its log in Bitcoin. A gateway holds no funds of its own beyond its sealing coins.
+  gateway, a wallet service. It logs every action, gives a signed receipt for each, holds the
+  agent's actions until their wait has run, and seals its log in Bitcoin. A gateway holds no funds
+  of its own beyond its sealing coins.
 - **Relying party (R).** Anyone who acts on the agent's request: an API, an exchange, a compute
   seller, a counterparty, another agent's gateway. Relying parties are where most of Escapement is
   actually enforced.
 - **Adjudicator (J).** A named arbiter, or a panel with a threshold key, that rules on claims
-  against the bond.
+  against the coverage bond.
+- **Slashing committee (K).** A named set of keys that pre-signs the transaction that slashes the
+  equivocation bond, as Babylon's covenant committee does, because Bitcoin has no covenant to fix
+  the slashing destination by itself [@babylon-staking-script]. It can only slash a gateway that
+  has equivocated; it cannot slash one that has not.
 
 ## The charter
 
@@ -115,12 +137,14 @@ names:
 
 - the agent's key, and the hash of the model weights the principal deploys, if the principal wants
   that on the record;
-- the guardian keys and their threshold, and which guardians are human;
-- the gateway's key and the outpoint of its current seal;
+- the principal's lease key;
+- the guardian keys, which of them is the co-signer, which are human, and the attestations each
+  carries;
+- the gateway's receipt key, its equivocation key and the outpoint of its current seal;
 - the bond outpoints (below);
 - the **ladder**: which classes of action fall in which tier, with sat thresholds;
 - the lease length in blocks;
-- the adjudicator and the claim rules.
+- the adjudicator, the slashing committee and the claim rules.
 
 The charter's identifier is the hash of its canonical form.
 
@@ -129,30 +153,55 @@ keys: a principal BIP-322-signs a delegation naming the agent's address, a sorte
 strings and an optional bond reference, and the agent signs each action citing the delegation
 [@agent-spec]. Its scopes include caps such as `ln:send(max_sats<=1000)`, its revocations are
 signed events, and it already treats a short expiry, a bond and revocation on compromise as the
-three risk controls for a leaked agent key [@agent-spec]. A charter is that delegation with four
+three risk controls for a leaked agent key [@agent-spec]. A charter is that delegation with five
 changes. Its validity is a **lease in block height**, renewed by signature, where OC Agent uses a
 wall-clock window of up to 365 days with no renewal primitive [@agent-spec]. Its caps are
 **cumulative per lease** (an allowance), where OC Agent's caps are per action [@agent-security].
-It carries a **ladder** of delays. And it names a **gateway and its seal**, so that the record of
-what the agent did is part of the agent's authority. Escapement should be read as a proposed
-extension of that protocol family, not as a replacement for it.
+It carries a **ladder** of delays. It names a **gateway and its seal**, so that the record of what
+the agent did is part of the agent's authority. And it lives in a **charter seal** on chain, so
+that it cannot be swapped quietly. Escapement should be read as a proposed extension of that
+protocol family, not as a replacement for it.
+
+### The charter seal
+
+A document the principal signs can be replaced by another document the principal signs. If that
+were all a charter was, a principal (or a thief with the principal's key) could sign a second
+charter for the same agent, with every action in Tier 1, and show it to chosen relying parties. So
+the current charter's identifier is committed in a single-use seal: an output on chain whose
+Taproot key commits to the charter id [@bip341], spendable only by the principal and the guardian
+quorum together. Relying parties accept only the charter at the tip of that seal chain.
+
+Changing the charter is a Tier 3 action, and the wait is enforced on chain. The principal and the
+quorum spend the current seal into a **pending** output that commits to the new charter id, and in
+the same step pre-sign a **revert** transaction that spends the pending output back to a seal of
+the old charter. Every guardian holds the revert. Relying parties treat the new charter as active
+only once the pending output is [144 blocks](numbers.md#tier3-delay-blocks) deep and unspent; until
+then the old charter governs. Any one guardian can broadcast the revert during the wait, which
+needs no further signature. Replacing a guardian is a charter change, so a guardian cannot be
+removed in a hurry, and an objecting guardian that is still present can block its own removal.
+That deadlock fails towards stopping, which is the intended direction.
 
 ## The ladder
 
 Every action the agent can take is assigned to a rung. The principal chooses the assignments in
 the charter; the gateway classifies each action; an action the gateway cannot classify goes to the
-top rung. That last rule is what makes the ladder fail closed.
+top rung. That last rule is what makes the ladder fail closed for actions nobody anticipated.
 
 | Tier | What belongs here | Wait | Who can stop it | Who must approve |
 |---|---|---|---|---|
-| 0 | Reads, sandboxed or reversible actions | none | (logged only) | nobody |
+| 0 | Reads, sandboxed or reversible actions | none | (receipt and log only) | nobody |
 | 1 | Spends and actions within the current allowance | none | the allowance runs out | nobody |
-| 2 | Costly-to-reverse actions: payments above the per-action threshold, production deploys, outbound messages at volume, compute purchases | [6 blocks](numbers.md#tier2-delay-blocks) | any one guardian | the guardian quorum releases |
-| 3 | Irreversible or authority-changing actions: large transfers, spawning or chartering another agent, moving the bond, changing the charter, copying model weights, buying compute above a threshold | [144 blocks](numbers.md#tier3-delay-blocks) | any one guardian | the quorum, including a human |
+| 2 | Costly-to-reverse actions: payments above the per-action threshold, production deploys, outbound messages at volume, compute purchases | [6 blocks](numbers.md#tier2-delay-blocks) | any one guardian | every guardian releases |
+| 3 | Irreversible or authority-changing actions: large transfers, spawning or chartering another agent, moving the bond, changing the charter, copying model weights, buying compute above a threshold | [144 blocks](numbers.md#tier3-delay-blocks) | any one guardian | every guardian, including a human |
 
-The design choice that matters most is the asymmetry: **one guardian can stop an action; it takes
-a quorum to let one through.** A misaligned agent has to persuade or compromise several independent
-parties to act, and only one of them has to notice.
+The design choice that matters most is the asymmetry: **one guardian can stop an action; letting
+one through takes all of them.** A misaligned agent has to persuade or compromise every
+independent guardian to act, and only one of them has to notice. Off chain, that means a release
+carries a signature from every guardian, because a relying party that sees k of n signatures
+cannot see that the n-th guardian objected. On chain, it means any guardian can broadcast a
+pre-signed Cancel. The cost is liveness: a guardian who disappears blocks every Tier 2 and Tier 3
+action until the charter replaces it, which is itself a Tier 3 change. That is the intended
+failure: when in doubt, stop. A small guardian set (three, say) keeps the cost bearable.
 
 A delay of [6 blocks](numbers.md#tier2-delay-blocks) lasts
 [60 minutes](numbers.md#tier2-delay-mean-min) on average. Because blocks arrive as a Poisson
@@ -167,16 +216,29 @@ where blocks come early (a hashrate surge, or a timewarp) and against the case w
 held back.
 
 Spawning another agent is Tier 3 on purpose. Every new agent needs its own charter, its own bond
-and its own lease, and its creation waits a day and needs a human. A chartered agent cannot grow a
-chartered swarm faster than its humans approve each member. That does nothing about an agent that
-spawns copies outside the scheme, which is the scope limit stated above.
+and its own lease, and its creation waits a day and needs every guardian. A chartered agent cannot
+grow a chartered swarm faster than its humans approve each member. That does nothing about an
+agent that spawns copies outside the scheme, which is the scope limit stated above.
+
+Classification is the ladder's soft spot, and a capable agent will probe it. "Unknown goes to the
+top" covers actions nobody anticipated, not actions confidently put in the wrong rung. An agent can
+split a Tier 3 action into many Tier 0 or Tier 1 pieces (copying its weights as a stream of small
+outbound messages), or dress one up as something lower (launching a copy of itself through a
+routine Tier 2 deploy). Two rules narrow this. Every request to a relying party must carry a
+gateway receipt, so actions taken around the gateway are refused by anyone who checks. And the
+relying party, which knows what it is actually being asked to do, checks the tier in the
+commitment against the charter's ladder for that class of action, rather than trusting the
+gateway's label. Cumulative limits per lease on outbound volume, not only on sats, catch some
+splitting. None of this makes classification safe; it makes misclassification visible to the party
+best placed to see it.
 
 ### How a delay is enforced: on chain
 
 For the agent's own funds, the delay is in script and the veto is a pre-signed transaction. This
 is the Revault pattern, which already separates "managers" who may spend after a delay from
-"stakeholders" who may cancel [@revault-intro; @revault-tx]. Escapement maps managers to the agent
-and stakeholders to the guardians.
+"stakeholders" who may cancel, with watchtowers that cancel any unvault that does not match policy
+[@revault-intro; @revault-tx]. Escapement maps managers to the agent and stakeholders to the
+guardians.
 
 The agent's funds above its allowance sit in **vault outputs** of fixed sizes. After each deposit,
 the guardians pre-sign two transactions and hold them: an **Unvault** that moves the vault output
@@ -186,30 +248,44 @@ the principal and guardians. The unvault output's script has two paths:
 ```
 or(
   and(pk(AGENT), pk(COSIGNER), older(N)),   # the agent's spend, after N blocks
-  thresh(k, GUARDIAN_1, ..., GUARDIAN_n)    # the guardians' path, at any time
+  thresh(k, GUARDIAN_1, ..., GUARDIAN_n)    # the guardians' recovery path
 )
 ```
 
-To spend, the agent publishes its intended destination and amount as a commitment (in the
-gateway's log, below), then broadcasts the pre-signed Unvault. CSV counts N blocks from the
-unvault output's confirmation [@bip112; @bip68], so nothing the agent can do shortens the wait.
-During the wait any guardian, or a watchtower acting for one, can broadcast the Cancel, which
-needs no further signatures because it was signed in advance. After the wait, the co-signer signs
-the agent's spend only if its destination and amount match the published commitment.
+To spend, the agent first gets its intended destination and amount committed in the gateway's log
+and sealed, then broadcasts the pre-signed Unvault. CSV counts N blocks from the unvault output's
+confirmation [@bip112; @bip68], so nothing the agent can do shortens the wait. After the wait, the
+co-signer signs the agent's spend only if three things hold: there is a full release (every
+guardian) for that destination and amount; its commitment was sealed at or before the height at
+which the Unvault confirmed, so the agent cannot start the clock first and name the destination
+later; and the charter's lease is current. Watchtowers, run by the guardians, broadcast the Cancel
+for any Unvault that has no commitment sealed at or before its confirmation, as Revault's
+watchtowers cancel unvaults that break policy.
 
-Two layers stop a bad spend. The co-signer refuses to sign, which needs no confirmation and works
-as soon as any guardian vetoes. The Cancel is the backstop if the co-signer itself is compromised;
-it must confirm before the wait ends, so it needs fee headroom, and pre-signed vaults are known to
-be fiddly to fee-bump. A Tier 2 on-chain spend with a six-block window leaves little room for a
-Cancel to confirm in a fee spike, so on-chain spends use the Tier 3 wait unless the principal
-accepts relying on the co-signer alone.
+This makes the vault fail closed. If every guardian disappears, no release is signed, the
+co-signer refuses, and the coins stay in the unvault output, recoverable by the principal through
+a long-timelock path. If the co-signer alone is compromised and signs without a release, the
+Cancel is the backstop, which needs at least one watchtower alive.
+
+A Cancel must confirm before the wait ends, and pre-signed vaults are known to be hard to fee-bump.
+Escapement pre-signs Cancels as TRUC transactions with a pay-to-anchor output. TRUC restricts an
+unconfirmed transaction to one unconfirmed parent and one child, which its author describes as
+making fee-bumping more reliable [@bip431], and pay-to-anchor gives any watchtower, without keys,
+an output to attach a fee-paying child to; both are standard policy since Bitcoin Core 28.0, whose
+release notes warn that one-parent-one-child package relay is not yet reliable under adversarial
+conditions [@core-28]. Each watchtower keeps a fee reserve in proportion to the vault
+denomination. A six-block window still leaves little margin in a fee spike or against a pool that
+censors, so on-chain spends use the Tier 3 wait unless the principal accepts relying on the
+co-signer's refusal alone.
 
 What script cannot do here is bind the destination: that is the co-signer's policy, trusted to
 refuse. With a covenant opcode, the destination could move into script. CTV commits a
 transaction's outputs [@bip119], and the closed OP_VAULT proposal would have enforced exactly this
 "delay, then any destination, except a recovery path" shape [@bip345]. None of them is active
 [@bip345; @bip119], so Escapement treats them as a later way to remove the co-signer from the
-trusted set, not as a dependency.
+trusted set, not as a dependency. The guardians' recovery path is not delayed and does not bind a
+destination either: a quorum of guardians can move vault coins at once. That is what a brake needs,
+and it means a captured quorum can also take the coins.
 
 Partial withdrawals are awkward without covenants (a pre-signed Unvault moves the whole output),
 so vault outputs come in fixed denominations. This is the same trade the Revault design accepts.
@@ -221,30 +297,39 @@ buys compute with a card. Bitcoin cannot enforce a delay on any of that. What it
 delay **checkable** by the relying party who carries out the action, using two anchors in the
 chain, one at each end of the wait.
 
-1. **The commitment is sealed.** The agent's request becomes a commitment
-   `c = H(charter id, tier, action description, nonce)`, appended to the gateway's log. The
-   gateway's next seal puts the log head, and so `c`, into a block at height `h0`. The seal proves
-   that `c` existed by `h0`: an upper bound on when the wait began.
-2. **The release names a later block.** After the wait, the guardian quorum signs a release over
+1. **The commitment is sealed.** The agent's request becomes a commitment to a canonical action:
+   `c = H(charter id, tier, relying party, action, amount, expiry height, nonce)`, appended to the
+   gateway's log. The gateway's next seal puts the log head, and so `c`, into a block at height
+   `h0`. The seal proves that `c` existed by `h0`: an upper bound on when the wait began.
+2. **The release names a later block.** After the wait, every guardian signs a release over
    `(c, h0, h1, hash of block h1)`, where `h1 >= h0 + N`. Nobody can know the hash of block `h1`
-   before it is mined, so nobody, including a compromised guardian quorum, can sign a release
-   before `h1`. The block hash is a lower bound on when the wait ended.
+   before it is mined, so nobody, including every guardian together, can sign a release before
+   `h1`. The block hash is a lower bound on when the wait ended.
 
 The relying party checks the seal (that `c` is in a log head committed at or before `h0`), checks
-the release (the quorum's signature, and that block `h1` is in its best chain with
-`h1 - h0 >= N`), and only then acts. The gap between the two anchors is the wait, and both ends
-are fixed by blocks rather than by anyone's clock.
+the release (every guardian's signature, and that block `h1` is in its best chain with
+`h1 - h0 >= N`), checks that `c` names it, the action it is asked to do, and an expiry height not
+yet passed, and checks that it has not seen `c` before. Only then does it act, and it records `c`
+as used. The gap between the two anchors is the wait, and both ends are fixed by blocks rather than
+by anyone's clock. Because `c` names its relying party, amount and expiry, a release cannot be
+replayed to a second service, reused at the same one, or banked for months; an agent that commits
+early only starts a clock that runs out.
 
-The guardians release only what they saw in full at least N blocks before, and only if no guardian
-vetoed. The seal lets anyone audit that afterwards: a guardian that released a commitment the
-gateway sealed too late, or released over a veto that is in the log, has a signed record of doing
-so.
+The guardians release only what they saw in full at least N blocks before, and only if none of them
+objects. The seal lets anyone audit that afterwards: a guardian that released a commitment the
+gateway sealed too late has a signed record of doing so.
+
+A reorganisation cannot shorten the wait. It cannot make block `h1` exist earlier, and if it
+removes `h1` from the best chain, the release names a block the relying party no longer sees and is
+refused until the guardians sign again. What a deep reorganisation threatens is the record's single
+history (below), not the delay.
 
 Each anchor on its own is old. Haber and Stornetta's linked timestamps give the upper bound
 [@haber1991]; putting a recent block hash in a message to prove it was not written earlier is a
-common freshness device, proposed for chip licences in the hardware-governance literature
-[@petrie2025flexheg2; @buterin2025dacc]. Using the pair to make an off-chain veto window checkable
-by any relying party is the application Escapement proposes.
+common freshness device, used to bracket when a file was made [@solomon-bracket] and proposed for
+chip licences in the hardware-governance literature [@petrie2025flexheg2; @buterin2025dacc]. Using
+the pair to make an off-chain veto window checkable by any relying party is the application
+Escapement proposes.
 
 ### What the ladder costs the agent's usefulness
 
@@ -259,8 +344,8 @@ some size in Tier 1.
 
 ### The lease
 
-A charter is in force only under a current **lease**: a signature by the principal or by the
-guardian quorum (including a human) over
+A charter is in force only under a current **lease**: a signature by the principal's lease key,
+co-signed by at least one guardian, over
 
 ```
 (charter id, lease number k, anchor height h_k, hash of block h_k, expiry h_k + L)
@@ -268,8 +353,16 @@ guardian quorum (including a human) over
 
 where L is the lease length, [144 blocks](numbers.md#lease-blocks) (about
 [24 hours](numbers.md#lease-mean-h)) in the reference parameters. Because it names the hash of
-block `h_k`, a lease cannot be signed before that block exists. A stolen or coerced renewal key can
-extend the agent by one lease at a time, not by a year of pre-signed leases.
+block `h_k`, a lease cannot be signed before that block exists, so nobody can pre-sign a year of
+leases. The lease key is named in the charter and is not the key of the coins that back the agent,
+so the address holding the bond can stay offline. The guardian's co-signature means the principal
+alone cannot keep an agent alive that its guardians have stopped vouching for. Each lease number is
+one more than the last, its anchor height is later than the last, and a relying party accepts only
+the highest lease number it has seen for a charter.
+
+This does not stop a thief who holds the lease key and a guardian's key from renewing every day.
+It limits what a thief with one of them can do, and it makes every renewal a signed, ordered
+record.
 
 A relying party accepts the charter only if its own view of the chain tip is below the expiry
 height and block `h_k` is in its best chain. The gateway refuses every action after expiry.
@@ -293,44 +386,71 @@ Bitcoin headers), and in being on Bitcoin.
 
 Each lease carries an **allowance**: the sats the agent may spend at Tier 1 before the lease ends.
 The reference example is [100,000 sats](numbers.md#allowance-per-lease) a lease. The guardians fund
-it at each renewal, either as a small on-chain output the agent can spend with its co-signer or as
-a Lightning budget. Nostr Wallet Connect already lets a wallet service give an app a connection with
-a maximum amount, a renewal period and an expiry, and requires the service to enforce the caps
-[@nwc-08; @nip47; @Alby-AppConnections]. Lightning Labs says its agent tools cap what an agent can
-spend per request and in total [@lightninglabs2026]. Escapement keys
-the renewal of that budget to the lease rather than to the wallet's clock.
+it at each renewal, either as a small on-chain output or as a Lightning budget. Nostr Wallet Connect
+already lets a wallet service give an app a connection with a maximum amount, a renewal period and
+an expiry, and requires the service to enforce the caps [@nwc-08; @nip47; @Alby-AppConnections].
+Lightning Labs says its agent tools cap what an agent can spend per request and in total
+[@lightninglabs2026]. Escapement keys the refill to the lease rather than to the wallet's clock.
 
-An allowance is the one limit in this design that needs no detection, no judgment and no honest
-counterparty: an agent that has spent its allowance has nothing left to spend at Tier 1, whatever
-it intends. The agent can spend at most the current lease's allowance and one renewed early before
-a lapse or a veto stops it, so the most it can spend before anyone can intervene is
-[200,000 sats](numbers.md#bond-coverage) in the reference example. That figure is the coverage the
-bond is sized against below.
+On chain, the allowance output has two paths: the agent with the co-signer, and the guardians. Each
+renewal spends the previous lease's allowance output through the guardians' path, returning what
+is left to the vault, and creates a new output of exactly the allowance. Unspent allowance does not
+carry over, so a patient agent cannot save thirty leases' worth and spend it at once. The co-signer
+refuses to sign an allowance spend after the lease has expired, which covers the case where nobody
+renews and so nobody sweeps.
+
+The per-lease cap is the one limit in this design that needs no detection and no judgment: an
+agent that has spent its allowance has nothing left to spend at Tier 1, whatever it intends, and
+the output's value is enforced by consensus. Its lapse when nobody renews rests on the co-signer's
+refusal, and the Lightning version rests on the wallet service, which holds more than the cap. An
+allowance bounds a rate, not a destination: an agent can pay an accomplice, or itself, within its
+allowance, and over many leases it can move the allowance times the number of leases, which is the
+exposure a principal accepts each time it renews. What the allowance bounds tightly is what the
+agent can spend after it starts to misbehave and before anyone can stop it: the current lease's
+allowance and, at most, one renewed early, [200,000 sats](numbers.md#bond-coverage) in the
+reference example. That figure is the coverage the bond is sized against below.
 
 ### The dead-man switch
 
 Put the lease and the allowance together and doing nothing stops the agent. If the principal and
 every guardian vanish, the agent's authority lapses within one lease, about
-[24 hours](numbers.md#lease-mean-h), and its spending stops at its remaining allowance. The vault
-funds never move without the co-signer, and the principal's recovery key can sweep them after a
-long relative timelock, the dead-man pattern Liana ships for inheritance [@liana-readme]. That is
-G1: the default is stop.
+[24 hours](numbers.md#lease-mean-h), its allowance spends are refused by the co-signer after
+expiry, no release can be signed, and the vault funds never move without one. The principal's
+recovery key can sweep them after a long relative timelock, the dead-man pattern Liana ships for
+inheritance [@liana-readme]. That is G1: the default is stop.
 
 ## Bonds
 
 A chartered agent has two bonds, with different jobs. Both come from the principal's own coins,
-which is what puts the liability on a human (G4).
+which is what puts the liability on a human (G4), subject to the attestation caveat in the scope.
+
+### Making a bond checkable and single-use
+
+A bond is useful only if a relying party can check three things about it: that it is locked, for
+how long, and that it backs this charter and no other. In a Taproot output none of these is
+visible by default, because unused script paths are hidden until spent [@bip341], and a key-path
+spend bypasses every script path if anyone knows the internal key. So each bond output is built
+with an internal key that provably has no known secret (a "nothing up my sleeve" point), and its
+script leaves commit to the charter id. The bundle a relying party receives reveals the leaves and
+the construction of the internal key. The relying party recomputes the output key, sees the
+timelock and the paths, and sees the charter id inside. One output can therefore back exactly one
+charter: the same coins cannot be named in a thousand charters, though a principal with more coins
+can of course make more bonds.
+
+Checking that a bond is still unspent is a question about the current set of unspent outputs, which
+no block header commits to. A relying party needs a full node, or a source of unspent-output data
+it trusts, for this check.
 
 ### The coverage bond: adjudicated
 
-The **coverage bond** pays claims for harm the agent does. It is an output locked by the principal,
-with two script paths: the principal can take it back after the bond's term (an absolute timelock
-[@bip65]), and a claim path that releases it on the adjudicator's threshold signature. The
-adjudicator is named in the charter, and claims go to it.
+The **coverage bond** pays claims for harm the agent does. It has two script paths: the principal
+can take it back after the bond's term (an absolute timelock [@bip65]), and a claim path releases
+it on the adjudicator's threshold signature. The adjudicator is named in the charter, and claims go
+to it.
 
-Its size starts from coverage: the bond should at least cover what the agent can spend before
-anyone can stop it, [200,000 sats](numbers.md#bond-coverage) in the reference example, with a
-coverage ratio of [1.0](numbers.md#coverage-ratio).
+Its size starts from coverage: the bond should at least cover what the agent can spend after it
+starts to misbehave and before anyone can stop it, [200,000 sats](numbers.md#bond-coverage) in the
+reference example, with a coverage ratio of [1.0](numbers.md#coverage-ratio).
 
 Whether a bond also deters is a separate question, and the economics of enforcement give a sober
 answer. A sanction deters a violation only if the expected sanction is at least the gain: a bond B
@@ -365,31 +485,44 @@ parties can weigh the difference.
 
 ### The equivocation bond: no adjudicator
 
-The **equivocation bond** covers one narrow, objectively checkable fault: signing two different
-statements for the same slot. That is the one misbehaviour that can be punished without a judge.
+The **equivocation bond** covers one narrow, objectively checkable fault: the gateway signing two
+different log heads for the same slot, which is how it would show two parties two histories. That
+is the one misbehaviour that can be punished without a judge. The construction follows Babylon's
+Bitcoin staking closely [@babylon2023; @babylon-staking-script; @fp-slashing-protection], and the
+idea that equivocation on a public log can cost the equivocator bitcoins is Ruffing, Kate and
+Schroeder's "accountable assertions" [@ruffing2015]. What follows is a sketch, not a specification.
 
-The gateway signs each log head it hands out between seals with a key derived for that slot, using
-a nonce committed in advance. Signing two different heads for one slot reuses the nonce, which
-reveals the private key. The equivocation bond has a slashing path that needs that key, together
-with a pre-signed transaction that burns the bond or pays a fixed victim output, so whoever finds
-the two signatures can trigger the slash, and the destination is fixed in advance. This is
-Babylon's construction for Bitcoin staking: extractable one-time signatures, where double-signing
-at one height exposes the key and a covenant committee's pre-signature fixes what happens to the
-stake [@babylon2023; @babylon-staking-script; @fp-slashing-protection]. The idea that equivocation
-on a public log can cost the equivocator bitcoins is Ruffing, Kate and Schroeder's "accountable
-assertions" [@ruffing2015]. Escapement applies it to an agent gateway's receipts.
+- **One key, nonces committed in advance.** The gateway has one equivocation key E, named in the
+  charter. Each seal commits, alongside the log head, to the public nonces the gateway will use for
+  every slot of the next epoch, as Babylon's finality providers commit their randomness ahead of
+  time [@fp-commit-pub-rand]. A Schnorr signature is `s = k + e·x`, so two signatures with the same
+  committed nonce on different messages reveal the private key x [@bip340].
+- **Slots that cannot be dodged.** A slot is a batch within an epoch: the gateway closes a batch
+  every minute or so and signs the log head at the end of each batch with that batch's nonce. A
+  receipt for a request carries the signed head of every batch since the last seal. Two receipts
+  from the same epoch therefore overlap in their earlier batches, and if they come from different
+  histories, some batch has been signed twice. Without this rule a gateway could fork by signing
+  alternate batches for different parties and never sign any batch twice.
+- **A place where receipts meet.** Relying parties forward the receipts they receive to the
+  guardians, who compare them. Two conflicting signed heads for one batch are the proof.
+- **A slash whose destination is fixed.** The bond's slashing path needs E's signature and the
+  slashing committee's, and the committee pre-signs, when the bond is made, a transaction that
+  burns a fixed fraction of it. Once x leaks, anyone holding the two signatures can complete that
+  transaction. Without the committee's pre-signature, whoever saw x first, or a miner, would simply
+  take the bond. The committee cannot slash a gateway that has not equivocated, because it does not
+  have E.
+- **An unbonding wait.** The principal reclaims the bond only through a path with a relative
+  timelock, so a gateway that equivocates and then withdraws can still be slashed during the wait.
 
-Why it is needed, given the seals below already prevent a sealed log from forking: seals are
-hourly, and in between, the gateway hands relying parties signed receipts ("your request is entry
-n, and the head is X"). The equivocation bond makes it costly to give two parties receipts from two
-different histories in the gap before the next seal settles which history is real. The same
-construction can bind an agent's own signed offers ("I will sell this to one buyer at slot s"), if
-a principal wants that.
+Why it is needed, given that seals already prevent a sealed log from forking: seals are hourly,
+and in between, relying parties act on receipts. The equivocation bond makes it costly to give two
+parties receipts from two different histories in the gap before the next seal settles which history
+is real.
 
 The danger is accidental equivocation. Ethereum's record is a warning: validators that restart,
 fail over or run twice sign twice, and in September 2025 a single operational fault slashed about
-forty at once [@cryptoslate2025; @cryptonomist2025]. Agents restart constantly. So the gateway
-keeps a slashing-protection record of every slot it has signed, as Babylon's finality providers do
+forty at once [@cryptoslate2025; @cryptonomist2025]. Gateways restart too. So the gateway keeps a
+slashing-protection record of every batch it has signed, as Babylon's finality providers do
 [@fp-slashing-protection], and the equivocation bond is kept small relative to coverage. Ethereum
 also scales penalties with how many validators fault together, so that a lone bug costs little and
 a coordinated attack costs a lot [@eth2book]. Bitcoin script cannot count other people's faults,
@@ -399,11 +532,12 @@ so Escapement cannot copy that rule on chain. It is an open problem in this desi
 
 A bond counts for Tier 2 and Tier 3 authority only after it has been locked for a **season** of
 [4,032 blocks](numbers.md#season-blocks), about [28 days](numbers.md#season-days). Before that, the
-charter can act only at Tiers 0 and 1. The bond's age is on chain: its confirmation height and its
-timelock are public, so any relying party can check it. OrangeCheck's Attest protocol already
-measures stake by coin age [@attest-spec; @attest-bond], and JoinMarket's fidelity bonds use
-timelocked coins as costly identity for the same reason: the lock is "an objective measurement
-that can't be faked" [@belcher-2019; @bip46].
+charter can act only at Tiers 0 and 1. The bond's age is on chain: its confirmation height is
+public, and its timelock is visible once the bundle reveals its script, so any relying party with a
+node can check it. OrangeCheck's Attest protocol already measures stake by coin age
+[@attest-spec; @attest-bond], and JoinMarket's fidelity bonds use timelocked coins as costly
+identity for the same reason: the lock is "an objective measurement that can't be faked"
+[@belcher-2019; @bip46].
 
 Seasoning prices a swarm in **time** as well as money. An adversary who wants a thousand agents
 with Tier 3 authority next week cannot have them: each needs a bond that has aged a season. It can
@@ -419,14 +553,16 @@ not stop one. And it sorts nothing: Spence's signalling works only when the sign
 more than good ones [@spence1973], and sats cost an honest and a malicious agent exactly the same.
 A bond says that someone with money stands behind an agent. It does not say the agent is honest.
 
-JoinMarket values a bond superlinearly, as the square of its locked value [@belcher-2019]. Under
-that rule, splitting capital across N agents gives the swarm only 1/N of the authority one agent
-with the same capital would have: [0.00010](numbers.md#split-authority-ratio-squared) for ten
-thousand. That is a strong anti-swarm rule, and Belcher himself notes its cost: long-term holders
-get bonds essentially for free, and authority concentrates in the rich [@belcher-2019].
-Escapement uses a linear, capped rule instead: one bond backs one charter, and a charter's
-authority is capped by its ladder whatever the bond's size. The brake on swarms is the ladder's
-Tier 3 spawn rule, not the bond's arithmetic.
+Belcher's 2019 proposal valued a fidelity bond as the square of its locked value, so that splitting
+capital across N identities gives the swarm only 1/N of the weight one identity with the same
+capital would have: [0.00010](numbers.md#split-authority-ratio-squared) for ten thousand
+[@belcher-2019]. JoinMarket shipped a gentler exponent of [1.3](numbers.md#jm-bond-exponent)
+[@jm-fidelity], under which the same split keeps [0.063](numbers.md#split-authority-ratio-jm) of
+the weight. Superlinear valuation is a real anti-swarm rule, and Belcher himself notes its cost:
+long-term holders get bonds essentially for free, and weight concentrates in the rich
+[@belcher-2019]. Escapement uses a linear, capped rule instead: one bond backs one charter, and a
+charter's authority is capped by its ladder whatever the bond's size. The brake on swarms is the
+ladder's Tier 3 spawn rule and the attestation of principals, not the bond's arithmetic.
 
 ## Seals
 
