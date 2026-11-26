@@ -378,6 +378,24 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - source: [@metr2026q4], 2026-11-20
 - defined in: `data/inputs.toml#L318`
 
+<a id="datacentre-twh-2025"></a>
+### datacentre-twh-2025
+
+**485 TWh**: electricity used by all data centres worldwide in 2025 (IEA)
+
+- basis: measured
+- source: [@iea-2026]
+- defined in: `data/inputs.toml#L330`
+
+<a id="bitcoin-twh-survey"></a>
+### bitcoin-twh-survey
+
+**138 TWh**: Bitcoin mining's electricity use, Cambridge survey of 48% of hashrate, annualised
+
+- basis: measured
+- source: [@cambridge-2025], 2025-04-28
+- defined in: `data/inputs.toml#L337`
+
 <a id="blocks-per-day"></a>
 ### blocks-per-day
 
@@ -498,6 +516,36 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - inputs: [tier3-compress-factor](#tier3-compress-factor), [hashrate-eh](#hashrate-eh), [asic-efficiency-j-th](#asic-efficiency-j-th)
 - defined in: `model/escapement.py#L107`
 
+<a id="datacentre-gw-2025"></a>
+### datacentre-gw-2025
+
+**55 GW**: average power drawn by all data centres in 2025
+
+- basis: derived
+- formula: `datacentre-twh-2025 * 1e12 / 8760 h / 1e9`
+- inputs: [datacentre-twh-2025](#datacentre-twh-2025)
+- defined in: `model/escapement.py#L111`
+
+<a id="bitcoin-gw-survey"></a>
+### bitcoin-gw-survey
+
+**15.8 GW**: average power drawn by Bitcoin mining in the Cambridge survey
+
+- basis: derived
+- formula: `bitcoin-twh-survey * 1e12 / 8760 h / 1e9`
+- inputs: [bitcoin-twh-survey](#bitcoin-twh-survey)
+- defined in: `model/escapement.py#L114`
+
+<a id="tier3-compress-vs-datacentres"></a>
+### tier3-compress-vs-datacentres
+
+**8 x**: that power as a multiple of every data centre on Earth in 2025
+
+- basis: derived
+- formula: `tier3-compress-power-gw / datacentre-gw-2025`
+- inputs: [tier3-compress-power-gw](#tier3-compress-power-gw), [datacentre-gw-2025](#datacentre-gw-2025)
+- defined in: `model/escapement.py#L117`
+
 <a id="reorg-p-largest-6"></a>
 ### reorg-p-largest-6
 
@@ -506,7 +554,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `Nakamoto(q = pool-largest-share, z = confirmations-standard)`
 - inputs: [pool-largest-share](#pool-largest-share), [confirmations-standard](#confirmations-standard)
-- defined in: `model/escapement.py#L112`
+- defined in: `model/escapement.py#L122`
 
 <a id="reorg-p-top2-6"></a>
 ### reorg-p-top2-6
@@ -516,7 +564,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `Nakamoto(q = pool-top2-share, z = confirmations-standard)`
 - inputs: [pool-top2-share](#pool-top2-share), [confirmations-standard](#confirmations-standard)
-- defined in: `model/escapement.py#L115`
+- defined in: `model/escapement.py#L125`
 
 <a id="depth-for-target-largest"></a>
 ### depth-for-target-largest
@@ -526,7 +574,27 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `least z with Nakamoto(pool-largest-share, z) < reorg-risk-target`
 - inputs: [pool-largest-share](#pool-largest-share), [reorg-risk-target](#reorg-risk-target)
-- defined in: `model/escapement.py#L119`
+- defined in: `model/escapement.py#L129`
+
+<a id="depth-for-target-top2"></a>
+### depth-for-target-top2
+
+**552 blocks**: confirmations before the two largest pools, colluding, have under the target chance of a rewrite
+
+- basis: derived
+- formula: `least z with Nakamoto(pool-top2-share, z) < reorg-risk-target`
+- inputs: [pool-top2-share](#pool-top2-share), [reorg-risk-target](#reorg-risk-target)
+- defined in: `model/escapement.py#L133`
+
+<a id="depth-for-target-top2-days"></a>
+### depth-for-target-top2-days
+
+**3.8 days**: that depth in days
+
+- basis: derived
+- formula: `depth-for-target-top2 * block-interval-s / 86400`
+- inputs: [depth-for-target-top2](#depth-for-target-top2), [block-interval-s](#block-interval-s)
+- defined in: `model/escapement.py#L136`
 
 <a id="reorg-p-top2-144"></a>
 ### reorg-p-top2-144
@@ -536,7 +604,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `Nakamoto(q = pool-top2-share, z = tier3-delay-blocks)`
 - inputs: [pool-top2-share](#pool-top2-share), [tier3-delay-blocks](#tier3-delay-blocks)
-- defined in: `model/escapement.py#L122`
+- defined in: `model/escapement.py#L139`
 
 <a id="vbytes-per-block"></a>
 ### vbytes-per-block
@@ -546,7 +614,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `block-weight-limit / 4`
 - inputs: [block-weight-limit](#block-weight-limit)
-- defined in: `model/escapement.py#L126`
+- defined in: `model/escapement.py#L143`
 
 <a id="vbytes-per-day"></a>
 ### vbytes-per-day
@@ -556,7 +624,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `vbytes-per-block * blocks-per-day`
 - inputs: [vbytes-per-block](#vbytes-per-block), [blocks-per-day](#blocks-per-day)
-- defined in: `model/escapement.py#L129`
+- defined in: `model/escapement.py#L146`
 
 <a id="seal-tx-vbytes"></a>
 ### seal-tx-vbytes
@@ -566,7 +634,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `tx-overhead-vb + p2tr-input-vb + p2tr-output-vb`
 - inputs: [tx-overhead-vb](#tx-overhead-vb), [p2tr-input-vb](#p2tr-input-vb), [p2tr-output-vb](#p2tr-output-vb)
-- defined in: `model/escapement.py#L133`
+- defined in: `model/escapement.py#L150`
 
 <a id="anchor-tx-vbytes"></a>
 ### anchor-tx-vbytes
@@ -576,7 +644,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `tx-overhead-vb + p2tr-input-vb + p2tr-output-vb + opreturn32-output-vb`
 - inputs: [tx-overhead-vb](#tx-overhead-vb), [p2tr-input-vb](#p2tr-input-vb), [p2tr-output-vb](#p2tr-output-vb), [opreturn32-output-vb](#opreturn32-output-vb)
-- defined in: `model/escapement.py#L137`
+- defined in: `model/escapement.py#L154`
 
 <a id="seal-tx-per-day-max"></a>
 ### seal-tx-per-day-max
@@ -586,7 +654,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `vbytes-per-day / seal-tx-vbytes`
 - inputs: [vbytes-per-day](#vbytes-per-day), [seal-tx-vbytes](#seal-tx-vbytes)
-- defined in: `model/escapement.py#L140`
+- defined in: `model/escapement.py#L157`
 
 <a id="seal-capacity-vs-2026"></a>
 ### seal-capacity-vs-2026
@@ -596,7 +664,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `seal-tx-per-day-max / tx-per-day-2026`
 - inputs: [seal-tx-per-day-max](#seal-tx-per-day-max), [tx-per-day-2026](#tx-per-day-2026)
-- defined in: `model/escapement.py#L143`
+- defined in: `model/escapement.py#L160`
 
 <a id="tier3-capacity-per-day"></a>
 ### tier3-capacity-per-day
@@ -606,7 +674,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `seal-tx-per-day-max * tier3-blockspace-share`
 - inputs: [seal-tx-per-day-max](#seal-tx-per-day-max), [tier3-blockspace-share](#tier3-blockspace-share)
-- defined in: `model/escapement.py#L147`
+- defined in: `model/escapement.py#L164`
 
 <a id="seal-cost-2026"></a>
 ### seal-cost-2026
@@ -616,7 +684,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `seal-tx-vbytes * feerate-2026`
 - inputs: [seal-tx-vbytes](#seal-tx-vbytes), [feerate-2026](#feerate-2026)
-- defined in: `model/escapement.py#L153`
+- defined in: `model/escapement.py#L170`
 
 <a id="seal-cost-2023"></a>
 ### seal-cost-2023
@@ -626,7 +694,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `seal-tx-vbytes * feerate-2023`
 - inputs: [seal-tx-vbytes](#seal-tx-vbytes), [feerate-2023](#feerate-2023)
-- defined in: `model/escapement.py#L153`
+- defined in: `model/escapement.py#L170`
 
 <a id="seal-cost-halving"></a>
 ### seal-cost-halving
@@ -636,7 +704,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `seal-tx-vbytes * feerate-halving`
 - inputs: [seal-tx-vbytes](#seal-tx-vbytes), [feerate-halving](#feerate-halving)
-- defined in: `model/escapement.py#L153`
+- defined in: `model/escapement.py#L170`
 
 <a id="seal-cost-peak-day"></a>
 ### seal-cost-peak-day
@@ -646,7 +714,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `seal-tx-vbytes * feerate-peak-day`
 - inputs: [seal-tx-vbytes](#seal-tx-vbytes), [feerate-peak-day](#feerate-peak-day)
-- defined in: `model/escapement.py#L153`
+- defined in: `model/escapement.py#L170`
 
 <a id="seals-per-day"></a>
 ### seals-per-day
@@ -656,7 +724,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `blocks-per-day / seal-epoch-blocks`
 - inputs: [blocks-per-day](#blocks-per-day), [seal-epoch-blocks](#seal-epoch-blocks)
-- defined in: `model/escapement.py#L156`
+- defined in: `model/escapement.py#L173`
 
 <a id="gateway-seal-cost-day-2026"></a>
 ### gateway-seal-cost-day-2026
@@ -666,7 +734,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `seals-per-day * seal-cost-2026`
 - inputs: [seals-per-day](#seals-per-day), [seal-cost-2026](#seal-cost-2026)
-- defined in: `model/escapement.py#L159`
+- defined in: `model/escapement.py#L176`
 
 <a id="gateway-seal-cost-day-halving"></a>
 ### gateway-seal-cost-day-halving
@@ -676,7 +744,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `seals-per-day * seal-cost-halving`
 - inputs: [seals-per-day](#seals-per-day), [seal-cost-halving](#seal-cost-halving)
-- defined in: `model/escapement.py#L162`
+- defined in: `model/escapement.py#L179`
 
 <a id="agent-seal-cost-day-halving"></a>
 ### agent-seal-cost-day-halving
@@ -686,7 +754,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `gateway-seal-cost-day-halving / agents-per-pool`
 - inputs: [gateway-seal-cost-day-halving](#gateway-seal-cost-day-halving), [agents-per-pool](#agents-per-pool)
-- defined in: `model/escapement.py#L165`
+- defined in: `model/escapement.py#L182`
 
 <a id="seal-blockspace-share-pools"></a>
 ### seal-blockspace-share-pools
@@ -696,7 +764,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `seals-per-day * seal-pools * seal-tx-vbytes / vbytes-per-day`
 - inputs: [seals-per-day](#seals-per-day), [seal-pools](#seal-pools), [seal-tx-vbytes](#seal-tx-vbytes), [vbytes-per-day](#vbytes-per-day)
-- defined in: `model/escapement.py#L169`
+- defined in: `model/escapement.py#L186`
 
 <a id="headers-mb-per-year"></a>
 ### headers-mb-per-year
@@ -706,7 +774,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `header-bytes * blocks-per-day * 365 / 1e6`
 - inputs: [header-bytes](#header-bytes), [blocks-per-day](#blocks-per-day)
-- defined in: `model/escapement.py#L172`
+- defined in: `model/escapement.py#L189`
 
 <a id="bond-deter-p10"></a>
 ### bond-deter-p10
@@ -716,7 +784,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `gain-from-violation / 0.10`
 - inputs: [gain-from-violation](#gain-from-violation)
-- defined in: `model/escapement.py#L180`
+- defined in: `model/escapement.py#L197`
 
 <a id="bond-deter-p50"></a>
 ### bond-deter-p50
@@ -726,7 +794,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `gain-from-violation / 0.50`
 - inputs: [gain-from-violation](#gain-from-violation)
-- defined in: `model/escapement.py#L180`
+- defined in: `model/escapement.py#L197`
 
 <a id="bond-deter-p90"></a>
 ### bond-deter-p90
@@ -736,7 +804,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `gain-from-violation / 0.90`
 - inputs: [gain-from-violation](#gain-from-violation)
-- defined in: `model/escapement.py#L180`
+- defined in: `model/escapement.py#L197`
 
 <a id="bond-judgment-proof-btc"></a>
 ### bond-judgment-proof-btc
@@ -746,7 +814,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `harm-catastrophic-btc / p-detect-rare`
 - inputs: [harm-catastrophic-btc](#harm-catastrophic-btc), [p-detect-rare](#p-detect-rare)
-- defined in: `model/escapement.py#L183`
+- defined in: `model/escapement.py#L200`
 
 <a id="bond-coverage"></a>
 ### bond-coverage
@@ -756,7 +824,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `coverage-ratio * allowance-per-lease * leases-at-risk`
 - inputs: [coverage-ratio](#coverage-ratio), [allowance-per-lease](#allowance-per-lease), [leases-at-risk](#leases-at-risk)
-- defined in: `model/escapement.py#L186`
+- defined in: `model/escapement.py#L203`
 
 <a id="swarm-capital-btc"></a>
 ### swarm-capital-btc
@@ -766,7 +834,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `swarm-size * bond-coverage / 1e8`
 - inputs: [swarm-size](#swarm-size), [bond-coverage](#bond-coverage)
-- defined in: `model/escapement.py#L191`
+- defined in: `model/escapement.py#L208`
 
 <a id="incident-swarm-capital-btc"></a>
 ### incident-swarm-capital-btc
@@ -776,7 +844,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `incident-agents-attack * bond-coverage / 1e8`
 - inputs: [incident-agents-attack](#incident-agents-attack), [bond-coverage](#bond-coverage)
-- defined in: `model/escapement.py#L194`
+- defined in: `model/escapement.py#L211`
 
 <a id="incident-days"></a>
 ### incident-days
@@ -786,7 +854,7 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `incident-stop-day - incident-first-day`
 - inputs: [incident-stop-day](#incident-stop-day), [incident-first-day](#incident-first-day)
-- defined in: `model/escapement.py#L197`
+- defined in: `model/escapement.py#L214`
 
 <a id="split-authority-ratio-squared"></a>
 ### split-authority-ratio-squared
@@ -796,4 +864,4 @@ Basis: **measured** (independent measurement), **vendor** (a claim by an interes
 - basis: derived
 - formula: `(N * (C/N)^2) / C^2 = 1/N with N = swarm-size`
 - inputs: [swarm-size](#swarm-size)
-- defined in: `model/escapement.py#L201`
+- defined in: `model/escapement.py#L218`

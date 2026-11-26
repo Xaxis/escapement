@@ -558,6 +558,32 @@
     "note": "",
     "defined_in": "data/inputs.toml#L318"
   },
+  "datacentre-twh-2025": {
+    "value": 485.0,
+    "display": "485 TWh",
+    "unit": "TWh",
+    "basis": "measured",
+    "label": "electricity used by all data centres worldwide in 2025 (IEA)",
+    "formula": "",
+    "inputs": [],
+    "source": "iea-2026",
+    "date": "",
+    "note": "",
+    "defined_in": "data/inputs.toml#L330"
+  },
+  "bitcoin-twh-survey": {
+    "value": 138.0,
+    "display": "138 TWh",
+    "unit": "TWh",
+    "basis": "measured",
+    "label": "Bitcoin mining's electricity use, Cambridge survey of 48% of hashrate, annualised",
+    "formula": "",
+    "inputs": [],
+    "source": "cambridge-2025",
+    "date": "2025-04-28",
+    "note": "",
+    "defined_in": "data/inputs.toml#L337"
+  },
   "blocks-per-day": {
     "value": 144.0,
     "display": "144 blocks",
@@ -750,8 +776,54 @@
     "note": "",
     "defined_in": "model/escapement.py#L107"
   },
+  "datacentre-gw-2025": {
+    "value": 55.36529680365297,
+    "display": "55 GW",
+    "unit": "GW",
+    "basis": "derived",
+    "label": "average power drawn by all data centres in 2025",
+    "formula": "datacentre-twh-2025 * 1e12 / 8760 h / 1e9",
+    "inputs": [
+      "datacentre-twh-2025"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L111"
+  },
+  "bitcoin-gw-survey": {
+    "value": 15.753424657534246,
+    "display": "15.8 GW",
+    "unit": "GW",
+    "basis": "derived",
+    "label": "average power drawn by Bitcoin mining in the Cambridge survey",
+    "formula": "bitcoin-twh-survey * 1e12 / 8760 h / 1e9",
+    "inputs": [
+      "bitcoin-twh-survey"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L114"
+  },
+  "tier3-compress-vs-datacentres": {
+    "value": 7.647931546391753,
+    "display": "8 x",
+    "unit": "x",
+    "basis": "derived",
+    "label": "that power as a multiple of every data centre on Earth in 2025",
+    "formula": "tier3-compress-power-gw / datacentre-gw-2025",
+    "inputs": [
+      "tier3-compress-power-gw",
+      "datacentre-gw-2025"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L117"
+  },
   "reorg-p-largest-6": {
-    "value": 0.08867441744659035,
+    "value": 0.08867441744659027,
     "display": "8.9%",
     "unit": "",
     "basis": "derived",
@@ -764,10 +836,10 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L112"
+    "defined_in": "model/escapement.py#L122"
   },
   "reorg-p-top2-6": {
-    "value": 0.822842150952584,
+    "value": 0.8228421509525841,
     "display": "82%",
     "unit": "",
     "basis": "derived",
@@ -780,7 +852,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L115"
+    "defined_in": "model/escapement.py#L125"
   },
   "depth-for-target-largest": {
     "value": 19.0,
@@ -796,10 +868,42 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L119"
+    "defined_in": "model/escapement.py#L129"
+  },
+  "depth-for-target-top2": {
+    "value": 552.0,
+    "display": "552 blocks",
+    "unit": "blocks",
+    "basis": "derived",
+    "label": "confirmations before the two largest pools, colluding, have under the target chance of a rewrite",
+    "formula": "least z with Nakamoto(pool-top2-share, z) < reorg-risk-target",
+    "inputs": [
+      "pool-top2-share",
+      "reorg-risk-target"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L133"
+  },
+  "depth-for-target-top2-days": {
+    "value": 3.8333333333333335,
+    "display": "3.8 days",
+    "unit": "days",
+    "basis": "derived",
+    "label": "that depth in days",
+    "formula": "depth-for-target-top2 * block-interval-s / 86400",
+    "inputs": [
+      "depth-for-target-top2",
+      "block-interval-s"
+    ],
+    "source": "",
+    "date": "",
+    "note": "",
+    "defined_in": "model/escapement.py#L136"
   },
   "reorg-p-top2-144": {
-    "value": 0.12785910352588656,
+    "value": 0.12785910352584418,
     "display": "12.79%",
     "unit": "",
     "basis": "derived",
@@ -812,7 +916,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L122"
+    "defined_in": "model/escapement.py#L139"
   },
   "vbytes-per-block": {
     "value": 1000000.0,
@@ -827,7 +931,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L126"
+    "defined_in": "model/escapement.py#L143"
   },
   "vbytes-per-day": {
     "value": 144000000.0,
@@ -843,7 +947,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L129"
+    "defined_in": "model/escapement.py#L146"
   },
   "seal-tx-vbytes": {
     "value": 111.0,
@@ -860,7 +964,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L133"
+    "defined_in": "model/escapement.py#L150"
   },
   "anchor-tx-vbytes": {
     "value": 154.0,
@@ -878,7 +982,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L137"
+    "defined_in": "model/escapement.py#L154"
   },
   "seal-tx-per-day-max": {
     "value": 1297297.2972972973,
@@ -894,7 +998,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L140"
+    "defined_in": "model/escapement.py#L157"
   },
   "seal-capacity-vs-2026": {
     "value": 2.190063572070338,
@@ -910,7 +1014,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L143"
+    "defined_in": "model/escapement.py#L160"
   },
   "tier3-capacity-per-day": {
     "value": 12972.972972972973,
@@ -926,7 +1030,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L147"
+    "defined_in": "model/escapement.py#L164"
   },
   "seal-cost-2026": {
     "value": 111.0,
@@ -942,7 +1046,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L153"
+    "defined_in": "model/escapement.py#L170"
   },
   "seal-cost-2023": {
     "value": 1665.0,
@@ -958,7 +1062,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L153"
+    "defined_in": "model/escapement.py#L170"
   },
   "seal-cost-halving": {
     "value": 22200.0,
@@ -974,7 +1078,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L153"
+    "defined_in": "model/escapement.py#L170"
   },
   "seal-cost-peak-day": {
     "value": 95571.0,
@@ -990,7 +1094,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L153"
+    "defined_in": "model/escapement.py#L170"
   },
   "seals-per-day": {
     "value": 24.0,
@@ -1006,7 +1110,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L156"
+    "defined_in": "model/escapement.py#L173"
   },
   "gateway-seal-cost-day-2026": {
     "value": 2664.0,
@@ -1022,7 +1126,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L159"
+    "defined_in": "model/escapement.py#L176"
   },
   "gateway-seal-cost-day-halving": {
     "value": 532800.0,
@@ -1038,7 +1142,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L162"
+    "defined_in": "model/escapement.py#L179"
   },
   "agent-seal-cost-day-halving": {
     "value": 532.8,
@@ -1054,7 +1158,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L165"
+    "defined_in": "model/escapement.py#L182"
   },
   "seal-blockspace-share-pools": {
     "value": 0.0185,
@@ -1072,7 +1176,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L169"
+    "defined_in": "model/escapement.py#L186"
   },
   "headers-mb-per-year": {
     "value": 4.2048,
@@ -1088,7 +1192,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L172"
+    "defined_in": "model/escapement.py#L189"
   },
   "bond-deter-p10": {
     "value": 10000000.0,
@@ -1103,7 +1207,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L180"
+    "defined_in": "model/escapement.py#L197"
   },
   "bond-deter-p50": {
     "value": 2000000.0,
@@ -1118,7 +1222,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L180"
+    "defined_in": "model/escapement.py#L197"
   },
   "bond-deter-p90": {
     "value": 1111111.111111111,
@@ -1133,7 +1237,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L180"
+    "defined_in": "model/escapement.py#L197"
   },
   "bond-judgment-proof-btc": {
     "value": 10000.0,
@@ -1149,7 +1253,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L183"
+    "defined_in": "model/escapement.py#L200"
   },
   "bond-coverage": {
     "value": 200000.0,
@@ -1166,7 +1270,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L186"
+    "defined_in": "model/escapement.py#L203"
   },
   "swarm-capital-btc": {
     "value": 20.0,
@@ -1182,7 +1286,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L191"
+    "defined_in": "model/escapement.py#L208"
   },
   "incident-swarm-capital-btc": {
     "value": 1.4,
@@ -1198,7 +1302,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L194"
+    "defined_in": "model/escapement.py#L211"
   },
   "incident-days": {
     "value": 68.0,
@@ -1214,7 +1318,7 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L197"
+    "defined_in": "model/escapement.py#L214"
   },
   "split-authority-ratio-squared": {
     "value": 0.0001,
@@ -1229,6 +1333,6 @@
     "source": "",
     "date": "",
     "note": "",
-    "defined_in": "model/escapement.py#L201"
+    "defined_in": "model/escapement.py#L218"
   }
 }

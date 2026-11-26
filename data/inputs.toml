@@ -323,3 +323,21 @@ fmt = ",.1f"
 source = "metr2026q4"
 date = "2026-11-20"
 label = "doubling time of AI task time horizons (METR, pooled estimate)"
+
+# ---------------------------------------------------------------------------------------------
+# Energy, for scale
+
+[datacentre-twh-2025]
+value = 485
+unit = "TWh"
+basis = "measured"
+source = "iea-2026"
+label = "electricity used by all data centres worldwide in 2025 (IEA)"
+
+[bitcoin-twh-survey]
+value = 138
+unit = "TWh"
+basis = "measured"
+source = "cambridge-2025"
+date = "2025-04-28"
+label = "Bitcoin mining's electricity use, Cambridge survey of 48% of hashrate, annualised"

@@ -71,3 +71,21 @@ year = 2015
 venue = "24th USENIX Security Symposium"
 url = "https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/melara"
 supports = "a per-identity Merkle map whose periodic signed root makes a server's equivocation detectable"
+
+[source.solomon-bracket]
+type = "essay"
+title = "Your timestamp proves \"no later than.\" What proves \"no earlier than\"?"
+authors = ["Craig Solomon"]
+undated = "posted Oct 15, year not shown; read 2026-11-26. The author runs ProofLedger, a timestamping vendor, and discloses the post was drafted by an AI agent."
+venue = "DEV Community"
+url = "https://dev.to/craig_solomon/your-timestamp-proves-no-later-than-what-proves-no-earlier-than-54m0"
+supports = "bracketing a file's creation time: a recent block hash written into the bytes gives 'no earlier than', an anchor gives 'no later than'; no agents, delays or vetoes"
+
+[source.reid2026]
+type = "report"
+title = "Risks and Controls for Multi-Agent Systems: an analytical framework for deployment of AI agents across organisational boundaries"
+authors = ["Alistair Reid", "Simon O'Callaghan", "Dustin Venini", "Liam Carroll", "Tiberio Caetano"]
+year = 2026
+venue = "Australian AI Safety Institute (arXiv cs.MA)"
+arxiv = "2608.26626"
+supports = "sybil controls: 'at most one root credential per human principal', each agent bound to a human principal; delegation scope attenuation; per-step re-authorisation; orphaned sub-agents"

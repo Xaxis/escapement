@@ -20,6 +20,14 @@
       "tests": []
     },
     {
+      "id": "cli:keys",
+      "kind": "cli",
+      "entry": "tools/keys.py",
+      "reach": "python3 tools/keys.py KEY [KEY ...] | --fix FILE",
+      "area": "sources",
+      "tests": []
+    },
+    {
       "id": "cli:model",
       "kind": "cli",
       "entry": "model/escapement.py",
@@ -33,6 +41,14 @@
       "entry": "tools/paper.py",
       "reach": "make paper (python3 tools/paper.py [--ids] [--keys MAP.json])",
       "area": "paper",
+      "tests": []
+    },
+    {
+      "id": "cli:sources",
+      "kind": "cli",
+      "entry": "tools/sources.py",
+      "reach": "make sources (python3 tools/sources.py [--check])",
+      "area": "sources",
       "tests": []
     },
     {

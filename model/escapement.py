@@ -39,7 +39,7 @@ def nakamoto_p(q: float, z: int) -> float:
     lam = z * (q / p)
     total = 1.0
     for k in range(z + 1):
-        poisson = math.exp(-lam) * lam**k / math.factorial(k)
+        poisson = math.exp(-lam + k * math.log(lam) - math.lgamma(k + 1)) if lam > 0 else float(k == 0)
         total -= poisson * (1 - (q / p) ** (z - k))
     return total
 
@@ -106,6 +106,16 @@ def build(overrides: dict | None = None) -> Ledger:
       "(tier3-compress-factor - 1) * hashrate-eh * 1e6 * asic-efficiency-j-th / 1e9", "GW", fmt=",.0f",
       label="power the added hardware would draw", defined_in=here())
 
+    d("datacentre-gw-2025", lambda q: q["datacentre-twh-2025"] * 1e12 / 8760 / 1e9,
+      "datacentre-twh-2025 * 1e12 / 8760 h / 1e9", "GW", fmt=",.0f",
+      label="average power drawn by all data centres in 2025", defined_in=here())
+    d("bitcoin-gw-survey", lambda q: q["bitcoin-twh-survey"] * 1e12 / 8760 / 1e9,
+      "bitcoin-twh-survey * 1e12 / 8760 h / 1e9", "GW", fmt=",.1f",
+      label="average power drawn by Bitcoin mining in the Cambridge survey", defined_in=here())
+    d("tier3-compress-vs-datacentres", lambda q: q["tier3-compress-power-gw"] / q["datacentre-gw-2025"],
+      "tier3-compress-power-gw / datacentre-gw-2025", "x", fmt=",.0f",
+      label="that power as a multiple of every data centre on Earth in 2025", defined_in=here())
+
     # Finality: Nakamoto's own catch-up probability for an attacker with share q, z blocks behind.
     d("reorg-p-largest-6", lambda q: nakamoto_p(q["pool-largest-share"], int(q["confirmations-standard"])),
       "Nakamoto(q = pool-largest-share, z = confirmations-standard)", fmt=".1%",
@@ -117,6 +127,13 @@ def build(overrides: dict | None = None) -> Ledger:
       "least z with Nakamoto(pool-largest-share, z) < reorg-risk-target", "blocks",
       label="confirmations before the largest pool alone has under the target chance of a rewrite",
       defined_in=here())
+    d("depth-for-target-top2", lambda q: depth_for(q["pool-top2-share"], q["reorg-risk-target"]),
+      "least z with Nakamoto(pool-top2-share, z) < reorg-risk-target", "blocks", fmt=",.0f",
+      label="confirmations before the two largest pools, colluding, have under the target chance of a rewrite",
+      defined_in=here())
+    d("depth-for-target-top2-days", lambda q: q["depth-for-target-top2"] * q["block-interval-s"] / 86400,
+      "depth-for-target-top2 * block-interval-s / 86400", "days", fmt=",.1f",
+      label="that depth in days", defined_in=here())
     d("reorg-p-top2-144", lambda q: nakamoto_p(q["pool-top2-share"], int(q["tier3-delay-blocks"])),
       "Nakamoto(q = pool-top2-share, z = tier3-delay-blocks)", fmt=".2%",
       label="chance the two largest pools rewrite an anchor a Tier 3 delay deep", defined_in=here())
