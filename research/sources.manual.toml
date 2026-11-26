@@ -577,3 +577,30 @@ year = 2025
 venue = "bitvm.org"
 url = "https://bitvm.org/bitvm_bridge.pdf"
 supports = "connector outputs and challenge windows where a later spend proves no challenge succeeded; a light client with a difficulty floor"
+
+[source.escapement-lab]
+type = "code"
+title = "Escapement regtest lab: bond, tick chain, release verifier, lease, co-signing, anchoring, TRUC veto and Merkle-sum tree on Bitcoin Core 32.1"
+authors = ["Xaxis"]
+year = 2026
+venue = "GitHub, Xaxis/escapement, lab/"
+url = "https://github.com/Xaxis/escapement/tree/main/lab"
+supports = "transaction sizes and behaviours measured on regtest; 104 checks, reproduced by make lab"
+
+[source.perdomo2020]
+type = "peer-reviewed"
+title = "Performative Prediction"
+authors = ["Juan C. Perdomo", "Tijana Zrnic", "Celestine Mendler-Dünner", "Moritz Hardt"]
+year = 2020
+venue = "ICML 2020"
+arxiv = "2002.06673"
+supports = "predictions that influence the outcomes they predict; training then optimises against a distribution the model itself shifts"
+
+[source.vovk2021]
+type = "peer-reviewed"
+title = "E-values: Calibration, combination and applications"
+authors = ["Vladimir Vovk", "Ruodu Wang"]
+year = 2021
+venue = "The Annals of Statistics 49(3)"
+doi = "10.1214/20-AOS2020"
+supports = "e-values, closely related to likelihood ratios and bets, can be merged by averaging them, whatever their dependence"

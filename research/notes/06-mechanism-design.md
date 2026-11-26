@@ -396,7 +396,7 @@ sources:
     title: The judgment proof problem
     venue: International Review of Law and Economics 6(1):45-58
     type: peer-reviewed
-    id: doi:10.1016/0144-8188(86)90038-9
+    id: doi:10.1016/0144-8188(86)90038-4
     url: https://ideas.repec.org/a/eee/irlaec/v6y1986i1p45-58.html
     supports: metadata only (unverified content)
   - key: fortune2025aiuc

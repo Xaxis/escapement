@@ -269,6 +269,40 @@ def build(overrides: dict | None = None) -> Ledger:
       "fake-record-success * 2^sim-skilled-log2-lambda", "identities", fmt="sig2",
       label="identities a faker without edge needs for the same score", defined_in=here())
 
+    # Correlated claims (RT-01) under the product rule and the round rule.
+    def corr(q, rule):
+        return sim.record_correlated(int(q["sim-corr-identities"]), int(q["sim-corr-claims"]),
+                                     q["sim-corr-r"], int(q["sim-log2-lambda"]), rule,
+                                     int(q["sim-corr-rounds"]), 4000, 11)
+    d("sim-corr-product-p", lambda q: corr(q, "product")["p-any-reaches"],
+      "simulated share of 4,000 trials in which some identity reaches 2^sim-log2-lambda, product rule",
+      fmt=".1%", label="success of the correlated-claims attack when a round's ratios multiply",
+      defined_in=here())
+    d("sim-corr-round-p", lambda q: corr(q, "mean")["p-any-reaches"],
+      "the same under the round rule (a round counts as the mean of its ratios)", fmt=".1%",
+      label="success of the same attack under the round rule", defined_in=here())
+    d("sim-corr-bound", lambda q: q["sim-corr-identities"] / 2 ** q["sim-log2-lambda"],
+      "sim-corr-identities / 2^sim-log2-lambda", fmt=".1%",
+      label="Theorem 1's bound for that many identities", defined_in=here())
+    d("tail-product-score", lambda q: (1 / (1 - q["tail-fail-p"])) ** q["tail-claims"],
+      "(1 / (1 - tail-fail-p)) ^ tail-claims", fmt="sig2",
+      label="score of the hidden tail-risk record when the claims multiply (99% of the time)",
+      defined_in=here())
+    d("tail-round-score", lambda q: 1 / (1 - q["tail-fail-p"]),
+      "1 / (1 - tail-fail-p): the mean of the claims' ratios", fmt=".2f",
+      label="score of the same record under the round rule", defined_in=here())
+
+    def skilled_rounds(q):
+        return sim.record_skilled_rounds(int(q["sim-skilled-log2-lambda"]), q["sim-skilled-p-low"],
+                                         q["sim-skilled-p-high"], int(q["sim-round-claims"]), 400, 3)
+    d("sim-skilled-rounds", lambda q: skilled_rounds(q)["rounds-median"],
+      "simulated median rounds until the round-rule score first reaches 2^sim-skilled-log2-lambda",
+      "rounds", fmt=",.0f", label="rounds the skilled honest identity needs under the round rule",
+      defined_in=here())
+    d("sim-skilled-round-claims", lambda q: skilled_rounds(q)["claims-median"],
+      "sim-skilled-rounds * sim-round-claims", "claims", fmt=",.0f",
+      label="claims it makes in those rounds", defined_in=here())
+
     # Training (section 5): the learned confidence parameter, 1 when calibrated.
     d("sim-train-a-complete", lambda q: sim.training("complete", 3000, 64, 0.5, 0.5, 4)["a"],
       "stochastic gradient ascent from a = 0.5, complete records", fmt=".2f",
@@ -316,22 +350,60 @@ def build(overrides: dict | None = None) -> Ledger:
     d("sim-population-mean", lambda q: adopt(q, 0.0, q["sim-start-low"], 0.0)["population-mean"],
       "mean type of all agents, harmful included", fmt=".2f",
       label="terms every agent would get if nobody could be told apart", defined_in=here())
-    d("sim-harm-terms-nosub", lambda q: adopt(q, q["sim-seed-readers"], q["sim-start-low"], 0.0)["harmful-terms"],
-      "best terms open to a harmful actor at the end, no substitution", fmt=".2f",
-      label="terms a harmful actor gets by routing around, when agents cannot move their business",
+    d("sim-harm-payoff-nosub", lambda q: adopt(q, q["sim-seed-readers"], q["sim-start-low"], 0.0)["harmful-payoff"],
+      "harmful actors' mean realised payoff over the last 20 periods, joining allowed, no substitution",
+      fmt=".2f", label="what a harmful actor earns, joining and leaving at will, when business cannot move",
       defined_in=here())
-    d("sim-harm-terms-partial",
-      lambda q: adopt(q, q["sim-seed-readers"], q["sim-start-low"], q["sim-substitution-partial"])["harmful-terms"],
+    d("sim-harm-payoff-partial",
+      lambda q: adopt(q, q["sim-seed-readers"], q["sim-start-low"], q["sim-substitution-partial"])["harmful-payoff"],
       "the same with partial substitution", fmt=".2f",
-      label="terms a harmful actor gets by routing around, with partial substitution", defined_in=here())
-    d("sim-harm-terms-full", lambda q: adopt(q, q["sim-seed-readers"], q["sim-start-low"], 1.0)["harmful-terms"],
+      label="what a harmful actor earns, with partial substitution", defined_in=here())
+    d("sim-harm-payoff-full", lambda q: adopt(q, q["sim-seed-readers"], q["sim-start-low"], 1.0)["harmful-payoff"],
       "the same with full substitution", fmt=".2f",
-      label="terms a harmful actor gets by routing around, with full substitution", defined_in=here())
+      label="what a harmful actor earns, with full substitution", defined_in=here())
+    d("sim-harm-switch", lambda q: adopt(q, q["sim-seed-readers"], q["sim-start-low"], 0.0)["harmful-switch-share"],
+      "share of harmful actors changing state each period, last 10 periods", fmt=".0%",
+      label="harmful actors that join or leave each period (identity cycling)", defined_in=here())
+
+    def adopt_instant(q, substitution):
+        return sim.adoption(q["sim-join-cost"], q["sim-gain-over-k"], q["sim-seed-readers"],
+                            q["sim-harmful-share"], q["sim-start-low"], 60, 2000, 0.0,
+                            substitution, 6)
+    d("sim-harm-payoff-instant-nosub", lambda q: adopt_instant(q, 0.0)["harmful-payoff"],
+      "harmful payoff when a record reveals type at once (tau = 0), no substitution", fmt=".2f",
+      label="what a harmful actor earns if records revealed type at once, business fixed",
+      defined_in=here())
+    d("sim-harm-payoff-instant-full", lambda q: adopt_instant(q, 1.0)["harmful-payoff"],
+      "harmful payoff when a record reveals type at once (tau = 0), full substitution", fmt=".2f",
+      label="what a harmful actor earns if records revealed type at once and business moved freely",
+      defined_in=here())
     d("sim-readers-final", lambda q: adopt(q, q["sim-seed-readers"], q["sim-start-low"], 0.0)["final-readers"],
       "share of relying parties reading records at the end, seed case", fmt=".0%",
       label="relying parties that read records", defined_in=here())
 
-    # The veto under censorship (section 1) and the chip clock (section 8).
+    # Measured on regtest (lab/): what a release, a veto and a chain proof cost.
+    d("tick-release-cost-2026", lambda q: q["lab-advance2-vbytes"] * q["feerate-2026"],
+      "lab-advance2-vbytes * feerate-2026", "sats", fmt=",.0f",
+      label="fee for a Tier 2 release at the 2026 median fee rate", defined_in=here())
+    d("tick-release-cost-halving", lambda q: q["lab-advance2-vbytes"] * q["feerate-halving"],
+      "lab-advance2-vbytes * feerate-halving", "sats", fmt=",.0f",
+      label="the same at the fee rate of the halving block", defined_in=here())
+    d("veto-cost-halving", lambda q: q["lab-veto-package-vbytes"] * q["feerate-halving"],
+      "lab-veto-package-vbytes * feerate-halving", "sats", fmt=",.0f",
+      label="fee for a veto package at the halving block's fee rate", defined_in=here())
+    d("tick-releases-per-day-max", lambda q: q["vbytes-per-day"] / q["lab-advance2-vbytes"],
+      "vbytes-per-day / lab-advance2-vbytes", "releases", fmt="sig2",
+      label="Tier 2 releases a day if they filled every block", defined_in=here())
+    d("tick-identities-max", lambda q: q["vbytes-per-day"] / q["lab-advance2-vbytes"] / (144 / q["tier2-delay-blocks"]),
+      "tick-releases-per-day-max / (144 / tier2-delay-blocks)", "identities", fmt="sig2",
+      label="identities that could each release every Tier 2 window if they filled every block",
+      defined_in=here())
+    d("chain-proof-bytes-per-link", lambda q: q["lab-chain-proof-bytes"] / q["lab-chain-links"],
+      "lab-chain-proof-bytes / lab-chain-links", "bytes", fmt=",.0f",
+      label="proof bytes per link on regtest, where Merkle branches are one or two hashes deep",
+      defined_in=here())
+
+    # The veto under censorship (section 1).
     d("veto-miss-tier2-half", lambda q: q["veto-censor-share"] ** q["tier2-delay-blocks"],
       "veto-censor-share ^ tier2-delay-blocks", fmt=".1%",
       label="chance a Tier 2 window passes with no block that would mine the veto", defined_in=here())
@@ -346,13 +418,6 @@ def build(overrides: dict | None = None) -> Ledger:
       lambda q: q["hashrate-eh"] * 1e6 * q["asic-efficiency-j-th"] * q["block-interval-s"] / 3.6e9,
       "hashrate-eh * 1e6 * asic-efficiency-j-th * block-interval-s / 3.6e9", "MWh", fmt=",.0f",
       label="energy the network spends on one block", defined_in=here())
-    d("chip-forge-blocks-tier3",
-      lambda q: (q["tier3-delay-blocks"] + q["confirmations-standard"]) * q["chip-difficulty-floor"],
-      "(tier3-delay-blocks + confirmations-standard) * chip-difficulty-floor", "blocks of work",
-      fmt=",.0f", label="work, in current blocks, to forge a Tier 3 release for a chip", defined_in=here())
-    d("chip-forge-mwh-tier3", lambda q: q["chip-forge-blocks-tier3"] * q["block-energy-mwh"],
-      "chip-forge-blocks-tier3 * block-energy-mwh", "MWh", fmt="sig2",
-      label="energy that forgery costs", defined_in=here())
     return L
 
 

@@ -76,6 +76,79 @@ def record_selective(log2_lambda: int, trials: int, seed: int) -> dict:
     return {"claims-mean": made / trials, "identities": 1}
 
 
+# Correlated claims (the red team's RT-01) and the round rule that answers it. A marginal baseline
+# is not the conditional law of an outcome once the forecaster picks claims that move together, so
+# a product of likelihood ratios over such claims is not a martingale. Under the round rule an
+# identity's claims are scored in rounds that do not overlap: a round's claims are committed in one
+# entry, settle together, and multiply the score by the weighted mean of their likelihood ratios.
+# Each ratio has expectation one under its own marginal baseline, so the mean does too, however
+# the claims are correlated (linearity of expectation), and the score is a martingale over rounds.
+
+
+@lru_cache(maxsize=None)
+def record_correlated(identities: int, claims: int, r: float, log2_lambda: int, rule: str,
+                      rounds: int, trials: int, seed: int) -> dict:
+    """Each round has `claims` yes/no events with baseline 1/2; each equals a common coin with
+    probability r, else is an independent coin. Each identity bets all in on one side, chosen at
+    random each round, on every claim. Under rule "product" a round multiplies the score by the
+    product of the ratios (2 or 0 each); under rule "mean" by their mean. The adversary wins if any
+    identity reaches 2^log2_lambda within `rounds` rounds."""
+    rng = random.Random(seed)
+    lam = 2.0 ** log2_lambda
+    wins = 0
+    for _ in range(trials):
+        won = False
+        for _ in range(identities):
+            score = 1.0
+            for k in range(rounds):
+                # Each round's factor is at most 2^claims (product) or 2 (mean); stop when even
+                # the best remaining rounds cannot reach lambda.
+                best = (2.0 ** claims) if rule == "product" else 2.0
+                if score * best ** (rounds - k) < lam:
+                    break
+                common = rng.random() < 0.5
+                side = rng.random() < 0.5
+                hits = sum(1 for _ in range(claims)
+                           if (common if rng.random() < r else rng.random() < 0.5) == side)
+                if rule == "product":
+                    score *= 2.0 ** claims if hits == claims else 0.0
+                else:
+                    score *= 2.0 * hits / claims
+                if score >= lam:
+                    won = True
+                    break
+            if won:
+                break
+        wins += won
+    return {"p-any-reaches": wins / trials, "bound": min(1.0, identities / lam)}
+
+
+@lru_cache(maxsize=None)
+def record_skilled_rounds(log2_lambda: int, p_low: float, p_high: float, per_round: int,
+                          trials: int, seed: int) -> dict:
+    """The skilled honest identity of record_skilled under the round rule: each round has
+    `per_round` independent events, equal weights, and the score multiplies by the mean of the
+    claims' ratios. Returns the median number of rounds, and of claims, until the score first
+    reaches lambda."""
+    rng = random.Random(seed)
+    target = log2_lambda * math.log(2)
+    needed = []
+    for _ in range(trials):
+        s, n = 0.0, 0
+        while s < target and n < 100_000:
+            total = 0.0
+            for _ in range(per_round):
+                p = rng.uniform(p_low, p_high)
+                y = rng.random() < p
+                total += (p if y else 1 - p) / 0.5
+            s += math.log(total / per_round)
+            n += 1
+        needed.append(n)
+    needed.sort()
+    rounds = needed[len(needed) // 2]
+    return {"rounds-median": rounds, "claims-median": rounds * per_round}
+
+
 @lru_cache(maxsize=None)
 def record_skilled(log2_lambda: int, p_low: float, p_high: float, trials: int, seed: int) -> dict:
     """A skilled honest identity: each event has a true probability p drawn uniformly from
@@ -138,8 +211,10 @@ def training(regime: str, steps: int, batch: int, rate: float, a0: float, seed: 
 
 # ------------------------------------------------------------------------------------------------
 # Adoption (Propositions 11 to 13), agent-based. Agents have types theta drawn from Beta(2, 2)
-# (log-concave, not uniform), plus a share of harmful actors with theta below zero who never join,
-# since joining would reveal them. A joined agent's type is learned gradually: readers price it at
+# (log-concave, not uniform), plus a share of harmful actors with theta below zero. Harmful actors
+# follow the same rule as everyone (an earlier version barred them from joining, which hid their
+# best response: join, be priced mostly at the joiners' mean while young, leave, and rejoin with a
+# fresh identity). A joined agent's type is learned gradually: readers price it at
 # a weighted mean of its true type and the joiners' mean, with the weight growing with tenure.
 # Readers price unverified agents at the mean type of the unverified pool. Agents join when their
 # expected gain over the next period exceeds the joining cost. Relying parties read records when
@@ -186,7 +261,11 @@ def adoption(cost: float, gain_over_k: float, seed_readers: float, harmful_share
             return z * (1 - s)
         return z
 
+    harm_payoffs = []
+    harm_switches = []
     for _ in range(periods):
+        harm_u = []
+        harm_switch = 0
         x = sum(joined) / agents
         z = min(1.0, seed_readers + (1 - seed_readers) * min(1.0, gain_over_k * x))
         out = [types[i] for i in range(agents) if not joined[i]]
@@ -202,7 +281,10 @@ def adoption(cost: float, gain_over_k: float, seed_readers: float, harmful_share
             u_join = r_join * priced + (1 - r_join) * p_nr - cost
             r_out = split(m_out, p_nr)
             u_out = r_out * m_out + (1 - r_out) * p_nr
-            new[i] = (not harmful[i]) and u_join > u_out
+            new[i] = u_join > u_out
+            if harmful[i]:
+                harm_u.append(u_join if new[i] else u_out)
+                harm_switch += new[i] != joined[i]
             r = r_join if new[i] else r_out
             num += (1 - r) * types[i]
             den += 1 - r
@@ -211,6 +293,8 @@ def adoption(cost: float, gain_over_k: float, seed_readers: float, harmful_share
             tenure[i] = tenure[i] + 1 if joined[i] else 0
         p_nr = num / den if den else p_nr
         path.append(sum(joined) / agents)
+        harm_payoffs.append(sum(harm_u) / len(harm_u) if harm_u else 0.0)
+        harm_switches.append(harm_switch / n_harm if n_harm else 0.0)
     out = [types[i] for i in range(agents) if not joined[i]]
     m_out = sum(out) / len(out) if out else 0.0
     harm_terms = max(m_out, p_nr)
@@ -222,6 +306,8 @@ def adoption(cost: float, gain_over_k: float, seed_readers: float, harmful_share
         "harmful-terms": harm_terms,
         "harmful-terms-vs-population": harm_terms - population_mean,
         "population-mean": population_mean,
+        "harmful-payoff": sum(harm_payoffs[-20:]) / 20,
+        "harmful-switch-share": sum(harm_switches[-10:]) / 10,
         "path": tuple(path),
     }
 
@@ -254,6 +340,9 @@ if __name__ == "__main__":
     print("record faking, 256 identities, lambda 2^10:", record_faking(256, 10, 10, 4000, 1))
     print("selective, lambda 2^10:", record_selective(10, 4000, 2))
     print("skilled, lambda 2^20:", record_skilled(20, 0.1, 0.9, 400, 3))
+    for rule in ("product", "mean"):
+        print(f"correlated claims, rule {rule}:", record_correlated(16, 10, 0.9, 10, rule, 40, 4000, 11))
+    print("skilled, round rule, 10 a round:", record_skilled_rounds(20, 0.1, 0.9, 10, 400, 3))
     print("training complete:", training("complete", 3000, 64, 0.5, 0.5, 4))
     print("training selective:", training("selective", 3000, 64, 0.5, 1.0, 5))
     for sub in (0.0, 1.0):
@@ -262,5 +351,8 @@ if __name__ == "__main__":
                 r = adoption(0.02, 0.5, seed_r, 0.05, start, 60, 2000, 3.0, sub, 6)
                 print(f"adoption s={sub} seed={seed_r} start={start}:",
                       {k: round(v, 3) for k, v in r.items() if k != "path"})
+    for sub in (0.0, 1.0):
+        r = adoption(0.02, 0.5, 0.1, 0.05, 0.02, 60, 2000, 0.0, sub, 6)
+        print(f"adoption, type revealed at once, s={sub}: harmful payoff", round(r["harmful-payoff"], 3))
     print("analytic:", adoption_analytic(0.02, 0.5))
     print("veto censorship, 6 blocks, half censor:", veto_censorship(6, 0.5, 200_000, 7))

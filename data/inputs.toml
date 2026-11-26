@@ -460,8 +460,103 @@ basis = "assumption"
 fmt = ".0%"
 label = "share of hashrate that refuses to mine a veto, in the censorship example"
 
-[chip-difficulty-floor]
-value = 0.25
-basis = "design"
-fmt = ".2f"
-label = "lowest difficulty a chip accepts, as a share of the last difficulty it accepted (one retarget step)"
+[sim-corr-identities]
+value = 16
+unit = "identities"
+basis = "assumption"
+label = "identities in the correlated-claims attack (the red team's RT-01)"
+
+[sim-corr-claims]
+value = 10
+unit = "claims"
+basis = "assumption"
+label = "claims per round in the correlated-claims attack"
+
+[sim-corr-r]
+value = 0.9
+basis = "assumption"
+fmt = ".1f"
+label = "chance each claim in the attack equals the round's common coin"
+
+[sim-corr-rounds]
+value = 40
+unit = "rounds"
+basis = "assumption"
+label = "rounds each attacking identity may play"
+
+[sim-round-claims]
+value = 10
+unit = "claims"
+basis = "assumption"
+label = "claims per round for the skilled honest identity under the round rule"
+
+[tail-claims]
+value = 1000
+unit = "claims"
+basis = "assumption"
+fmt = ",.0f"
+label = "claims tied to one rare failure in the hidden tail-risk record (RT-01, version B)"
+
+[tail-fail-p]
+value = 0.01
+basis = "assumption"
+fmt = ".0%"
+label = "probability of the rare failure"
+
+
+[lab-advance2-vbytes]
+value = 137
+unit = "vB"
+basis = "measured"
+source = "escapement-lab"
+date = "2026-11-26"
+label = "a Tier 2 release (advance2 script-path spend of T_n creating T_n+1), measured on regtest"
+
+[lab-advance3-vbytes]
+value = 228
+unit = "vB"
+basis = "measured"
+source = "escapement-lab"
+date = "2026-11-26"
+label = "a Tier 3 release (advance3, agent and three guardians), measured on regtest"
+
+[lab-veto-package-vbytes]
+value = 319
+unit = "vB"
+basis = "measured"
+source = "escapement-lab"
+date = "2026-11-26"
+label = "a TRUC veto to the halt output with its fee-paying child, measured on regtest"
+
+[lab-renew-vbytes]
+value = 178
+unit = "vB"
+basis = "measured"
+source = "escapement-lab"
+date = "2026-11-26"
+label = "a renewal from the halt output by three guardians, measured on regtest"
+
+[lab-chain-proof-bytes]
+value = 6305
+unit = "bytes"
+basis = "measured"
+source = "escapement-lab"
+date = "2026-11-26"
+fmt = ",.0f"
+label = "proof of a whole tick chain from its pinned T_0, with witness commitments, headers excluded (regtest, shallow Merkle branches)"
+
+[lab-chain-links]
+value = 7
+unit = "links"
+basis = "measured"
+source = "escapement-lab"
+date = "2026-11-26"
+label = "links in the chain that proof covers"
+
+[lab-checks]
+value = 104
+unit = "checks"
+basis = "measured"
+source = "escapement-lab"
+date = "2026-11-26"
+label = "checks in the regtest lab, all passing on Bitcoin Core 32.1"

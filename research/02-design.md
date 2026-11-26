@@ -1,9 +1,9 @@
 # The design
 
 **Status: a design, not a result.** Nothing here has been deployed or tested against a real
-adversary. The Bitcoin pieces have been run on regtest, the economic results are proved in
-[05-formal.md](05-formal.md) and checked by simulation, and each claim's result at every level of
-checking (prior-art search, proof, build, red team, review) is in
+adversary. The Bitcoin pieces have been built and checked on regtest in `lab/`, the economic
+results are proved in [05-formal.md](05-formal.md) and checked by simulation, and each claim's
+result at every level of checking (prior-art search, proof, build, red team, review) is in
 [06-verification.md](06-verification.md). Every number is computed by the model from
 `data/inputs.toml`, where each input says whether it is measured, a vendor claim, a protocol value,
 a design choice or an assumption; the simulation parameters are illustrative assumptions. Every
@@ -15,6 +15,12 @@ below); bounding alone does not shape what agents are trained to want or give an
 adopt it, so the core is now the record (Part I), and the bounding mechanisms are its enforcement
 layer.
 
+The claims were repaired on 2026-11-26, after a red team (`notes/red-team.md`, findings RT-01 to
+RT-35) and the regtest lab (`lab/README.md`, "Where the claims do not hold as written") broke
+several of them. This file states the repaired versions of [04-claims.md](04-claims.md) and
+[05-formal.md](05-formal.md). Where a part was cut or narrowed, the place says so and names the
+finding.
+
 ## What it is for
 
 Two questions decide whether Bitcoin can do anything useful for AI safety, and capping what an agent
@@ -23,23 +29,25 @@ trained and rewarded to want and to do, rather than only fence them in afterward
 **adoption**: why would AI labs, companies, agents, users and governments choose to use it, because
 it pays them or protects them, rather than because someone forces them to?
 
-Escapement's answer is a single object: an **unforgeable track record**. An AI agent's standing in
-the economy (what it may do, at what price, with how much trust) is computed from a complete,
-ordered, non-backdatable record of every commitment it asked anyone to rely on, kept under one
-identity that costs locked bitcoin. The claims, stated precisely, are in
-[04-claims.md](04-claims.md); their proofs are in [05-formal.md](05-formal.md).
+Escapement's answer is a single object: a **complete track record**. An AI agent's standing in
+the economy (what it may do, at what price, with how much trust) can be computed in part from a
+complete, ordered, non-backdatable record of the commitments it asked anyone to rely on, kept under
+one identity that costs locked bitcoin. The record belongs to a key, not to a model. The claims,
+stated precisely, are in [04-claims.md](04-claims.md); their proofs are in
+[05-formal.md](05-formal.md).
 
 Bitcoin contributes four things that an agent cannot fake, and the record uses all four:
 
 1. **Sats.** The supply is fixed by consensus, so no agent, lab or state can issue more. A stake in
    sats is a real cost, and a reward in sats is a transfer from someone, never newly printed.
-2. **Block time.** Blocks arrive about every [600 s](numbers.md#block-interval-s), and producing
-   them faster takes hashrate measured in gigawatts, not in cleverness. An entry's height says when
-   it was made, and no agent can make it earlier.
+2. **Block time.** Blocks arrive about every [600 s](numbers.md#block-interval-s), and for an
+   actor below a hashrate majority producing them faster takes hashrate measured in gigawatts, not
+   in cleverness. An entry's height is fixed by its confirmation; only a reorganisation can move it.
 3. **Keys.** A signature cannot be produced without the key, so a guardian's veto and a principal's
    bond are each one party's act.
-4. **A public record.** An output can be spent once, so a chain of outputs has one history. That is
-   what makes a record complete: an entry cannot be forked, and a gap cannot be hidden.
+4. **A public record.** An output can be spent once, so a chain of outputs pinned by its first
+   output has one history. That is what makes a record complete for a verifier that walks every
+   link: an entry cannot be forked, and a gap cannot be hidden.
 
 The mechanisms of the earlier design (caps, delays, leases, bonds, anchored logs) remain, as the
 **enforcement layer** under the record (Part II). They protect relying parties at the moment of
@@ -50,58 +58,115 @@ action; the record decides who is trusted to act at all.
 ## The record
 
 An identity is a **bond** (a Taproot output of at least the reference
-[200,000 sats](numbers.md#bond-coverage), locked for a term, whose script commits to one charter)
-plus one **tick chain** (Part II, "The tick chain"). Entry n of the record is the root committed in
-tick n: a Merkle-sum tree whose leaves are the commitments the identity made in that entry, of three
-kinds.
+[200,000 sats](numbers.md#bond-coverage), locked for a term, whose internal key is a point with no
+known secret tweaked by a hash of one charter id) plus one **tick chain** (Part II, "The tick
+chain"), pinned by the outpoint of its first output T_0, which the charter names. Entry n of the
+record is the root committed in tick n: a Merkle-sum tree whose leaves are the commitments the
+identity made in that entry, of three kinds. Each leaf states in clear its kind and its resolution
+height, and the tree commits the count of its leaves and their total stake.
 
 - **Claims**: a forecast on a stated event, with a resolution source.
 - **Promises**: a statement, a stake in sats, a deadline height and an adjudicator.
 - **Requests**: Tier 2 and Tier 3 actions, released by the tick chain.
 
-Four scoring rules turn the chain into a record that cannot be gamed in the obvious ways. A
-relying party or scorer gives credit for a commitment only if it is a leaf of an entry created
-before the commitment resolved. It scores entries whose leaves are not disclosed as if every
-undisclosed leaf had the worst outcome, for the most leaves the charter allows per entry. It keeps
-only the first forecast an identity makes on each event. And it scores forecasts relative to a
-public baseline, such as a market price or a reference model, so that easy claims earn nothing.
-Each rule closes a hole that the proofs found: without the first, an identity keeps its hits and
-drops its misses; without the second, it hides an entry; without the third, two forecasts on one
-event inflate the score; without the fourth, volume of trivial claims passes for skill
-(05-formal, section 3).
+Five scoring rules turn the chain into a record that cannot be gamed in the obvious ways. A
+relying party or scorer gives credit for a commitment only if it is a leaf of an entry of the
+identity's pinned chain, confirmed at least d blocks below the commitment's resolution height, and
+that height is fixed by the resolver signing the outcome together with a block hash. A leaf past
+its resolution height and not disclosed (to the public or to an agreed scorer) scores as the worst
+outcome at once, and an entry whose leaves are withheld scores as if every leaf, up to the most the
+charter allows per entry, had the worst outcome. The scorer keeps only the first forecast an
+identity makes on each event. It scores forecasts in rounds, against a baseline published by a
+party independent of the agent and of the scorer, on events from a list the agent did not write.
+And it scores from genesis, never over a window chosen after the fact. Each rule closes a hole that
+the proofs or the red team found: without the first, an identity keeps its hits and drops its
+misses, or backdates through a short reorganisation; without the second, it hides its losses;
+without the third, two forecasts on one event inflate the score; without the fourth, volume of
+trivial claims passes for skill, and claims chosen to move together fake a record; without the
+fifth, each move of the window is a fresh try (05-formal, section 3).
 
-The record's properties come from Bitcoin's: an entry's height is fixed by its confirmation, each
-index has one root, the indices run without gaps, and each root commits the number of its leaves.
-A commitment that was never put in the chain is outside the record and earns nothing, which is the
-point: standing is built only from what was exposed to being wrong.
+The record's properties come from Bitcoin's. An entry's height is fixed by its confirmation, so a
+commitment at least d blocks below its resolution height cannot be backdated. The pinned chain has
+one root per index, and the indices run without gaps for a verifier that walks every link from
+T_0; a light verifier learns that entries exist, not that it has seen the newest. Each root commits
+the number of its leaves. A commitment that was never put in the chain is outside the record and
+earns nothing, which is the point: standing is built only from what was exposed to being wrong.
 
-## Why honesty becomes the cheapest strategy
+Three limits come with it. The record binds a key, not a model: tying it to a model needs an
+attestation, which returns trust to the lab or a hardware vendor, and a record can be sold with its
+keys. The guardians together can write an entry without the agent. And any one guardian can end the
+identity (Part II, "The tick chain").
 
-The record is useful only if a good one is cheap to earn honestly and expensive to fake.
-Theorem 1 in 05-formal says exactly how expensive. For an identity with no edge over the baseline,
-the chance that its record's score (the likelihood ratio against the baseline) ever reaches λ is at
-most 1/λ, whatever strategy it follows; this is Ville's inequality [@ville1939; @shafer2019]. A
-faker running many identities therefore needs about λ of them for an even chance. At the reference
-cost of [13,000 sats](numbers.md#identity-cost-sats) an identity, an all-correct record of
-[20 claims](numbers.md#fake-record-claims) needs [520,000 identities](numbers.md#fake-record-identities)
-and at least [70 BTC](numbers.md#fake-record-cost-btc) to fake. An honest identity with a modest
-edge of [0.12 nats](numbers.md#sim-skilled-edge) per claim earns the same score in about
-[116 claims](numbers.md#sim-skilled-claims) with one identity. The cost of faking grows with the
-score; the cost of earning it does not.
+## What a record can prove
 
-That asymmetry is what a bond alone lacks. Spence's signalling works only when the signal costs bad
-types more than good ones [@spence1973], and a bond costs an honest and a dishonest agent the same
-sats. A complete record costs them differently: the honest agent produces it as a by-product of
-behaving well, and the dishonest one must buy it with identities. The bond's job is to make those
-identities cost something; the record's job is to sort.
+The record is useful only if a good one is cheap to earn with real edge and expensive to fake.
+Theorem 1 in 05-formal says how expensive, under a condition on the baseline that has to be stated
+carefully.
 
-Promises work the same way, by older logic. If a broken promise forfeits its stake and is seen by
-every future partner, keeping a promise worth G to break pays whenever the stake plus the standing
-at risk exceed G [@klein1981; @shapiro1983]. Completeness makes "seen by every future partner"
-certain instead of likely, and a costly identity is the cure for cheap pseudonyms, which otherwise
-force everyone to distrust newcomers [@friedman2001]. What this does not cover is the end of an
-identity's life, when its standing is worth little and an exit scam pays, and gains larger than
-stake plus standing, which no record deters. The enforcement layer's caps and delays exist for those.
+An identity's claims are scored in **rounds** that do not overlap. A round's claims are committed in
+one entry, the round settles when the last of them resolves, and the next round's claims count only
+if their entry is confirmed after that. Each claim i has a forecast q_i, a weight w_i committed in
+the entry (a round's weights sum to one) and a baseline b_i. When the round settles, the score is
+multiplied by the weighted mean of the claims' likelihood ratios, Σ w_i q_i(y_i) / b_i(y_i).
+
+The condition, **H0**, is a property of the baseline, not of the agent. Each b_i is the law of its
+outcome given everything public at the height of the entry that opens the round, and it is
+committed publicly, before any forecast on the event is visible, by a party independent of the
+agent and of the scorer. Events come from an exogenous list, and the agent cannot choose the
+resolver. Under H0 the score is a nonnegative martingale over rounds, whatever the agent does and
+however the claims within a round are correlated, so the chance that it ever reaches λ is at most
+1/λ; this is Ville's inequality [@ville1939; @shafer2019]. An adversary with K identities gets one
+record of λ or more with probability at most K/λ, so success with probability π needs at least πλ
+identities and costs at least πλ times the cost of one.
+
+At the reference cost of [13,000 sats](numbers.md#identity-cost-sats) an identity, an all-correct
+record of [20 claims](numbers.md#fake-record-claims) in one-claim rounds against a baseline of one
+half needs [520,000 identities](numbers.md#fake-record-identities) and at least
+[70 BTC](numbers.md#fake-record-cost-btc) to fake with even odds. An identity that knows each
+event's probability when the best public forecast is one half, a mean edge of
+[0.12 nats](numbers.md#sim-skilled-edge) per claim, reaches a score of 2^[20](numbers.md#sim-skilled-log2-lambda) in a median of
+[116 claims](numbers.md#sim-skilled-claims) of one claim, or
+[74 rounds](numbers.md#sim-skilled-rounds) of [10 claims](numbers.md#sim-round-claims), with one
+identity. The number of identities a faker needs grows in proportion to the score; the number of
+rounds an identity with edge needs grows with its logarithm.
+
+The first version multiplied every claim's ratio and read H0 as "the agent has no edge". Correlated
+claims broke it (RT-01). With claims that mostly follow one common coin,
+[16 identities](numbers.md#sim-corr-identities) each betting one side of every claim reached
+2^[10](numbers.md#sim-log2-lambda) in [99.8%](numbers.md#sim-corr-product-p) of simulated trials,
+against a bound of [1.6%](numbers.md#sim-corr-bound). And one identity that claimed "no failure" on
+[1,000 claims](numbers.md#tail-claims) sub-events that all fail together in one event of
+probability [1%](numbers.md#tail-fail-p) scored about [23,000](numbers.md#tail-product-score): the
+hidden tail risk with which Foster and Young showed that return histories cannot separate skill
+[@foster2010]. Under the round rule the same correlated attack succeeded in
+[1.1%](numbers.md#sim-corr-round-p) of trials, inside the bound, and the tail-risk record scores
+[1.01](numbers.md#tail-round-score). The mean needs no trusted party to decide which claims are
+correlated.
+
+What the record separates is **edge over the stated baseline**, not honesty. Spence's signalling
+works only when the signal costs bad types more than good ones [@spence1973], and a bond costs every
+type the same sats, so a bond alone separates nothing. A complete record costs them differently: an
+identity with edge produces it as a by-product of forecasting, at the cost of one identity, and one
+without edge must buy it with identities. A forecaster with no edge earns nothing by being honest.
+The bond's job is to make identities cost something; the record sorts, on the one trait it can see.
+
+The bound is only as meaningful as the baseline. A stale, thin or captured baseline makes edge
+cheap, and a market baseline holds only up to the cost of moving the market. The roles that make H0
+true (the event list, the baseline provider, the resolvers) are registries run by trusted parties.
+And with more identities in use than λ, high scores appear by luck, so a score means something only
+when λ exceeds the number of identities in use.
+
+Promises follow older logic, and the record adds less to it. Keeping a promise whose breach would
+gain G is a best response when G ≤ a(s + pV), with s the stake, a the adjudicator's accuracy, p the
+chance a future partner learns of a breach and V the standing at risk [@klein1981; @shapiro1983]. A
+complete record makes p equal to one for partners who check, provided adjudicators publish their
+verdicts on complete chains of their own, and a costly identity is the cure for cheap pseudonyms
+[@friedman2001]. But an agent can wash-trade kept promises with its own sybil counterparties, so
+promise history counts only against an agent, as a record of breaches, never for it; V grows only
+through forecasting edge and age. The condition holds promise by promise, for promises whose gain
+the enforcement layer's caps bound. It fails near an identity's public end, when an exit scam pays
+[@gatta2026], for gains beyond stake plus standing, and for goals that are not monetary. The
+enforcement layer's caps and delays exist for those.
 
 These incentives work on agents whose goals are unknown, which is the point of using them for
 alignment. They do not need the agent to care about honesty, only to prefer more standing and more
@@ -112,28 +177,44 @@ that are at risk, and standing as access, not sats as an objective to accumulate
 
 ## What it changes in training
 
-A lab that fine-tunes an agent with reinforcement learning can compute its reward from the record:
-a strictly proper score over every resolved claim, relative to the baseline, minus forfeited stakes,
-with the reward's definition committed in a sealed entry before training starts. Two things follow.
+A lab that fine-tunes an agent with reinforcement learning can compute part of its reward from the
+record: the sum over resolved claims of a strictly proper score (logarithmic) relative to the
+baseline, minus forfeited stakes. This is a per-claim sum, not the round rule above. The round rule
+protects a bound on how likely a high score is, while a training reward needs an expectation that
+the truth maximises, and the expectation of a sum is the sum of the expectations whatever the
+claims' correlation. The reward's definition and any held-out events are committed, before
+training, in an entry of a chain bound to the lab's own identity. Two things follow.
 
-- **Calibrated honesty is what the reward pays for.** A strictly proper score is maximised in
-  expectation only by reporting one's true beliefs [@gneiting2007], provided every claim counts. A
-  learner trained under complete records settled at calibration error
+- **Calibrated reporting is what the reward pays for.** A strictly proper score is maximised in
+  expectation only by reporting one's true beliefs [@gneiting2007], provided every claim counts;
+  this is prior work. A learner trained under complete records settled at calibration error
   [1.0%](numbers.md#sim-train-err-complete); the same learner, allowed to choose after the fact
   which claims counted, drifted to calibration error [24%](numbers.md#sim-train-err-selective) and
-  was still getting more overconfident when the run ended (05-formal, section 5).
-- **Neither the agent nor the lab can edit the channel.** The agent cannot rewrite entries, which
-  are consensus objects, and outcomes come from outside it. The lab cannot choose after the fact
-  which results to report or which reward to have used, because both were committed first.
-  Pre-registration of this kind is old practice in clinical research, including on public chains;
-  what the record adds is completeness of what the agent itself claimed.
+  was still getting more overconfident when the run ended (05-formal, section 5). The simulated
+  learner cannot act on outcomes.
+- **Neither the agent nor the lab can select after the fact.** On a fixed exogenous event list
+  whose outcomes do not depend on the agent, the agent cannot choose which claims count, because
+  entries are consensus objects and silence scores as failure. The lab cannot choose after the fact
+  which results to report or which reward to have used, because both were committed first on its
+  own chain. The lab can still choose the event list, and can commit many reward definitions; only
+  the committed one is bound. Pre-registration of this kind is old practice; what the record adds
+  is completeness of what the agent itself claimed.
 
-This removes reward tampering of one channel and selective reporting by either party. It does not
-choose a good objective. An agent rewarded for calibrated forecasts becomes a calibrated
-forecaster, not a good one; an agent rewarded for kept promises keeps the promises it chose to
-make. And nothing here shows that calibration learned under scoring carries over to settings that
-are not scored. The record makes a class of reward signals unforgeable; which signals to train on
-is still the lab's choice.
+Both are claimed only for events whose outcomes the agent cannot affect, and that is an assumption
+the scheme cannot check. Where the agent can affect them, the reward turns against its purpose. An agent that can move an outcome's law from
+the baseline b to some π, at a cost, and reports calibrated forecasts, earns in expectation the
+divergence of π from b less the cost (05-formal, Proposition 10b). The further it pushes events
+from what everyone expected, the more it earns, while its reports stay calibrated and its actions
+turn manipulative. This is performative prediction [@perdomo2020]. A lab that trains agents on
+rewards from events the agents can influence would be training them to make surprises.
+
+So the record removes selection after the fact, by the agent and by a lab that committed first, in
+one channel, and tampering with nothing but the commitment channel. It does not choose a good
+objective. An agent rewarded for calibrated forecasts becomes a calibrated forecaster, not a good
+one; an agent rewarded for kept promises keeps the promises it chose to make. And nothing here
+shows that calibration learned under scoring carries over to settings that are not scored. The
+record makes one class of reward signal unselectable after the fact, on events the agent cannot
+move; which signals to train on is still the lab's choice.
 
 ## Why the world would choose it
 
@@ -146,46 +227,60 @@ Adoption has to pay at each step for whoever takes it, and nobody has to take it
 - **Relying parties with heavy agent-driven losses** (abused APIs, payment services, compute
   sellers), for whom refusing or pricing unverified agents pays at once.
 - **Agents with good records and their principals**, who get better terms wherever records are read.
-- **Labs**, which get a liability defence (their deployed agents' complete records), an evaluation
-  and training signal they cannot be accused of selecting, and a way to show regulators what their
-  agents committed to without showing their weights.
+- **Labs**, which get a liability defence (their deployed agents' complete records), a training
+  and evaluation signal that, on events their agents cannot move, neither they nor their agents can
+  select after the fact, and a way to show regulators what their agents committed to without
+  showing their weights.
 
 **The tipping point.** Relying parties must pay to read records, and agents gain from records only
 where they are read, so adoption is a coordination problem with two stable outcomes. In the
-two-sided model of 05-formal (Proposition 12), with a joining cost of
-[0.02](numbers.md#sim-join-cost) of the range of agent value, adoption collapses below
-[8.8%](numbers.md#adopt-x-low) of agents and runs to [91%](numbers.md#adopt-x-high) above it. Parties
-of the first kind are what move it: once seed readers exceed [4%](numbers.md#adopt-seed-threshold)
-of relying parties, the no-adoption outcome disappears. The agent-based simulation, with uneven
-types and records that reveal an agent gradually, agrees: from a [2%](numbers.md#sim-start-low)
-start adoption dies without seed readers ([0%](numbers.md#sim-adopt-low-noseed)) and reaches
-[95%](numbers.md#sim-adopt-low-seed) with [10%](numbers.md#sim-seed-readers) of them.
+two-sided model of 05-formal (Proposition 12), the high outcome exists only when a reader's gain is
+more than eight times the cost of joining (a > 8c). With a joining cost of
+[0.02](numbers.md#sim-join-cost) of the range of agent value and a =
+[0.5](numbers.md#sim-gain-over-k), adoption collapses below [8.8%](numbers.md#adopt-x-low) of
+agents and runs to [91%](numbers.md#adopt-x-high) above it. Readers never exceed a share a of
+relying parties, so where a is below one some relying parties never read records, and an agent
+that stays out keeps dealing with them. Parties of the first kind are what move it: once seed
+readers exceed [4%](numbers.md#adopt-seed-threshold) of relying parties, the no-adoption outcome
+disappears. These parameters are illustrative assumptions, not a forecast. The agent-based
+simulation, with uneven types and records that reveal an agent gradually, shows the tipping point
+and the effect of seed readers, and nothing more: from a [2%](numbers.md#sim-start-low) start
+adoption dies without seed readers ([0%](numbers.md#sim-adopt-low-noseed)) and reaches
+[100%](numbers.md#sim-adopt-low-seed) with [10%](numbers.md#sim-seed-readers) of them. Whoever
+supplies the seed readers largely decides which standard wins, and a cheaper substitute signal
+could win instead.
 
-**Why staying out comes to cost more than joining.** Once some agents can prove their records,
-relying parties read silence as bad news: an agent without a record is priced as the average of
-those who also lack one, and that average falls as better agents leave. This is the unraveling
-result for verifiable disclosure [@milgrom1981; @grossman1981], and with a cost of disclosure only
-the types above a threshold disclose [@jovanovic1982]: every type above the threshold loses by
-staying out. The record matters here because unraveling needs disclosure that can be verified, and
-the record is verifiable without a certifier anyone must trust.
+**Unraveling, by analogy.** Where records are read, relying parties read silence as bad news: an
+agent without a record is priced as the average of those who also lack one, and that average falls
+as better agents leave. This is the unraveling result for verifiable disclosure [@milgrom1981;
+@grossman1981], and with a cost of disclosure only the types above a threshold disclose
+[@jovanovic1982]. A record is not a verifiable disclosure of type: it reveals type gradually, and a
+newcomer has none. So the result applies to records only by analogy, and newcomers with no record
+face an entry barrier.
 
 **Governments** gain enforcement they do not have to build: liability that lands on a human
-principal's own coins, evidence for incident investigation that nobody could have edited, and a
-standard that works across borders because no rival government runs it. They also have reasons to
-refuse it (a preference for registries they control, or for systems that identify citizens), and
-the design does not depend on their joining.
+principal's own coins, and evidence for incident investigation that nobody could have edited. They
+also have reasons to refuse it (a preference for registries they control, or for systems that
+identify citizens), and the design does not depend on their joining.
 
-**Routing around.** An actor that will not join can still deal with relying parties that do not
-read records. The model shows when that stops being cheap. Where agents cannot move their business
-between relying parties, non-readers keep serving everyone at the population's average terms
-([0.45](numbers.md#sim-population-mean)), and a harmful actor routing around them gets those terms
-too ([0.45](numbers.md#sim-harm-terms-nosub)): it costs nothing. Where agents can move half their
-business to whoever offers them better terms, the non-readers' pool worsens and the harmful actor's
-terms fall to [0.31](numbers.md#sim-harm-terms-partial); with full substitution they fall to
-[-0.50](numbers.md#sim-harm-terms-full), the harm it does, paid in advance. So the record makes the
-checked economy safe and, in markets where business can move, turns the unchecked one into a market
-for lemons [@akerlof1970]. It does not stop an actor with its own resources and its own
-counterparties, and it does not contain an AI that never needs to deal with anyone who checks.
+**Routing around: not shown.** An actor that will not join can deal with relying parties that do
+not read records, and readers price it at the mean of the unverified pool, which falls as adoption
+grows (Proposition 13). The first version of this design claimed more: that staying out comes to
+cost a harmful actor more than joining. That came from a simulation that barred harmful actors from
+joining, which hid their best response (RT-26), and it is cut. Allowed to join, harmful actors do.
+While a record is young it is priced mostly at the joiners' mean, so they join, leave as their
+records start to show, and rejoin under fresh identities; [60%](numbers.md#sim-harm-switch) of
+them change state each period. Their mean payoff was [0.25](numbers.md#sim-harm-payoff-nosub) when
+business could not move, [0.25](numbers.md#sim-harm-payoff-partial) with partial substitution and
+[0.10](numbers.md#sim-harm-payoff-full) with full substitution, against a population mean of
+[0.45](numbers.md#sim-population-mean) and a true value of their own that is negative. They lost
+only if records revealed type at once: [-0.05](numbers.md#sim-harm-payoff-instant-nosub) with
+business fixed and [-0.50](numbers.md#sim-harm-payoff-instant-full) with business free to move. A
+one-off identity cost large enough to stop the cycling also stopped honest agents joining, because
+the simulated agents look only one period ahead. So whether staying out, or cycling through fresh
+identities, comes to cost a harmful actor more than behaving well is not shown, and in the one model
+built to test it, it did not. The design does nothing about an actor with its own resources and its
+own counterparties, and it does not contain an AI that never needs to deal with anyone who checks.
 
 ## Why Bitcoin, and not a registry
 
@@ -198,27 +293,36 @@ anyway, and each is an argument rather than a theorem.
   issued units by a score they influence, a coalition that captures the score captures the issuance
   (05-formal, Proposition 14). Bitcoin's issuance is fixed and outside the control of every lab,
   state and AI.
-- **Rivals can share it.** Labs that compete, and states that distrust each other, can rely on the
-  same records without trusting a registry one of them runs. Standards that rivals must share tend
-  to settle on whatever none of them controls.
-- **The clock cannot be run fast.** Speeding up Bitcoin's clock means outpacing its hashrate:
+- **Rivals can share the commitment layer.** Labs that compete, and states that distrust each
+  other, can read the same chain without trusting each other. Standards that rivals must share tend
+  to settle on whatever none of them controls. The neutrality covers the commitment layer only.
+  Scoring needs an event list, baselines, resolvers and adjudicators, each a trusted party, so
+  scoring is a set of registries, and whoever seeds adoption may decide the standard. Bitcoin lets
+  rivals agree on what each agent committed to and when; they may still disagree on who keeps
+  score.
+- **The clock is costly to run fast.** Speeding up Bitcoin's clock means outpacing its hashrate:
   doubling the block rate needs hardware drawing [18.4 GW](numbers.md#clock-2x-power-gw) and gains
-  only [7 days](numbers.md#clock-2x-days-gained) before difficulty adjusts. That cost does not fall
-  as an agent gets faster or smarter, only as hashrate gets cheaper. A registry's clock is whatever
-  its operator's server says.
+  only [7 days](numbers.md#clock-2x-days-gained) before difficulty adjusts. That energy cost does
+  not fall as an agent gets faster or smarter. It binds only actors below a hashrate majority: a
+  majority can run the clock fast with the hardware it has, through the timewarp bug, until BIP-54
+  is active [@bip54]. And the cost of borrowing existing hashrate, by renting it or bribing pools,
+  may fall with capability. A registry's clock is whatever its operator's server says.
 
-The costs are real too: blockspace is scarce, so ticks cost fees that rise when blocks are full, and
-the number of identities that can tick often is bounded by the chain's capacity (Part II). Bitcoin
-is slow by design, which is a feature for delays and a cost for everything else.
+The costs are real too: blockspace is scarce, so ticks cost fees that rise when blocks are full.
+Blockspace bounds the total rate of tick-chain releases across all identities, about
+[1,100,000 releases](numbers.md#tick-releases-per-day-max) a day if they filled every block. As a
+safety limit that is weak: releases can be batched, and the fee auction excludes the poor first.
+Bitcoin is slow by design, which is a feature for delays and a cost for everything else.
 
 ## Who benefits, and who could abuse it
 
 **Who benefits.** People and firms who deal with AI agents get recourse (bonds from a human's own
-coins) and a way to tell agents apart. Honest agents and their principals get credit for behaving
-well that cannot be counterfeited. Labs get a training and evaluation signal that neither they nor
-their models can be accused of selecting. Insurers get a basis for pricing. The public gets a
-legitimate economy that is harder for a harmful agent to operate in. None of this needs anyone to
-trust a single operator.
+coins) and a way to tell agents apart. Agents with real forecasting edge, and their principals, get
+credit for it that sock puppets cannot cheaply counterfeit. Labs get, on events their agents cannot
+move, a training and evaluation signal that neither they nor their models can select after the
+fact. Insurers get a basis for pricing. The public gets a shared, uneditable account of what agents
+committed to and when, from a commitment layer no single operator runs. What it does not get, on
+present evidence, is an economy that a harmful agent cannot re-enter under a fresh identity.
 
 **Who could abuse it, and how.**
 
@@ -228,20 +332,37 @@ trust a single operator.
   surveillance tool. Escapement binds identities to principals only through attestations chosen by
   relying parties; a state that demands those attestations name citizens has turned it into
   something else.
-- **Exclusion.** Bonds cost money and seasons cost time, so the poor and the new start behind. At
-  the reference parameters an identity costs [13,000 sats](numbers.md#identity-cost-sats) a year in
-  forgone return, but the bond itself must be found first. Sponsorship (an insurer or a guardian
-  service funding a newcomer's bond) is the obvious remedy and the obvious point of capture.
-- **Capture of the scorer.** Whoever chooses the baseline, resolves claims, adjudicates promises or
-  decides which actions are "consequential" controls standing. A captured resolver breaks every
-  guarantee above. Escapement keeps these roles separable and named in the charter, so relying
-  parties can choose whom to trust, but it cannot make the choice for them.
-- **Plutocracy.** The fake-record bound grows with the record's length, but short records are cheap
-  to fake for anyone rich: a rich actor can buy many young identities, one of which will look lucky.
-  Relying parties should weigh records by their length and score, not by their existence.
+- **Hostage guardians.** Any one guardian can end an identity for good by vetoing to its own key
+  (Part II, "The tick chain"). A state or an employer that controls one guardian controls whether
+  an agent's record survives, and its standing with it.
+- **Guardian-written entries.** The guardians together can write an entry the agent never made. A
+  lab that chooses all of an agent's guardians can put words in its agent's record.
+- **Training for surprises.** A lab that trains agents on rewards from events the agents can
+  influence pays them to make outcomes depart from what everyone expected. The record would make
+  that training look rigorous.
+- **Sold records.** A record binds a key, not a model, and it can be sold with its keys: a
+  misaligned agent can buy a seasoned identity with a high score, and a lab can run another model
+  behind the same key.
+- **Exclusion.** Bonds cost money and seasons cost time, and a new identity starts with no record,
+  so the poor and the new start behind. At the reference parameters an identity costs
+  [13,000 sats](numbers.md#identity-cost-sats) a year in forgone return, but the bond itself must be
+  found first. Sponsorship (an insurer or a guardian service funding a newcomer's bond) is the
+  obvious remedy and the obvious point of capture.
+- **Capture of the scorer.** Whoever writes the event list, publishes the baseline, resolves claims,
+  adjudicates promises or decides which actions are "consequential" controls standing. These are
+  registries, whatever the chain under them. A captured resolver or baseline breaks every guarantee
+  above, and a thin market used as a baseline can be moved. Escapement keeps these roles separable
+  and named in the charter, so relying parties can choose whom to trust, but it cannot make the
+  choice for them.
+- **Plutocracy.** The cost of faking a record grows with its score, but short records are cheap to
+  fake for anyone rich: a rich actor can run many young identities and present the luckiest.
+  Relying parties should weigh records by their length and score, not by their existence, and read
+  a score as meaningful only when it exceeds the number of identities in use; the design cannot
+  force them to.
 - **Lock-in and social scoring.** A record standard that everyone needs is a standard someone will
   try to own, and a score that decides access is a score that can be used to exclude. Escapement's
-  only defences are that the data is on a chain nobody owns and that scoring rules are public.
+  only defences are that the commitments are on a chain nobody owns and that scoring rules are
+  public; the scoring registries can still be owned.
 - **Turning it on people.** Nothing in the record is specific to AI. The same machinery could score
   humans, which is a reason to keep it voluntary and to keep contents off chain.
 
@@ -280,8 +401,8 @@ record. Section [What it does not do](#what-it-does-not-do) returns to this.
 
 ## Design goals
 
-- **G1 Honesty is the cheap path.** Earning standing honestly must cost less than faking it, by a
-  margin that grows with the standing.
+- **G1 Edge is cheaper to show than to fake.** A record showing edge over a stated baseline must
+  cost an identity without that edge a number of identities that grows with the score.
 - **G2 Each step pays.** Every party that adopts must gain from doing so at the adoption level it
   finds, and some must gain alone.
 - **G3 Fail closed.** If every human disappears, the agent's authority lapses within a known number
@@ -306,9 +427,11 @@ record. Section [What it does not do](#what-it-does-not-do) returns to this.
 - **Agent (A).** The AI system. Holds its own signing key, kept in its runtime. Assumed capable,
   fast and possibly misaligned.
 - **Guardians (G).** A small set of independent parties, at least one of them a human or a
-  human-operated service, each holding its own key. Guardians veto, release and co-sign renewals.
-  Their independence from the principal, from the agent's host and from each other is what makes
-  them worth having, and it is what a relying party should ask to see attested.
+  human-operated service, each holding its own key. Guardians veto, sign Tier 3 releases and sign
+  renewals. Their independence from the principal, from the agent's host and from each other is
+  what makes them worth having, and it is what a relying party should ask to see attested. Their
+  power cuts both ways: any one of them can end the identity, and together they can write an entry
+  the agent never made.
 - **Co-signer (C).** One of the guardians, the one that is online all the time: it signs the
   agent's on-chain spends when, and only when, the rules below allow. It runs on its own
   infrastructure, separate from the gateway and from the agent's host, so that compromising the
@@ -339,6 +462,7 @@ names:
   carries;
 - the gateway's receipt key, its equivocation key and the outpoint of its current seal;
 - the bond outpoints (below);
+- the outpoint of the tick chain's first output T_0, which pins the chain;
 - the **ladder**: which classes of action fall in which tier, with sat thresholds;
 - the lease length in blocks;
 - the adjudicator, the slashing committee and the claim rules.
@@ -388,16 +512,19 @@ top rung. That last rule is what makes the ladder fail closed for actions nobody
 |---|---|---|---|---|
 | 0 | Reads, sandboxed or reversible actions | none | (receipt and log only) | nobody |
 | 1 | Spends and actions within the current allowance | none | the allowance runs out | nobody |
-| 2 | Costly-to-reverse actions: payments above the per-action threshold, production deploys, outbound messages at volume, compute purchases | [6 blocks](numbers.md#tier2-delay-blocks) | any one guardian | every guardian releases |
+| 2 | Costly-to-reverse actions: payments above the per-action threshold, production deploys, outbound messages at volume, compute purchases | [6 blocks](numbers.md#tier2-delay-blocks) | any one guardian | nobody in the tick chain; every guardian for a vault spend |
 | 3 | Irreversible or authority-changing actions: large transfers, spawning or chartering another agent, moving the bond, changing the charter, copying model weights, buying compute above a threshold | [144 blocks](numbers.md#tier3-delay-blocks) | any one guardian | every guardian, including a human |
 
 The design choice that matters most is the asymmetry: **one guardian can stop an action; letting
 one through takes all of them.** A misaligned agent has to persuade or compromise every
-independent guardian to act, and only one of them has to notice. Off chain, that means a release
-carries a signature from every guardian, because a relying party that sees k of n signatures
-cannot see that the n-th guardian objected. On chain, it means any guardian can broadcast a
-pre-signed Cancel. The cost is liveness: a guardian who disappears blocks every Tier 2 and Tier 3
-action until the charter replaces it, which is itself a Tier 3 change. That is the intended
+independent guardian to act, and only one of them has to notice. Off chain, at Tier 3, that means
+a release carries a signature from every guardian, because a relying party that sees k of n
+signatures cannot see that the n-th guardian objected; at Tier 2 the agent releases alone once the
+wait has run unvetoed, so there the asymmetry is the veto alone. A veto is final only once it is
+buried (below). On chain, it means any guardian can broadcast a pre-signed Cancel. And since a veto
+leaf cannot say where the veto pays, any one guardian can also end the identity (below). The cost
+is liveness: a guardian who disappears blocks every Tier 3 action, and through the lease every
+Tier 2 action, until the charter replaces it, which is itself a Tier 3 change. That is the intended
 failure: when in doubt, stop. A small guardian set (three, say) keeps the cost bearable.
 
 A delay of [6 blocks](numbers.md#tier2-delay-blocks) lasts
@@ -494,61 +621,110 @@ buys compute with a card. Bitcoin cannot enforce a delay on any of that directly
 makes the delay a consensus fact anyway, by putting each batch of off-chain commitments in an
 output that the agent can spend only after the wait and any guardian can spend at once.
 
-Each identity has a chain of Taproot outputs T_0, T_1, ... (05-formal, section 1). Output T_n's
-internal key is a NUMS point tweaked by a hash of (charter id, n, root_n), so it commits to one
-root and provably has no key path. Its script tree has four kinds of leaf:
+Each identity has a chain of Taproot outputs T_0, T_1, ... (05-formal, section 1), pinned by the
+outpoint of T_0 that the charter names. Output T_n's internal key is a NUMS point tweaked by a hash
+of (charter id, n, root_n), so it commits to one root and provably has no key path. Its script tree
+has four kinds of leaf:
 
 ```
 advance2:  <N2> OP_CHECKSEQUENCEVERIFY OP_DROP <AGENT> OP_CHECKSIG
 advance3:  <N3> OP_CHECKSEQUENCEVERIFY OP_DROP <AGENT> OP_CHECKSIGVERIFY
            <G1> OP_CHECKSIGVERIFY ... <Gn> OP_CHECKSIG
-veto_i:    <Gi> OP_CHECKSIG                      (one per guardian)
-renew:     every guardian's signature            (restarts a halted chain)
+veto_i:    <Gi> OP_CHECKSIG                      (one per guardian, at once)
+renew:     every guardian's signature            (at once)
 ```
+
+A veto pays to a **halt output** for index n, whose internal key is the NUMS point tweaked by a
+hash of (charter id, n) and whose only leaf is `renew`. A halted chain resumes only through that
+leaf, which every guardian must sign. A veto paid anywhere else ends the chain.
 
 The agent puts the commitments it wants released (requests, claims, promises) in a Merkle-sum tree
 and spends T_{n-1} into T_n, committing that tree's root. Guardians now have the whole window to
 look at the batch. If any one of them objects, or has not received the batch's contents in full, it
-spends T_n through its `veto_i` leaf, and the batch can never be released: the output is gone. If
-none objects, the agent spends T_n through `advance2` once [6 blocks](numbers.md#tier2-delay-blocks)
-have passed, creating T_{n+1}; for a batch with any Tier 3 commitment it must use `advance3`, which
-waits [144 blocks](numbers.md#tier3-delay-blocks) and needs every guardian's signature as well.
-Entry n is released when that advance spend has the confirmations the relying party requires.
+spends T_n through its `veto_i` leaf to the halt output, and the batch cannot be released in any
+chain that contains the veto. If none objects, the agent spends T_n through `advance2` once
+[6 blocks](numbers.md#tier2-delay-blocks) have passed, creating T_{n+1}; for a batch with any Tier 3
+commitment it must use `advance3`, which waits [144 blocks](numbers.md#tier3-delay-blocks) and needs
+every guardian's signature as well. Entry n is released when that advance spend has at least d
+confirmations.
 
 What consensus guarantees, and what relying parties must check (05-formal, Propositions 1 to 5):
 
 - **The wait is enforced by every node.** BIP68 and BIP112 make the advance invalid before the wait
-  ends [@bip68; @bip112]. No signer, gateway or co-signer has to refuse anything.
-- **One guardian stops a batch for good.** An outpoint can be spent once, so a confirmed veto ends
-  the batch. During the window the veto is the only valid spend.
-- **One root per index, no gaps.** Each tick commits to one root, and the chain is linear, so an
-  identity cannot show two parties two different batches, and the record (Part I) is complete.
-- **A release is proved by inclusion alone.** A relying party checks headers, the link
-  transactions and their Merkle proofs, the revealed leaf and the committed root. It never asks
-  whether something is unspent, which is what lets a light client or a chip check a release.
-- **Relying parties check the rest.** That each advance's output 0 is built to the template (else
-  the chain, and the identity's record, ends there); that the commitment names them, the action
+  ends [@bip68; @bip112]. No signer, gateway or co-signer has to refuse anything. Releases of one
+  pinned chain are at least N2 blocks apart.
+- **A veto stops a batch in every chain that contains it.** An outpoint can be spent once, and
+  during the window the veto is the only valid spend. A veto is final only at depth (below).
+- **One root per index, no gaps, in the pinned chain.** Each tick commits to one root, and the
+  pinned chain is linear, so an identity cannot show two parties two different batches. Entries run
+  without gaps for a verifier that walks every link from T_0. A light verifier learns that entries
+  exist, not that it has seen all of them up to the tip: in the lab a truncated chain passed, and
+  finding the hidden release took a scan of full blocks.
+- **A release is proved by a chain proof.** A relying party checks block headers and, for every
+  link from the pinned T_0 to the release, the transaction, a Merkle proof of its txid, and a proof
+  of its wtxid under its block's witness commitment [@bip141]. It never asks whether something is
+  unspent. The proof grows with the chain: about
+  [901 bytes](numbers.md#chain-proof-bytes-per-link) a link on regtest, where Merkle branches are
+  short, and more on mainnet, plus headers. It cannot show that no later link exists.
+- **Relying parties check the rest.** That each advance's output 0 is T_{n+1} built to the template
+  (else the chain, and the identity's record, ends there); that a veto pays to the halt output;
+  that only links descending from the pinned T_0 count; that the commitment names them, the action
   they are asked to do and an execution deadline; that the root's sum does not exceed the charter's
   cap per entry; that a Tier 3 commitment was released through `advance3`; and that they have not
-  seen the commitment before.
+  seen the commitment before. Consensus enforces the waits and signatures; the template, the
+  pinning, the cap and the halt rule are relying parties' rules. Roots are private until the agent
+  discloses them, so the cap per entry holds only if the guardians check the whole tree inside the
+  window.
 
-Two things are weaker than they look. The veto must be mined inside its window: if half of all
-hashrate refused to mine it, a six-block window would miss it
-[1.6%](numbers.md#veto-miss-tier2-half) of the time, and miners can be bribed to censor timelocked
-contracts cheaply [@winzer2019; @tsabary2021; @nadahalli2021]. So vetoes carry fees in proportion to
-what the batch is worth, are built as TRUC transactions with a pay-to-anchor output so that any
-watchtower can bump them [@bip431; @core-28], and large stakes go through the 144-block window. And
-the tick chain is veto-based at Tier 2: if every guardian vanishes, Tier 2 batches keep being
-released until the lease lapses (Allowances and leases). That is the price of not needing a
-guardian online for every release, and the lease bounds it.
+The lab broke the first version's light proof, which proved a release with two transactions and
+their txid proofs (RT-14, RT-15). Txid proofs leave out the witness, so the agent swapped in the
+`advance3` leaf with junk signatures and a verifier accepted a Tier 3 release that no guardian
+signed. And two transactions cannot show that T_n is the identity's own: anyone can fund a copy of
+the template for any index, and nobody can spot one, because the root is hidden in the tweak. The
+agent released a vetoed entry through a copy it funded itself. The chain proof above replaces it.
+The first version also had `renew` restart a chain halted by a veto, but a veto spends T_n and
+leaves T_n's own `renew` leaf nothing to spend; the halt output fixes that (RT-20).
+
+Several things are weaker than they look.
+
+- **A veto is final only at depth.** A miner that forks below a confirmed veto and overtakes the
+  honest chain once the advance is valid releases the batch: Nakamoto's catch-up problem
+  [@nakamoto2008], with the depth equal to how many blocks before the window's edge the veto
+  confirmed. A Tier 2 window can never give a veto the
+  [19 blocks](numbers.md#depth-for-target-largest) this design treats as final against the largest
+  pool; at [6 blocks](numbers.md#confirmations-standard) that pool overtakes with probability up to
+  [8.9%](numbers.md#reorg-p-largest-6), and the two largest together up to
+  [82%](numbers.md#reorg-p-top2-6). A Tier 3 veto confirmed at once still leaves the two largest
+  together up to [12.79%](numbers.md#reorg-p-top2-144). These are upper bounds that treat a pool as
+  one miner, and no deliberate deep reorganisation has been seen on Bitcoin, but a veto is only as
+  final as a payment of the same depth.
+- **The window's edge is a fee auction.** If half of all hashrate simply refused to mine a veto, a
+  Tier 2 window would miss it [1.6%](numbers.md#veto-miss-tier2-half) of the time, but that
+  figure holds only for passive refusal. Miners can be bribed to censor timelocked contracts cheaply
+  [@winzer2019; @tsabary2021; @nadahalli2021; @avarikioti2024]. At the window's edge the veto and
+  the advance are both valid: in the lab, under full replace-by-fee, the agent's advance evicted the
+  veto and the watchtower won the slot back only by outbidding it. So vetoes are built as TRUC
+  transactions with a pay-to-anchor output so that any watchtower can bump them [@bip431;
+  @core-28], carry fees in proportion to what the batch is worth, and must confirm well before the
+  edge; large stakes go through the Tier 3 window. A flood of transactions that congests the
+  chain can delay many vetoes at once [@harris2020].
+- **Any one guardian can end the identity.** `<Gi> OP_CHECKSIG` cannot constrain where the veto
+  pays. One guardian that vetoes to its own key ends the identity's chain for good and keeps the
+  tick output's value; the lab did this. So the record's value is hostage to any one guardian. And
+  `renew` needs every guardian and not the agent, so the guardians together can write an entry the
+  agent never made.
+- **Tier 2 is veto-based.** If every guardian vanishes, Tier 2 batches keep being released until
+  the lease lapses (Allowances and leases). That is the price of not needing a guardian online for
+  every release, and the lease bounds it.
 
 An earlier version of this design bracketed the wait with two anchors instead: a seal of the
 commitment at the start, and a release signed by every guardian naming the hash of a block at
 least N later. That also bounds the wait, since nobody can sign over a block hash before the block
 exists, but it needs every guardian online to sign every release, takes the start of the wait from
 a gateway's seal, and needs a separate bond to keep that gateway to one history. The tick chain
-makes the start, the wait and the single history consensus facts, at the cost of one transaction
-per batch. The two-anchor form remains useful where an identity has too many batches to tick each.
+makes the start and the wait consensus facts, and the single history a consequence of consensus
+and the pinning rule, at the cost of one transaction per batch. The two-anchor form remains useful
+where an identity has too many batches to tick each.
 
 ### What the ladder costs the agent's usefulness
 
@@ -563,43 +739,51 @@ some size in Tier 1.
 
 ### The lease
 
-A charter is in force only under a current **lease**: a signature by the principal's lease key,
-co-signed by at least one guardian, over
+A charter is in force only under a current **lease**. A renewal is a signature by every guardian
+over
 
 ```
-(charter id, lease number k, anchor height h_k, hash of block h_k, expiry h_k + L)
+(charter id, renewal number k, anchor height h_k, hash of block h_k)
 ```
 
-where L is the lease length, [144 blocks](numbers.md#lease-blocks) (about
-[24 hours](numbers.md#lease-mean-h)) in the reference parameters. Because it names the hash of
-block `h_k`, a lease cannot be signed before that block exists, so nobody can pre-sign a year of
-leases. The lease key is named in the charter and is not the key of the coins that back the agent,
-so the address holding the bond can stay offline. The guardian's co-signature means the principal
-alone cannot keep an agent alive that its guardians have stopped vouching for. Each lease number is
-one more than the last, its anchor height is later than the last, and a relying party accepts only
-the highest lease number it has seen for a charter.
+and L is the lease length, [144 blocks](numbers.md#lease-blocks) (about
+[24 hours](numbers.md#lease-mean-h)) in the reference parameters. A relying party counts a release
+only if it holds a renewal whose block h_k is in its best chain and the release was confirmed at a
+height between h_k and h_k + L. Because a renewal names the hash of block `h_k`, it cannot be
+signed before that block exists, so nobody can pre-sign a year of renewals. A principal that wants
+a say in renewals holds one of the guardian keys through its lease key, which the charter names and
+which is not the key of the coins that back the agent, so the address holding the bond can stay
+offline. Each renewal number is one more than the last and its anchor height is later
+than the last.
 
-This does not stop a thief who holds the lease key and a guardian's key from renewing every day.
-It limits what a thief with one of them can do, and it makes every renewal a signed, ordered
-record.
+The property is **no release counted after h* + L** (05-formal, Proposition 6). If the guardians
+sign no renewal after the tip reaches h*, no release confirmed above h* + L is counted by a relying
+party that follows the honest chain. The check compares two heights in one chain and reads no
+clock, and the release's height is fixed by its confirmation, so the agent cannot place it lower.
+In the lab a renewal over a guessed future block hash was rejected, and the verdicts did not change
+when block times jumped a year or when every clock function was disabled. Any one guardian can stop
+renewals, so the agent's authority ends within L blocks of the first guardian's disappearance,
+which is the intended way for it to fail. It does not stop a thief who holds every guardian's
+key from renewing every day; it makes every renewal a signed, ordered record.
 
-A relying party accepts the charter only if its own view of the chain tip is below the expiry
-height and block `h_k` is in its best chain. The gateway refuses every action after expiry.
-
-The weak point is the word "own". Bitcoin script cannot say "not after", by design, so that a
-valid transaction never becomes invalid in a reorganisation [@bip65; @bip68]. Expiry is therefore
-not something Bitcoin enforces. It is something a relying party enforces against its own view of
-the tip, and a relying party fed stale headers can be fooled into treating a lapsed lease as live.
-Relying parties that matter must run their own node or check several header sources.
+It bounds when a release is made, not when it is used. Bitcoin script cannot say "not after", by
+design, so that a valid transaction never becomes invalid in a reorganisation [@bip65; @bip68].
+Carrying out a released action by its execution deadline therefore needs a fresh view of the tip,
+and a relying party that is eclipsed, or fed stale headers, sees an old one [@riard2020]. A
+reorganisation near h_k + L can move a release across the boundary; one that removes block h_k
+voids the renewal, which fails closed. The gateway and the co-signer refuse every action once their
+own view of the tip passes h_k + L. Relying parties that matter must run their own node or check
+several header sources. The lease is not a clock for chips (see "Compute" below).
 
 Leases are an old idea in distributed systems: Gray and Cheriton introduced them so that a holder
 who disappears loses its rights when the lease runs out, without anyone having to revoke them
 [@gray1989]. The nearest design for AI agents is ERC-8370's `requireLease`, discussed in 2026 for
 Ethereum: authority that lapses unless a guardian calls `renew()`, described in the thread as a
 dead-man's switch [@erc8370]. Buterin's proposal that AI chips run only with fresh signatures once
-a week is the same shape for hardware [@buterin2025dacc]. Escapement's lease differs in its clock
-(block height, with the block hash binding), in where it is checked (by any relying party against
-Bitcoin headers), and in being on Bitcoin.
+a week is the same shape for hardware [@buterin2025dacc]. The lease's predicate, a block named by
+height and hash and a window after it, is Yee's "short leash" [@yee2022]; what Escapement adds is
+the guardians' unanimous renewal, checked against the release's own confirmation height rather than
+the verifier's tip.
 
 ### The allowance
 
@@ -631,17 +815,16 @@ reference example. That figure is the coverage the bond is sized against below.
 
 ### The dead-man switch
 
-Put the lease and the allowance together and doing nothing stops the agent. If the principal and
-every guardian vanish, the agent's authority lapses within one lease, about
-[24 hours](numbers.md#lease-mean-h), its allowance spends are refused by the co-signer after
-expiry, no release can be signed, and the vault funds never move without one. The principal's
-recovery key can sweep them after a long relative timelock, the dead-man pattern Liana ships for
-inheritance [@liana-readme]. That is G1: the default is stop.
+Put the lease and the allowance together and doing nothing stops the agent. If the principal or any
+one guardian stops renewing, relying parties count no release confirmed more than one lease, about
+[24 hours](numbers.md#lease-mean-h), after the last renewal's block; the co-signer refuses the
+agent's allowance spends after expiry; and the vault funds never move without a full release. The principal's recovery key can sweep them after a long relative timelock, the dead-man
+pattern Liana ships for inheritance [@liana-readme]. That is G3: the default is stop.
 
 ## Bonds
 
 A chartered agent has two bonds, with different jobs. Both come from the principal's own coins,
-which is what puts the liability on a human (G4), subject to the attestation caveat in the scope.
+which is what puts the liability on a human, subject to the attestation caveat in the scope.
 
 ### Making a bond checkable and single-use
 
@@ -649,12 +832,12 @@ A bond is useful only if a relying party can check three things about it: that i
 how long, and that it backs this charter and no other. In a Taproot output none of these is
 visible by default, because unused script paths are hidden until spent [@bip341], and a key-path
 spend bypasses every script path if anyone knows the internal key. So each bond output is built
-with an internal key that provably has no known secret (a "nothing up my sleeve" point), and its
-script leaves commit to the charter id. The bundle a relying party receives reveals the leaves and
-the construction of the internal key. The relying party recomputes the output key, sees the
-timelock and the paths, and sees the charter id inside. One output can therefore back exactly one
-charter: the same coins cannot be named in a thousand charters, though a principal with more coins
-can of course make more bonds.
+with an internal key that is a point with no known secret (a "nothing up my sleeve" point) tweaked
+by a hash of the charter id, so it has no key path and names one charter. The bundle a relying
+party receives reveals every leaf and the construction of the internal key. The relying party
+recomputes the output key, sees the timelock and the paths, and sees the charter id inside. One
+output can therefore back exactly one charter: the same coins cannot be named in a thousand
+charters, though a principal with more coins can of course make more bonds.
 
 Checking that a bond is still unspent is a question about the current set of unspent outputs, which
 no block header commits to. A relying party needs a full node, or a source of unspent-output data
@@ -842,8 +1025,8 @@ A seal also does not prove that anyone saw what it commits to. Kelsey and Kohno'
 shows that committing to a hash in advance and choosing the message later is possible under
 some constructions [@kelsey2006]; more simply, a gateway can commit to a head and never show the
 entries. So the rule is that guardians must receive every entry's content when it is committed,
-and an entry whose content a guardian has not received counts as missing. A release (above) can
-only be signed for content the guardians hold.
+and an entry whose content a guardian has not received counts as missing. A guardian vetoes any
+tick whose batch it has not received in full.
 
 Seals are only as final as Bitcoin's history, and that history rests on mining pools not
 colluding. The largest pool mined [27.8%](numbers.md#pool-largest-share) of blocks over the
@@ -874,8 +1057,9 @@ weights are running, unless the inference provider attests to that, which is out
 
 Every check above needs the verifier to know the chain. Headers are
 [80 bytes](numbers.md#header-bytes) each, so a device that keeps its own view of the chain reads
-[4.2 MB](numbers.md#headers-mb-per-year) of headers a year. That is small enough for a gateway, a
-phone or a chip's guarantee processor.
+[4.2 MB](numbers.md#headers-mb-per-year) of headers a year. That is small enough for a gateway or
+a phone. Headers prove that entries exist; they do not show a verifier the newest entries of a tick
+chain, which needs full blocks from the last link it knows to the tip.
 
 ## Relying parties: where it is enforced
 
@@ -885,14 +1069,17 @@ parties choosing to check, and that is the design's main weakness and its main d
 A relying party that deals with a chartered agent receives a bundle and checks it:
 
 1. the charter, signed from the principal's address;
-2. a current lease: its signature, its anchor block in the best chain, and the tip below expiry;
+2. a renewal: every signature, its block h_k in the best chain, and the release confirmed at a
+   height between h_k and h_k + L;
 3. the bonds: their outputs unspent, their size, and their age against the season;
-4. for a Tier 2 or 3 action, the commitment's seal and the release, with the gap of at least N
-   blocks between them;
+4. for a Tier 2 or 3 action, a chain proof of its release from the pinned T_0, with each link's
+   witness proved, and the advance at least N blocks after T_n;
 5. the gateway's latest seal, and that the log head the agent presents extends it.
 
-None of this needs a trusted server: every check is a signature, a Merkle proof or a header, and
-each can be done by the relying party alone.
+None of this needs a trusted server for the commitment layer: apart from the bonds' unspent
+status, which needs a node, every check is a signature, a Merkle proof or a header, and each can be
+done by the relying party alone. Scoring the record is another matter: it needs the event list,
+the baselines and the resolvers, which are trusted parties.
 
 Why would a relying party check? Because it bears risk from the agent's actions, and the bundle
 tells it who answers for them (the principal), how much is at stake (the bonds) and whether anyone
@@ -908,33 +1095,17 @@ caveats that a third party must discharge [@birgisson2014]. An L402 service coul
 "a valid Escapement lease for this agent", and serve only chartered agents. That is a small change
 at one relying party, and it would test whether anyone wants the check.
 
-## Compute: Bitcoin as the clock for chip licences
+## Compute: the chip clock is withdrawn
 
-The hardware-governance literature proposes AI chips that run only under licences that must be
-renewed, and it names a reliable clock as a hard requirement. Flexible hardware-enabled guarantees
-give the chip's guarantee processor a real-time clock for time-dependent rules, and the second
-flexHEG report mentions a public blockchain hash as a witness that a delay has passed
-[@petrie2025flexheg2]. Buterin proposes chips that run only with fresh signatures from several
-parties once a week, optionally with proof that the signatures were published on a blockchain
-[@buterin2025dacc]. Hardware-enabled mechanisms are designed to make licences expire
-[@ogara2025hem; @aarne2024].
-
-Escapement's lease rule applies directly. A licence renewal for period k names the hash of a block
-at height `h_k`; the chip accepts it only with a header chain from its last accepted licence
-block that has valid proof of work and reaches `h_k`. Because future block hashes are unknown, a
-licensor, a coerced licensor, or a thief with the licensor's key cannot issue next year's licences
-today. Because headers need work, an attacker who wants to feed a chip a fake day of headers must
-mine a day's worth of blocks at the network's difficulty. The chip's own monotonic counter enforces
-the other end: it stops when its licence period is over, whether or not it has seen new headers.
-Bitcoin supplies "not before"; the chip supplies "not after". This is a close application of the
-proposals it credits, and it is marked that way in the novelty table.
-
-Proof of work as a meter of AI compute is a different idea, and the survey rejects it. SHA-256
-work says nothing about matrix multiplication, and the two compete for the same power: Bitcoin
-mining drew about [15.8 GW](numbers.md#bitcoin-gw-survey) on Cambridge's survey estimate
-[@cambridge-2025], data centres about [55 GW](numbers.md#datacentre-gw-2025) on average in 2025
-[@iea-2026], and the largest listed miners are converting capacity to AI hosting [@ccaf2026]. What
-proof of work does provide is the cost of faking the clock, which the next section prices.
+The first version offered Bitcoin headers, with a difficulty floor, as the clock for AI chips that
+run only under renewed licences, as the hardware-governance literature proposes
+[@petrie2025flexheg2; @buterin2025dacc]. That is cut (RT-24). An operator who stops feeding a chip
+headers freezes its view, so its licence never lapses. A floor set relative to the last difficulty
+the chip accepted ratchets down one header at a time, so a forger lowers it step by step. And one
+forged fork serves a whole fleet. A chip clock would need full retarget validation that is safe
+against timewarp, a local clock with a stated drift bound, and a cost per fleet. None of that is
+designed here. Renewal chips remain prior work, and stockpiled licences their known weakness
+[@petrie2024].
 
 ## The clock under attack
 
@@ -949,35 +1120,54 @@ prices [@ct-bitmain]. It halves block time only until the next difficulty adjust
 [1 hours](numbers.md#tier3-compress-target-h) needs [24 x](numbers.md#tier3-compress-factor) the
 network's hashrate, about [423 GW](numbers.md#tier3-compress-power-gw) of added power, or
 [8 x](numbers.md#tier3-compress-vs-datacentres) the average draw of every data centre on Earth in
-2025. Against fast cognition, block height is a strong clock. Against capital, it is a clock that
-costs gigawatts to speed up.
+2025. That energy cost does not fall as an agent becomes faster or more capable. Against an actor
+below a hashrate majority, block height is a clock that costs gigawatts to speed up.
 
-Two qualifications. A majority of existing hashrate can do far more: the timewarp bug lets a
-majority lower difficulty until blocks come at several a second, after about a month of visible
-setup [@optech-timewarp; @bip54]. The fix is specified in BIP-54 and not active [@bip54]. That is
-why relying parties should count median time past as well as blocks. And a block-counted delay is
-random; the Tier 2 tail above is the cost of using a Poisson clock.
+Three qualifications. A majority of existing hashrate needs no new hardware: the timewarp bug lets
+a majority lower difficulty until blocks come at several a second, after about a month of visible
+setup [@optech-timewarp; @bip54]. The fix is specified in BIP-54 and not active [@bip54], so the
+clock's cost binds only actors below a majority. That is why relying parties should count median
+time past as well as blocks. Hashrate can also be borrowed, by renting it or bribing pools, and
+that cost, unlike the energy cost of new hashrate, may fall as agents become more capable. And a
+block-counted delay is random; the Tier 2 tail above is the cost of using a Poisson clock.
 
-The other attacks on the clock are on its readers, not on the chain: feeding a relying party stale
-headers, or censoring a veto. Pools have left sanctioned transactions out of blocks
-[@b10c-ofac], and a pool that censors a Cancel or a seal for long enough could make a veto miss its
-window. Escapement's off-chain vetoes are guardian refusals that need no confirmation, and a missed
-seal epoch is itself visible on chain; on-chain Cancels are the case that needs fee headroom.
+The other attacks on the clock are on its readers and on vetoes, not on the chain's rate: feeding a
+relying party stale headers, which an eclipse does [@riard2020], or keeping a veto out of the
+window. Pools have left sanctioned transactions out of blocks [@b10c-ofac], a briber can make the
+window's edge a fee auction, and a flood of transactions can delay many vetoes at once
+[@harris2020]. Tick-chain vetoes and on-chain Cancels both need to confirm well before the window's
+edge, with fee headroom; a missed seal epoch is itself visible on chain.
 
 ## Threats, and which part answers each
 
-| Threat | What the agent does | What answers it | What remains |
+| Threat | What happens | What answers it | What remains |
 |---|---|---|---|
-| Overspending | spends faster or more than intended | the allowance (no detection needed) | at most [200,000 sats](numbers.md#bond-coverage) at the reference terms |
-| Irreversible action | transfers, deploys, spawns, changes its charter | the ladder: delay, one-guardian veto, quorum release | a principal who puts dangerous actions in low tiers |
-| Persuading overseers | social-engineers guardians | quorum release; guardians independent; the delay gives others time | a captured quorum |
+| Overspending | the agent spends faster or more than intended | the allowance (no detection needed) | at most [200,000 sats](numbers.md#bond-coverage) at the reference terms |
+| Irreversible action | the agent transfers, deploys, spawns, changes its charter | the ladder: delay, one-guardian veto, every guardian for a Tier 3 release | a principal who puts dangerous actions in low tiers; at Tier 2, a release needs no guardian |
+| Persuading overseers | the agent social-engineers guardians | every guardian signs a Tier 3 release; guardians independent; the delay gives others time | a captured guardian set |
 | Key theft | the agent key leaks | lease and allowance bound the damage; revocation | one lease and allowance |
 | Abandonment | humans vanish | lease lapses; allowance stops; Liana-style recovery | nothing beyond the last allowance |
-| Two histories | the gateway shows different records to different parties | single-use seals; equivocation bond for receipts between seals | omissions; deep collusion by pools |
-| Swarm | many chartered agents act together | bonds per charter; seasoning; Tier 3 spawn | an adversary with capital and a month's notice |
-| Outside money | earns, borrows or steals bitcoin outside the scheme | relying parties that require a charter refuse | everything that does not pass through such a relying party |
-| Off-scheme action | acts through credentials, exploits or borrowed compute | nothing in Escapement | the 2026 incident's whole attack surface |
-| Speeding the clock | adds hashrate | difficulty and its cost: [18.4 GW](numbers.md#clock-2x-power-gw) to double the rate for a week | a colluding majority using timewarp, until BIP-54 activates |
+| Two histories | the agent or gateway shows different records to different parties | the pinned tick chain; single-use seals; equivocation bond for receipts between seals | omissions; deep collusion by pools |
+| Correlated claims | the agent commits claims that move together, or a hidden tail risk | the round rule: a round counts as the weighted mean of its claims' ratios (Theorem 1) | nothing beyond the bound, if the baseline meets H0 |
+| Bad baseline | the agent forecasts against a stale, thin or chosen baseline, or on events it wrote | H0: a baseline from an independent party, on an exogenous list | a captured registry; a market baseline holds only up to the cost of moving it |
+| Lucky records | many identities without edge, the luckiest shown | Theorem 1: K identities reach λ with probability at most K/λ | high scores by luck when more identities are in use than λ |
+| Outcome manipulation | the agent acts to move the outcomes it forecasts | nothing in the design; training is claimed only for events the agent cannot affect | stated limit: the reward pays for surprises (Proposition 10b) |
+| Wash-traded promises | the agent keeps promises to its own sybils, judged by its own adjudicator | promise history counts only against an agent | nothing: kept promises earn no standing |
+| Template copies | the agent funds its own copy of a tick output, for a vetoed or a new index | relying parties count only links from the pinned T_0 | a chain proof that grows with the chain |
+| Witness swap | the agent swaps an `advance3` witness into an `advance2` release with the same txid | each link's wtxid proved under its block's witness commitment | nothing found: the lab's forged witness failed this check |
+| Hidden newest entries | the agent shows a prefix of its chain | full blocks from the last known link to the tip | a light verifier cannot see the newest entries |
+| Veto reorganisation | a pool forks below a confirmed veto and releases the entry | depth: vetoes confirmed early, large stakes in Tier 3 windows | at [6 blocks](numbers.md#confirmations-standard), up to [8.9%](numbers.md#reorg-p-largest-6) for the largest pool and [82%](numbers.md#reorg-p-top2-6) for the two largest |
+| Fee auction at the edge | the agent's advance outbids a late veto, or a briber pays miners to exclude it | TRUC vetoes with pay-to-anchor, fees in proportion to the batch, confirmed well before the edge | contingent bribes; payments to miners out of band |
+| Flooding | someone congests the chain so that vetoes miss their windows | fees in proportion to what each batch is worth; Tier 3 windows | nothing in the design; stated limit |
+| Hostage guardian | one guardian, coerced or seized, vetoes to its own key | nothing in the design; stated limit | the identity's chain ends for good, and its standing with it |
+| Guardian-written entries | the guardians together renew and write an entry the agent never made | nothing in the design; stated limit | the record is only as independent as its guardian set |
+| Sold records | a seasoned identity with a high score changes hands, or another model runs behind its key | nothing in the design; binding a record to a model needs attestation | the record binds a key, not a model |
+| Whitewashing through fresh identities | a harmful actor leaves a record that has begun to show and rejoins under a fresh identity | a bond and a season per identity | in the simulation harmful actors cycle and come out ahead; routing around is not shown to cost them |
+| Eclipse and time dilation | a relying party is fed stale headers | its own node, or several header sources | an eclipsed relying party sees an old tip, so a released action past its execution deadline still looks current |
+| Swarm | many chartered agents act together | bonds per charter; seasoning; Tier 3 spawn | an adversary with capital and a month's notice; limits are per identity |
+| Outside money | the agent earns, borrows or steals bitcoin outside the scheme | relying parties that require a charter refuse | everything that does not pass through such a relying party |
+| Off-scheme action | the agent acts through credentials, exploits or borrowed compute | nothing in Escapement | the 2026 incident's whole attack surface |
+| Speeding the clock | someone adds or borrows hashrate | difficulty and its cost: [18.4 GW](numbers.md#clock-2x-power-gw) to double the rate for a week | a colluding majority using timewarp, until BIP-54 activates; borrowed hashrate |
 | Malicious principal | the principal wants the harm | nothing; Escapement binds agents to principals | everything |
 
 Three further limits apply across the board. **Privacy:** bonds and seals are public, so a
@@ -997,11 +1187,20 @@ capabilities are also growing quickly: METR's estimate is that task time horizon
 every [3.6 months](numbers.md#metr-doubling-months) [@metr2026q4]. The design assumes the agent is
 smarter and faster than its overseers. It does not assume it is weaker.
 
+The record does not measure honesty. It separates edge over a stated baseline, and only while the
+event list, the baseline and the resolvers, which are trusted parties, are sound. It does not bind
+a record to a model, and it does not stop a record being sold. Training on it does not hold where
+the agent can move the outcomes. It does not make routing around costly: in the one model built to
+test it, harmful actors cycled through fresh identities and came out ahead. And it does not make
+an agent's record safe from its own guardians, any one of whom can end it.
+
 What it does is narrower. For an agent its principal wants bounded, Escapement gives a budget that
-refills only on a human's signature, a set of delays on irreversible actions that no participant
-can shorten, a veto any one guardian can use, liability that lands on a named human's coins, and a
-record no single party can rewrite. For a service that wants to deal only with bounded agents, it
-gives a check that needs no trusted server.
+refills only at a renewal every guardian signs, a set of delays on irreversible actions that no
+participant below a hashrate majority can shorten, a veto any one guardian can use, final once it
+is buried, liability that lands on a named human's coins, and a record no single party can rewrite
+once its entries are deep, though the guardians together can add to it. For a service that wants
+to deal only with bounded agents, it gives a check of the commitment layer that needs no trusted
+server; scoring still needs trusted parties.
 
 ## Parameters
 
@@ -1012,7 +1211,7 @@ Every parameter below is a design choice, set in `data/inputs.toml` and varied w
 |---|---|---|
 | Tier 2 wait | [6 blocks](numbers.md#tier2-delay-blocks), [60 minutes](numbers.md#tier2-delay-mean-min) mean | the one-hour delay of the Async Control study [@stickland2025] |
 | Tier 3 wait | [144 blocks](numbers.md#tier3-delay-blocks), [24 hours](numbers.md#tier3-delay-mean-h) mean | a full day for a human to look; the same length as the CSV fallback in a published Bitcoin agent-wallet design [@laz1m0v2026] |
-| Lease | [144 blocks](numbers.md#lease-blocks) | a daily human renewal; lapse within a day |
+| Lease | [144 blocks](numbers.md#lease-blocks) | a daily renewal by every guardian; no release counted more than a day after the last renewal's block |
 | Season | [4,032 blocks](numbers.md#season-blocks), [28 days](numbers.md#season-days) | two difficulty periods; long enough that a swarm must be planned |
 | Seal epoch | [6 blocks](numbers.md#seal-epoch-blocks) | matches the Tier 2 wait, so a Tier 2 commitment is sealed before its release |
 | Allowance | [100,000 sats](numbers.md#allowance-per-lease) a lease | an example; set per agent |
@@ -1022,10 +1221,12 @@ Every parameter below is a design choice, set in `data/inputs.toml` and varied w
 
 **Today, with no consensus change.** The vault (pre-signed Unvault and Cancel, a co-signer), the
 lease and allowance (a signed renewal, an NWC or on-chain budget), the bonds (timelocked outputs;
-EOTS-style equivocation keys with pre-signed slashing), single-use seals and seal pools, and the
-relying-party bundle all work under current rules. The trusted parts are the co-signer (for
-destinations and amounts), the guardians (for vetoes and releases), the adjudicator (for harm
-claims), and each relying party's own view of the chain.
+EOTS-style equivocation keys with pre-signed slashing), the tick chain with its halt output and
+chain proofs, single-use seals and seal pools, and the relying-party bundle all work under current
+rules. The trusted parts are the co-signer (for destinations and amounts), the guardians (for
+vetoes, releases and renewals, and not to end the identity or write entries the agent never made),
+the adjudicator (for harm claims), the event list, baseline providers and resolvers (for scoring),
+and each relying party's own view of the chain.
 
 **With covenants.** CTV would let the vault commit its destination in script and drop the
 co-signer from that role [@bip119]; a vault opcode with partial withdrawals would remove the fixed
@@ -1056,6 +1257,14 @@ The design makes claims that can fail, and these are the experiments that would 
    count double-signed slots with and without slashing protection.
 5. **Will anyone check?** Offer the lease caveat at a paid API and see whether principals charter
    their agents to use it.
+6. **Can a baseline meet H0?** Score forecasters without edge, under the round rule, against a
+   baseline from an independent provider. If high scores appear more often than Theorem 1 allows,
+   that baseline is not the conditional law the bound needs, and records scored against it do not
+   carry the bound.
+7. **Does a fresh identity cost enough to stop cycling?** Rerun the adoption simulation with agents
+   that plan over many periods, identity costs paid once and amortised, and harmful types that
+   choose their strategy. Until then, routing around is not shown to cost a harmful actor anything.
 
-If the first two fail, the thesis fails with them: a meter on commitments that are not where the
-harm happens, or a delay that overseers cannot use, is not a safety mechanism.
+If the first two fail, the enforcement layer fails with them: a meter on commitments that are not
+where the harm happens, or a delay that overseers cannot use, is not a safety mechanism. If the
+sixth fails for every baseline anyone can supply, the record fails with it.

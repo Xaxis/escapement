@@ -27,6 +27,12 @@ the ordinary logic of shared standards, where the standard that survives is ofte
 competitor owns; it is an argument about coordination, and it could be wrong if a dominant platform
 or a group of states prefers a registry it controls and can make others use it.
 
+The neutrality covers the commitment layer and nothing above it. Scoring needs an event list, a
+baseline provider, resolvers and adjudicators (section 4), and each of those is a party that
+relying parties trust and rivals may not share. So the honest form of the argument is that Bitcoin
+lets rivals agree on what each agent committed to and when, while they may still disagree on who
+keeps score.
+
 ## The clock cannot be run fast
 
 Every height in the record, every wait in the tick chain and every lease is measured in blocks.
@@ -40,7 +46,10 @@ it. Shrinking a day-long Tier 3 wait to an hour needs
 [8 x](../research/numbers.md#tier3-compress-vs-datacentres) the power of every data centre in the
 world in 2025. These costs do not fall as an agent becomes faster or more capable; they fall only as
 hashrate becomes cheaper. That is the precise sense of the claim that Bitcoin is a clock an AI
-cannot speed up. A registry's clock is whatever its operator's server reports.
+cannot speed up, and it has two limits. It binds only actors below a hashrate majority, and while
+the energy cost of new hashrate does not fall with intelligence, the cost of borrowing existing
+hashrate, by renting it or bribing pools, may. A registry's clock is whatever its operator's server
+reports.
 
 The clock has a known crack. The timewarp bug lets a hashrate majority manipulate timestamps so that
 difficulty falls and blocks come much faster, after weeks of visible preparation; its fix is
@@ -54,6 +63,10 @@ The same scarcity that makes the unit neutral makes the substrate expensive. Eac
 transaction, and blockspace is sold at auction: the median fee rate was
 [1 sat/vB](../research/numbers.md#feerate-2026) across 2026 but
 [200 sat/vB](../research/numbers.md#feerate-halving) in the halving block. The chain holds about
-[144,000,000 vB](../research/numbers.md#vbytes-per-day) a day, which bounds how many identities can
-tick often (section 8), and fee spikes fall hardest on the smallest identities. Bitcoin is slow by
+[144,000,000 vB](../research/numbers.md#vbytes-per-day) a day. A Tier 2 release measured on regtest
+costs [137 sats](../research/numbers.md#tick-release-cost-2026) at the 2026 median and
+[27,400 sats](../research/numbers.md#tick-release-cost-halving) at the halving block's rate, and if
+releases filled every block, about [44,000 identities](../research/numbers.md#tick-identities-max)
+could release every six blocks. That bounds the total rate of releases, but weakly, since a release
+can batch many commitments, and fee spikes fall hardest on the smallest identities. Bitcoin is slow by
 design, which is the point for delays and a cost for everything else.

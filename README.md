@@ -6,11 +6,18 @@ know, act as a safety limit on AI?
 In a mechanical clock the escapement lets a mainspring's energy out one counted tick at a time,
 and keeps the time. Escapement asks two things of Bitcoin. For alignment: can its scarcity, its
 clock and its unforgeable costs shape what AI agents are trained and rewarded to do, by making an
-agent's standing an **unforgeable track record** (complete, non-backdatable, under an identity that
-costs locked bitcoin) that is cheap to earn honestly and expensive to fake? For adoption: would
-labs, companies, agents and governments choose it because it pays them, with staying out coming to
-cost more than joining? The earlier mechanisms (caps, delays, leases, bonds, anchored logs) are the
-enforcement layer under that record.
+agent's standing a **complete track record** (ordered, non-backdatable, under an identity that costs
+locked bitcoin)? For adoption: would labs, companies, agents and governments choose it because it
+pays them? The earlier mechanisms (caps, delays, leases, bonds, anchored logs) are the enforcement
+layer under that record.
+
+What survived checking is narrower than what was proposed. Under a stated condition on the baseline,
+a record of forecasts scored in rounds costs an agent without edge a number of identities that grows
+with the score; on events the agent cannot influence, it gives a training reward nobody can select
+after the fact; and adoption has a tipping point that parties who gain alone can push past. The
+claim that staying out comes to cost a harmful actor more than joining was cut, as were a light
+proof of releases and Bitcoin as a clock for AI chips. `research/06-verification.md` has each claim's
+result at every level.
 
 ## Status
 
@@ -43,12 +50,15 @@ tools/                     docs sync, the repository check, the paper build
 
 ## Reproduce
 
-You need Python 3.11 or later; nothing else.
+You need Python 3.11 or later; nothing else for the model. `make lab` also downloads Bitcoin Core
+32.1 (checked against a pinned hash) into `~/.cache/escapement/` and runs a throwaway regtest node.
 
 ```sh
 make model                                   # every number, from inputs and model
 make docs                                    # write those numbers into the documents
 make check                                   # em dashes, reproducibility, sync, every citation
+make lab                                     # the Bitcoin pieces on regtest: 104 checks
+python3 model/sim.py                         # the simulations
 python3 model/escapement.py --only season-days
 python3 model/escapement.py --set tier3-delay-blocks=288
 ```
